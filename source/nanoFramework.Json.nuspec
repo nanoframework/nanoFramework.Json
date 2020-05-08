@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>nanoFramework.Json</id>
+    <version>$version$</version>
+    <title>nanoFramework.Json</title>
+    <authors>nanoFramework project contributors</authors>
+    <owners>nanoFramework project contributors</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <releaseNotes>
+    </releaseNotes>
+    <developmentDependency>false</developmentDependency>
+    <projectUrl>https://github.com/nanoframework/lib-nanoFramework.Json</projectUrl>
+    <iconUrl>https://secure.gravatar.com/avatar/97d0e092247f0716db6d4b47b7d1d1ad</iconUrl>
+    <repository type="git" url="https://github.com/nanoframework/lib-nanoFramework.Json" commit="$commit$" />
+    <copyright>Copyright (c) 2020 The nanoFramework project contributors</copyright>
+    <description>This package includes the nanoFramework.Json assembly for nanoFramework C# projects.</description>
+    <summary>nanoFramework.Json assembly for nanoFramework C# projects</summary>
+    <tags>nanoFramework C# csharp netmf netnf nanoFramework.Json</tags>
+    <dependencies>
+      <dependency id="nanoFramework.CoreLibrary" version="1.7.0-preview.12" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.dll" target="lib\nanoFramework.Json.dll" />
+    <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.pdb" target="lib\nanoFramework.Json.pdb" />
+    <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.pdbx" target="lib\nanoFramework.Json.pdbx" />
+    <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.pe" target="lib\nanoFramework.Json.pe" />
+    <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.xml" target="lib\nanoFramework.Json.xml" />
+    <!-- readme -->
+    <file src="readme.txt" target="readme.txt" />
+  </files>
+</package>
