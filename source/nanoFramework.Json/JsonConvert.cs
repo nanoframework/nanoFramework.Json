@@ -69,7 +69,7 @@ namespace nanoFramework.Json
 		/// <returns></returns>
 		public static object DeserializeObject(string sourceString, Type type)
 		{
-			var dserResult = DeserializeObject(sourceString);
+			var dserResult = Deserialize(sourceString);
 			return PopulateObject((JsonToken)dserResult, type, "/");
 		}
 
@@ -81,7 +81,7 @@ namespace nanoFramework.Json
 		/// <returns></returns>
 		public static object DeserializeObject(Stream stream, Type type)
 		{
-			var dserResult = DeserializeObject(stream);
+			var dserResult = Deserialize(stream);
 			return PopulateObject((JsonToken)dserResult, type, "/");
 		}
 
@@ -93,61 +93,9 @@ namespace nanoFramework.Json
 		/// <returns></returns>
 		public static object DeserializeObject(DataReader dr, Type type)
 		{
-			var dserResult = DeserializeObject(dr);
+			var dserResult = Deserialize(dr);
 			return PopulateObject((JsonToken)dserResult, type, "/");
 		}
-
-		// Trying to deserialize a stream in nanoFramework is problematic.
-		// as Stream.Peek() has not been implemented in nanoFramework
-		// Therefore, read all input into the static jsonBytes[] and use jsonPos to keep track of where we are when parsing the input
-		private static byte[] jsonBytes;     // Do all deserialization using this byte[]
-		private static int jsonPos;      // Current position in jsonBytes[]
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sourceString"></param>
-		/// <returns></returns>
-		public static object DeserializeObject(string sourceString)
-		{
-			jsonBytes = new byte[sourceString.Length];
-			jsonBytes = Encoding.UTF8.GetBytes(sourceString);
-			jsonPos = 0;
-			return Deserialize();
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sourceStream"></param>
-		/// <returns></returns>
-		public static object DeserializeObject(Stream sourceStream)
-		{
-			// Read the sourcestream into jsonBytes[]
-			jsonBytes = new byte[sourceStream.Length];
-			sourceStream.Read(jsonBytes, 0, (int)sourceStream.Length);
-			jsonPos = 0;
-			return Deserialize();
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="dr"></param>
-		/// <returns></returns>
-		public static object DeserializeObject(DataReader dr)
-		{
-			// Read the DataReader into jsonBytes[]
-			jsonBytes = new byte[dr.UnconsumedBufferLength];
-			jsonPos = 0;
-			while (dr.UnconsumedBufferLength > 0)
-			{
-				jsonBytes[jsonPos++] = dr.ReadByte();
-			}
-			jsonPos = 0;
-			return Deserialize();
-		}
-
 
 		private static string debugIndent = $"PopulateObject() - ";      // PopulateObject() goes recursive - this cleans up the debug output
 		private static int debugOutdent = 10;
@@ -197,7 +145,13 @@ namespace nanoFramework.Json
 						DebugHelper.DisplayDebug($"{debugIndent} Process rootObject.Member");
 						var memberProperty = (JsonPropertyAttribute)m;
 						DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
+
 						MethodInfo memberGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
+						if (memberGetMethod == null) //TODO: skips non property objects, but should it also do fields?
+						{
+							DebugHelper.DisplayDebug($"{debugIndent}     memberProperty is null, skipping");
+							continue;
+						}
 						Type memberType = memberGetMethod.ReturnType;
 						MethodInfo memberSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
 						if (memberType == null)
@@ -357,9 +311,43 @@ namespace nanoFramework.Json
 				debugIndent = debugIndent.Substring(debugOutdent);          // 'Outdent' before returning
 				return null;
 			}
-		}   // end of PopulateObject
+		}
 
+		// Trying to deserialize a stream in nanoFramework is problematic.
+		// as Stream.Peek() has not been implemented in nanoFramework
+		// Therefore, read all input into the static jsonBytes[] and use jsonPos to keep track of where we are when parsing the input
+		private static byte[] jsonBytes;     // Do all deserialization using this byte[]
+		private static int jsonPos;      // Current position in jsonBytes[]
 
+		private static object Deserialize(string sourceString)
+		{
+			jsonBytes = new byte[sourceString.Length];
+			jsonBytes = Encoding.UTF8.GetBytes(sourceString);
+			jsonPos = 0;
+			return Deserialize();
+		}
+
+		private static object Deserialize(Stream sourceStream)
+		{
+			// Read the sourcestream into jsonBytes[]
+			jsonBytes = new byte[sourceStream.Length];
+			sourceStream.Read(jsonBytes, 0, (int)sourceStream.Length);
+			jsonPos = 0;
+			return Deserialize();
+		}
+
+		private static object Deserialize(DataReader dr)
+		{
+			// Read the DataReader into jsonBytes[]
+			jsonBytes = new byte[dr.UnconsumedBufferLength];
+			jsonPos = 0;
+			while (dr.UnconsumedBufferLength > 0)
+			{
+				jsonBytes[jsonPos++] = dr.ReadByte();
+			}
+			jsonPos = 0;
+			return Deserialize();
+		}
 		// Deserialize() now assumes that the input has been copied int jsonBytes[]
 		// Keep track of position with jsonPos
 		private static JsonToken Deserialize()
@@ -491,9 +479,13 @@ namespace nanoFramework.Json
 			}
 			else if (token.TType == TokenType.Number)
 			{
-				if (token.TValue.IndexOfAny(new char[] { '.', 'e', 'E' }) != -1)
+				if (token.TValue.IndexOfAny(new char[] { 'e', 'E' }) != -1) // TODO nF doesnt support Double out of the box, use float instead
 				{
 					return new JsonValue(double.Parse(token.TValue));
+				}
+				if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F' }) != -1)
+				{
+					return new JsonValue(float.Parse(token.TValue));
 				}
 				else
 				{
