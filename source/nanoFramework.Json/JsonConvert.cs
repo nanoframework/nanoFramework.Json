@@ -13,7 +13,9 @@ using Windows.Storage.Streams;
 
 namespace nanoFramework.Json
 {
-
+	/// <summary>
+	/// Provides methods for converting between .NET types and JSON types.
+	/// </summary>
 	public static class JsonConvert
 	{
 		private enum TokenType
@@ -65,7 +67,7 @@ namespace nanoFramework.Json
 		/// Deserializes a Json string into an object.
 		/// </summary>
 		/// <param name="sourceString"></param>
-		/// <param name="type"></param>
+		/// <param name="type">The object type to convert to</param>
 		/// <returns></returns>
 		public static object DeserializeObject(string sourceString, Type type)
 		{
@@ -74,10 +76,10 @@ namespace nanoFramework.Json
 		}
 
 		/// <summary>
-		/// 
+		/// Deserializes a Json string into an object.
 		/// </summary>
 		/// <param name="stream"></param>
-		/// <param name="type"></param>
+		/// <param name="type">The object type to convert to</param>
 		/// <returns></returns>
 		public static object DeserializeObject(Stream stream, Type type)
 		{
@@ -86,10 +88,10 @@ namespace nanoFramework.Json
 		}
 
 		/// <summary>
-		/// 
+		/// Deserializes a Json string into an object.
 		/// </summary>
 		/// <param name="dr"></param>
-		/// <param name="type"></param>
+		/// <param name="type">The object type to convert to</param>
 		/// <returns></returns>
 		public static object DeserializeObject(DataReader dr, Type type)
 		{

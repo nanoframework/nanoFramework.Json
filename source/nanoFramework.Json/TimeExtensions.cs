@@ -8,7 +8,7 @@ using System;
 
 namespace nanoFramework.Json
 {
-	public static class DateTimeExtensions
+	internal static class DateTimeExtensions
 	{
 		/// <summary>
 		/// Converts a vCal or iCal date string into a DateTime object.

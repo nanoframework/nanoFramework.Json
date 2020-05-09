@@ -24,6 +24,11 @@ namespace nanoFramework.Test
         }
     }
 
+    public class TestClassNaN
+    {
+        public float nF { get; set; } //<- fails on deserialization
+    }
+
     public class TestClass
     {
         public int i { get; set; }
@@ -34,7 +39,7 @@ namespace nanoFramework.Test
         public string[] stringArray { get; set; }
         public ChildClass child1;
         public ChildClass Child { get; set; }
-        //public object nullObject { get; set; } //<- fails on serialization
+        public object nullObject { get; set; }
         //public float nanFloat { get; set; } //<- fails on serialization
         public float f { get; set; }
         public bool b { get; set; }
@@ -50,6 +55,7 @@ namespace nanoFramework.Test
 
             DoArrayTest();
             DoSimpleObjectTest();
+            DoFloatNaNObjectTest();
             DoComplexObjectTest();
 
             Thread.Sleep(Timeout.Infinite);
@@ -101,7 +107,7 @@ namespace nanoFramework.Test
                 stringArray = new[] { "two", "four", "six", "eight" },
                 child1 = new ChildClass() { one = 1, two = 2, three = 3 },
                 Child = new ChildClass() { one = 100, two = 200, three = 300 },
-                //nullObject = null,
+                nullObject = null,
                 //nanFloat = float.NaN,
                 f = 1.2345f,
                 b = true
@@ -127,7 +133,27 @@ namespace nanoFramework.Test
             Console.WriteLine("Complex Object Test succeeded");
         }
 
-        private static bool ArraysAreEqual(Array a1, Array a2)
+        private static void DoFloatNaNObjectTest()
+        {
+            Console.WriteLine("Starting float NaN Object Test...");
+            var test = new TestClassNaN()
+            {
+                nF = float.NaN,
+            };
+            var result = JsonConvert.SerializeObject(test);
+            Console.WriteLine($"Serialized Object: {result}");
+
+
+            var dserResult = (TestClassNaN)JsonConvert.DeserializeObject(result, typeof(TestClassNaN));
+
+            Console.WriteLine("After Type deserialization:");
+            Console.WriteLine(dserResult.ToString());
+
+            Console.WriteLine("float NaN Object Test Test succeeded");
+
+        }
+
+            private static bool ArraysAreEqual(Array a1, Array a2)
         {
             if (a1 == null && a2 == null)
                 return true;

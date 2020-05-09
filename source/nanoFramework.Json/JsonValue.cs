@@ -23,6 +23,13 @@ namespace nanoFramework.Json
 
 		public static JsonValue Serialize(Type type, object oValue)
 		{
+			if (type.Name == "Single")
+			{
+				if (float.IsNaN((float)oValue))
+				{
+					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
+				}
+			}
 			return new JsonValue() { Value = oValue };
 		}
 

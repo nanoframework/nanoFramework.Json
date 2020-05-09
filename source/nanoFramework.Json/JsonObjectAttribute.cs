@@ -77,7 +77,9 @@ namespace nanoFramework.Json
 				var methodResult = m.Invoke(oSource, null);
 				// It was pretty tricky getting things to work - tried lots of different combinations - needed lots of debug - keep it in case future testing reveals trouble
 				// Code would be pretty simple without all this debug - maybe get rid of it at some point after things have been well proven
-				DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - method: {m.Name}   methodResult.GetType(): {methodResult.GetType().Name}  methodResult: {methodResult.ToString()}  m.DeclaringType: {m.DeclaringType.Name}");
+				
+				//TODO: debug helper does not handle null objects. Commented out for the time being!
+				//DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - method: {m.Name}   methodResult.GetType(): {methodResult.GetType().Name}  methodResult: {methodResult.ToString()}  m.DeclaringType: {m.DeclaringType.Name}");
 				if (methodResult == null)
 				{
 					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - methodResult is null.  Calling JValue.Serialize({m.ReturnType.Name}, null) ");
@@ -122,17 +124,6 @@ namespace nanoFramework.Json
 						if (value == null)
 						{
 							result._members.Add(f.Name, new JsonPropertyAttribute(f.Name, JsonValue.Serialize(f.FieldType, null)));
-						}
-						else if (f.FieldType == typeof(System.Single)) //catch nan values TODO: how should this be handled??? It doesnt hit it anyway!!! (value == NaN)
-						{
-							if ((float)value == Single.NaN)
-							{
-								result._members.Add(f.Name.ToLower(), new JsonPropertyAttribute(f.Name, JsonValue.Serialize(f.FieldType, value)));
-							}
-							else
-							{
-								result._members.Add(f.Name.ToLower(), new JsonPropertyAttribute(f.Name, JsonValue.Serialize(f.FieldType, value)));
-							}
 						}
 						else if (f.FieldType.IsValueType || f.FieldType == typeof(string))
 						{
