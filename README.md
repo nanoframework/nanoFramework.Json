@@ -11,7 +11,7 @@
 | Component | Build Status | NuGet Package |
 |:-|---|---|
 | Json | [![Build Status](https://dev.azure.com/nanoframework/nanoFramework.Json/_apis/build/status/nanoframework.lib-nanoFramework.Json?branchName=master)](https://dev.azure.com/nanoframework/nanoFramework.Json/_build/latest?definitionId=59&branchName=master) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.Json.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.Json/) |
-| Json (preview) | [[![Build Status](https://dev.azure.com/nanoframework/nanoFramework.Json/_apis/build/status/nanoframework.lib-nanoFramework.Json?branchName=develop)](https://dev.azure.com/nanoframework/nanoFramework.Json/_build/latest?definitionId=59&branchName=develop) | [![](https://badgen.net/badge/NuGet/preview/D7B023?icon=https://simpleicons.now.sh/azuredevops/fff)](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&package=nanoFramework.Json&protocolType=NuGet&view=overview) |
+| Json (preview) | [![Build Status](https://dev.azure.com/nanoframework/nanoFramework.Json/_apis/build/status/nanoframework.lib-nanoFramework.Json?branchName=develop)](https://dev.azure.com/nanoframework/nanoFramework.Json/_build/latest?definitionId=59&branchName=develop) | [![](https://badgen.net/badge/NuGet/preview/D7B023?icon=https://simpleicons.now.sh/azuredevops/fff)](https://dev.azure.com/nanoframework/feed/_packaging?_a=package&feed=sandbox&package=nanoFramework.Json&protocolType=NuGet&view=overview) |
 
 ## Feedback and documentation
 
