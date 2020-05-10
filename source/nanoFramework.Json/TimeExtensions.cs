@@ -83,7 +83,6 @@ namespace nanoFramework.Json
 		/// <returns></returns>
 		public static DateTime FromIso8601(string date)
 		{
-			string result = string.Empty;
 
 			// Check to see if format contains the timezone ID, or contains UTC reference
 			// Neither means it's localtime
@@ -103,30 +102,35 @@ namespace nanoFramework.Json
 
 			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), Convert.ToInt32(ms));
 
-			// If a time offset was specified instead of the UTC marker,
-			// add/subtract in the hours/minutes
-			if ((utc == false) && (parts.Length >= 9))
-			{
-				// There better be a timezone offset
-				string hourOffset = (parts.Length > 7) ? parts[7] : "";
-				string minuteOffset = (parts.Length > 8) ? parts[8] : "";
-				if (date.Contains("+"))
-				{
-					dt = dt.AddHours(Convert.ToDouble(hourOffset));
-					dt = dt.AddMinutes(Convert.ToDouble(minuteOffset));
-				}
-				else
-				{
-					dt = dt.AddHours(-(Convert.ToDouble(hourOffset)));
-					dt = dt.AddMinutes(-(Convert.ToDouble(minuteOffset)));
-				}
-			}
-
 			if (utc)
 			{
 				// Convert the Kind to DateTimeKind.Utc if string Z present
-				//dt = new DateTime(0, DateTimeKind.Utc).AddTicks(dt.Ticks);
 				dt = new DateTime(dt.Ticks, DateTimeKind.Utc); //TODO!!!
+			}
+			else
+			{
+				//nF does not support non UTC dates, so should we throw an exception instead.
+				throw new NotSupportedException("DateTime is not UTC");
+
+				//TODO: remove old handling of non UTC datetime code.
+				//// If a time offset was specified instead of the UTC marker,
+				//// add/subtract in the hours/minutes
+				//if ((utc == false) && (parts.Length >= 9))
+				//{
+				//	// There better be a timezone offset
+				//	string hourOffset = (parts.Length > 7) ? parts[7] : "";
+				//	string minuteOffset = (parts.Length > 8) ? parts[8] : "";
+				//	if (date.Contains("+"))
+				//	{
+				//		dt = dt.AddHours(Convert.ToDouble(hourOffset));
+				//		dt = dt.AddMinutes(Convert.ToDouble(minuteOffset));
+				//	}
+				//	else
+				//	{
+				//		dt = dt.AddHours(-(Convert.ToDouble(hourOffset)));
+				//		dt = dt.AddMinutes(-(Convert.ToDouble(minuteOffset)));
+				//	}
+				//}
 			}
 
 			return dt;
