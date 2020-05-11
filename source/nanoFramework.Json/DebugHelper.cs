@@ -4,7 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
-//#define NANOFRAMEWORK_DISPLAY_DEBUG
+using System;
 
 namespace nanoFramework.Json
 {
@@ -13,7 +13,7 @@ namespace nanoFramework.Json
         // Used this a lot in the effort to get Array serialization & deserialization working
         public static void DisplayDebug(string displayString)
         {
-#if (NANOFRAMEWORK_DISPLAY_DEBUG)
+#if DEBUG
 		Console.WriteLine(displayString);           // Show Serialize & Deserialize details - but only when NANOFRAMEWORK_DISPLAY_DEBUG is defined
 #endif
         }
