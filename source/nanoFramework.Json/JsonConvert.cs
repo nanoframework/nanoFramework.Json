@@ -207,7 +207,7 @@ namespace nanoFramework.Json
 						{
 							// Don't need any more info - populate the member using memberSetMethod.Invoke()
 							DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Value is JValue");
-							if (memberType != typeof(DateTime)) 
+							if (memberType != typeof(DateTime))
 							{
 								DebugHelper.DisplayDebug($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
 								if (((JsonValue)memberProperty.Value).Value == null) 
@@ -241,7 +241,7 @@ namespace nanoFramework.Json
 							{
 								DateTime dt;
 								var sdt = ((JsonValue)memberProperty.Value).Value.ToString();
-								if (sdt.Contains("Date(")) 
+								if (sdt.Contains("Date("))
 								{
 									dt = DateTimeExtensions.FromASPNetAjax(sdt);
 								} 
@@ -259,7 +259,7 @@ namespace nanoFramework.Json
 								}
 								DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {dt.ToString()} ");
 							}
-						} 
+						}
 						else if (memberProperty.Value is JsonArrayAttribute)
 						{
 							DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Value is a JArray");
@@ -503,7 +503,7 @@ namespace nanoFramework.Json
 				throw new Exception("unterminated json object");
 			}
 			return result;
-		}   // end of ParseObject()
+		}
 
 		private static JsonArrayAttribute ParseArray(ref LexToken token)
 		{
