@@ -27,9 +27,6 @@
       <Private>True</Private>
       <SpecificVersion>True</SpecificVersion>
     </Reference>
-    <Reference Include="nanoFramework.Json">
-      <HintPath>..\nanoFramework.Json\bin\Debug\nanoFramework.Json.dll</HintPath>
-    </Reference>
     <Reference Include="nanoFramework.System.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>packages\nanoFramework.System.Collections.1.0.1-preview.6\lib\nanoFramework.System.Collections.dll</HintPath>
       <Private>True</Private>
@@ -48,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nanoFramework.Json\nanoFramework.Json.nfproj" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>
