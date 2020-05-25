@@ -532,7 +532,7 @@ namespace nanoFramework.Json
 			}
 			var result = new JsonArrayAttribute((JsonToken[])list.ToArray(typeof(JsonToken)));
 			return result;
-		}   // end of ParseArray()
+		}
 
 		private static JsonToken ParseValue(ref LexToken token)
 		{
@@ -588,7 +588,7 @@ namespace nanoFramework.Json
 			}
 
 			throw new Exception("invalid value found during json parse");
-		}   // end of ParseValue()
+		}
 
 		private static LexToken GetNextToken()
 		{
