@@ -55,7 +55,7 @@ namespace nanoFramework.Test
 
             DoArrayTest();
             DoSimpleObjectTest();
-            //DoFloatNaNObjectTest();
+            DoFloatNaNObjectTest();
             DoComplexObjectTest();
 
             Thread.Sleep(Timeout.Infinite);

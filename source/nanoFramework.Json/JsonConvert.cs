@@ -149,29 +149,29 @@ namespace nanoFramework.Json
 						DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
 						// Figure out if we're dealing with a Field or a Property and handle accordingly
-						Type	   memberType			= null;
-						FieldInfo  memberFieldInfo		= null;
-						MethodInfo memberPropSetMethod	= null;
-						MethodInfo memberPropGetMethod	= null;
-						bool	   memberIsProperty		= false;
+						Type memberType = null;
+						FieldInfo memberFieldInfo = null;
+						MethodInfo memberPropSetMethod = null;
+						MethodInfo memberPropGetMethod = null;
+						bool memberIsProperty = false;
 						memberFieldInfo = rootType.GetField(memberProperty.Name);
-						if (memberFieldInfo != null) 
+						if (memberFieldInfo != null)
 						{
 							memberType = memberFieldInfo.FieldType;
 							memberIsProperty = false;
-						} 
-						else 
+						}
+						else
 						{
 							memberPropGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
-							if (memberPropGetMethod == null) 
+							if (memberPropGetMethod == null)
 							{
 								throw new Exception($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null");
-							} 
-							else 
+							}
+							else
 							{
 								memberType = memberPropGetMethod.ReturnType;
 								memberPropSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
-								if (memberType == null) 
+								if (memberType == null)
 								{
 									throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
 								}
@@ -193,16 +193,16 @@ namespace nanoFramework.Json
 								memberPath = memberPath + '/' + memberProperty.Name;    // Need to add a slash before appending rootElementType
 							}
 							var memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
-							if (memberIsProperty) 
+							if (memberIsProperty)
 							{
 								memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
-							} 
-							else 
+							}
+							else
 							{
 								memberFieldInfo.SetValue(rootInstance, memberObject);
 							}
 							DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
-						} 
+						}
 						else if (memberProperty.Value is JsonValue)
 						{
 							// Don't need any more info - populate the member using memberSetMethod.Invoke()
@@ -210,50 +210,51 @@ namespace nanoFramework.Json
 							if (memberType != typeof(DateTime))
 							{
 								DebugHelper.DisplayDebug($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
-								if (((JsonValue)memberProperty.Value).Value == null) 
+								if (((JsonValue)memberProperty.Value).Value == null)
 								{
 									// This doesn't work for float members that have a value of NaN - check for this and handle it separately
 									DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Value is null");
 									if (memberIsProperty)
 									{
 										memberPropSetMethod.Invoke(rootInstance, new object[] { null });
-									} 
-									else 
+									}
+									else
 									{
 										object obj = null;
 										memberFieldInfo.SetValue(rootInstance, obj);
 									}
 									DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  null");
-								} 
-								else 
+								}
+								else
 								{
-									if (memberIsProperty) 
+									if (memberIsProperty)
 									{
 										memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
-									} 
-									else 
+									}
+									else
 									{
 										memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
 									}
 									DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {((JsonValue)memberProperty.Value).Value} ");
 								}
-							} else 
+							}
+							else
 							{
 								DateTime dt;
 								var sdt = ((JsonValue)memberProperty.Value).Value.ToString();
 								if (sdt.Contains("Date("))
 								{
 									dt = DateTimeExtensions.FromASPNetAjax(sdt);
-								} 
-								else 
+								}
+								else
 								{
 									dt = DateTimeExtensions.FromIso8601(sdt);
 								}
-								if (memberIsProperty) 
+								if (memberIsProperty)
 								{
 									memberPropSetMethod.Invoke(rootInstance, new object[] { dt });
-								} 
-								else 
+								}
+								else
 								{
 									memberFieldInfo.SetValue(rootInstance, dt);
 								}
@@ -307,11 +308,11 @@ namespace nanoFramework.Json
 							memberValueArrayList.CopyTo(targetArray);
 							DebugHelper.DisplayDebug($"{debugIndent}       copied memberValueArrayList into the targetArray");
 							// Populate rootInstance
-							if (memberIsProperty) 
+							if (memberIsProperty)
 							{
 								memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-							} 
-							else 
+							}
+							else
 							{
 								memberFieldInfo.SetValue(rootInstance, targetArray);
 							}
@@ -464,7 +465,7 @@ namespace nanoFramework.Json
 				throw new Exception("unexpected lexical token during json parse");
 			}
 			return result;
-		}	// end of Deserialize()
+		}
 
 		private static JsonObjectAttribute ParseObject(ref LexToken token)
 		{

@@ -34,7 +34,7 @@ namespace nanoFramework.Json
 				sb.Append("\":"); //Use minimalist JSON, pretty can be handled on the client!
 				JsonToken token = Value;
 				if (token is JsonValue j)
-				{   // Not all tokens are JValue - some are JObject or JArray
+				{	// Not all tokens are JValue - some are JObject or JArray
 					if (j.Value != null)
 					{
 						if (j.Value.GetType().Name == "Boolean") //TODO: can this be done on convert rather than here??
