@@ -93,7 +93,7 @@ namespace nanoFramework.Json
 					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (m.ReturnType.IsArray)
-				{          // Original code checked m.DeclaringType - this didn't work very well - checking m.ReturnType made all the difference
+				{	// Original code checked m.DeclaringType - this didn't work very well - checking m.ReturnType made all the difference
 					elementType = methodResult.GetType().GetElementType();
 					// Tried lots of combinations to get this to work - used 'json2csharp.com' to verify the serialized result string - leave this debug here in case future testing reveals trouble  
 					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");

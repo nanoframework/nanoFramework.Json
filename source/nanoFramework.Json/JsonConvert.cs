@@ -104,6 +104,8 @@ namespace nanoFramework.Json
 
 		private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
 		{
+			debugIndent = "          " + debugIndent;
+			DebugHelper.DisplayDebug($"{debugIndent} Start - ");        // Simple message to make sure we get to this point - be careful with this - displaying null values causes the device to hang & makes debugging problematic
 			if ((rootToken == null) || (rootType == null) || (rootPath == null))
 			{
 				throw new Exception($"PopulateObject() - All parameters must be non-null.  rootToken: {(rootToken != null ? rootToken.GetType().Name : "null")}   rootType: {(rootType != null ? rootType.Name : "null")}   rootPath: {(rootPath != null ? rootPath : "null")}");
@@ -111,8 +113,6 @@ namespace nanoFramework.Json
 			try
 			{
 				// Leave the debug here in case future testing reveals trouble - maybe get rid of it at some point
-				debugIndent = "          " + debugIndent;
-				DebugHelper.DisplayDebug($"{debugIndent} Start - ");        // Simple message to make sure we get to this point - displaying null values causes the device to hang & makes debugging problematic
 				DebugHelper.DisplayDebug($"{debugIndent} rootToken is a {rootToken.GetType().Name}  rootType: {rootType.Name}   rootPath: {rootPath}");
 				if (rootToken is JsonObjectAttribute)
 				{
@@ -148,17 +148,35 @@ namespace nanoFramework.Json
 						var memberProperty = (JsonPropertyAttribute)m;
 						DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
-						MethodInfo memberGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
-						if (memberGetMethod == null) //TODO: skips non property objects, but should it also do fields?
+						// Figure out if we're dealing with a Field or a Property and handle accordingly
+						Type memberType = null;
+						FieldInfo memberFieldInfo = null;
+						MethodInfo memberPropSetMethod = null;
+						MethodInfo memberPropGetMethod = null;
+						bool memberIsProperty = false;
+						memberFieldInfo = rootType.GetField(memberProperty.Name);
+						if (memberFieldInfo != null)
 						{
-							DebugHelper.DisplayDebug($"{debugIndent}     memberProperty is null, skipping");
-							continue;
+							memberType = memberFieldInfo.FieldType;
+							memberIsProperty = false;
 						}
-						Type memberType = memberGetMethod.ReturnType;
-						MethodInfo memberSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
-						if (memberType == null)
+						else
 						{
-							throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
+							memberPropGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
+							if (memberPropGetMethod == null)
+							{
+								throw new Exception($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null");
+							}
+							else
+							{
+								memberType = memberPropGetMethod.ReturnType;
+								memberPropSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
+								if (memberType == null)
+								{
+									throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
+								}
+								memberIsProperty = true;
+							}
 						}
 						// Process the member based on JObject, JValue, or JArray
 						if (memberProperty.Value is JsonObjectAttribute)
@@ -175,7 +193,15 @@ namespace nanoFramework.Json
 								memberPath = memberPath + '/' + memberProperty.Name;    // Need to add a slash before appending rootElementType
 							}
 							var memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
-							memberSetMethod.Invoke(rootInstance, new object[] { memberObject });
+							if (memberIsProperty)
+							{
+								memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
+							}
+							else
+							{
+								memberFieldInfo.SetValue(rootInstance, memberObject);
+							}
+							DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
 						}
 						else if (memberProperty.Value is JsonValue)
 						{
@@ -183,7 +209,34 @@ namespace nanoFramework.Json
 							DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Value is JValue");
 							if (memberType != typeof(DateTime))
 							{
-								memberSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
+								DebugHelper.DisplayDebug($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
+								if (((JsonValue)memberProperty.Value).Value == null)
+								{
+									// This doesn't work for float members that have a value of NaN - check for this and handle it separately
+									DebugHelper.DisplayDebug($"{debugIndent}     memberProperty.Value is null");
+									if (memberIsProperty)
+									{
+										memberPropSetMethod.Invoke(rootInstance, new object[] { null });
+									}
+									else
+									{
+										object obj = null;
+										memberFieldInfo.SetValue(rootInstance, obj);
+									}
+									DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  null");
+								}
+								else
+								{
+									if (memberIsProperty)
+									{
+										memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
+									}
+									else
+									{
+										memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
+									}
+									DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {((JsonValue)memberProperty.Value).Value} ");
+								}
 							}
 							else
 							{
@@ -197,7 +250,15 @@ namespace nanoFramework.Json
 								{
 									dt = DateTimeExtensions.FromIso8601(sdt);
 								}
-								memberSetMethod.Invoke(rootInstance, new object[] { dt });
+								if (memberIsProperty)
+								{
+									memberPropSetMethod.Invoke(rootInstance, new object[] { dt });
+								}
+								else
+								{
+									memberFieldInfo.SetValue(rootInstance, dt);
+								}
+								DebugHelper.DisplayDebug($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {dt.ToString()} ");
 							}
 						}
 						else if (memberProperty.Value is JsonArrayAttribute)
@@ -243,11 +304,19 @@ namespace nanoFramework.Json
 								throw new Exception("PopulateObject() - failed to create Array of type: {memberElementType}[]");
 							}
 							DebugHelper.DisplayDebug($"{debugIndent}       targetArray created using CreateInstance().  targetArray.GetType().Name: {(targetArray?.GetType()?.Name != null ? targetArray.GetType().Name : "null")}");
-
+							// Fill targetArray with the memberValueArrayList
 							memberValueArrayList.CopyTo(targetArray);
 							DebugHelper.DisplayDebug($"{debugIndent}       copied memberValueArrayList into the targetArray");
-							memberSetMethod.Invoke(rootInstance, new object[] { targetArray });
-							DebugHelper.DisplayDebug($"{debugIndent}       populated the rootInstance object with the contents of targetArray -  via {memberSetMethod.Name}()");
+							// Populate rootInstance
+							if (memberIsProperty)
+							{
+								memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+							}
+							else
+							{
+								memberFieldInfo.SetValue(rootInstance, targetArray);
+							}
+							DebugHelper.DisplayDebug($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
 						}
 					}
 					debugIndent = debugIndent.Substring(debugOutdent);     // 'Outdent' before returning
@@ -262,7 +331,6 @@ namespace nanoFramework.Json
 						throw new NotSupportedException($"PopulateObject() - For arrays, type: {rootType.Name} must have a valid element type");
 					}
 					DebugHelper.DisplayDebug($"{debugIndent} rootType: {rootType.Name}  rootType.GetElementType(): {rootType.GetElementType().Name}");
-
 					// Create & populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue 
 					DebugHelper.DisplayDebug($"{debugIndent} Create and populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue");
 					ArrayList rootArrayList = new ArrayList();
@@ -370,7 +438,7 @@ namespace nanoFramework.Json
 						token = GetNextToken();
 					}
 					else if (token.TType != TokenType.End && token.TType != TokenType.Error)
-					{        // MORT clean this up
+					{
 						throw new Exception("unexpected content after end of object");
 					}
 					break;
@@ -404,8 +472,8 @@ namespace nanoFramework.Json
 			var result = new JsonObjectAttribute();
 			token = GetNextToken();
 			while (token.TType != TokenType.End && token.TType != TokenType.Error && token.TType != TokenType.RBrace)
-			{         // MORT clean this up
-					  // Get the name from the name:value pair
+			{
+				// Get the name from the name:value pair
 				if (token.TType != TokenType.String)
 				{
 					throw new Exception("expected label");
@@ -442,7 +510,7 @@ namespace nanoFramework.Json
 		{
 			ArrayList list = new ArrayList();
 			while (token.TType != TokenType.End && token.TType != TokenType.Error && token.TType != TokenType.RArray)
-			{         // MORT clean this up
+			{
 				var value = ParseValue(ref token);
 				if (value != null)
 				{
@@ -540,7 +608,7 @@ namespace nanoFramework.Json
 				{
 					if (jsonPos >= jsonBytes.Length)
 					{
-						DebugHelper.DisplayDebug($"GetNextTokenInternal() - JsonConverter GetNextToken() - no more data - call EndToken()");
+						DebugHelper.DisplayDebug($"GetNextTokenInternal() - no more data - call EndToken()");
 						return EndToken(sb);
 					}
 					ch = (char)jsonBytes[jsonPos++];
@@ -591,7 +659,7 @@ namespace nanoFramework.Json
 							// nanoFramework doesn't support Peek() for Streams or DataReaders
 							// This is why we converted everything to a byte[] instead of trying to work directly from a Stream or a DataReader
 							// Look at the next byte but don't advance jsonPos unless we're still working on the number
-							// i.e. Peek() to see if we're at the end of the number
+							// i.e. 'peek' to see if we're at the end of the number
 							ch = (char)jsonBytes[jsonPos];
 							if (IsNumberChar(ch))
 							{
@@ -673,7 +741,6 @@ namespace nanoFramework.Json
 			}
 			catch (Exception e)
 			{
-				// MORT - eventually get rid of this try/catch
 				DebugHelper.DisplayDebug($"GetNextTokenInternal() - Exception caught");
 				DebugHelper.DisplayDebug($"GetNextTokenInternal() - Exception: {e.Message}");
 				DebugHelper.DisplayDebug($"GetNextTokenInternal() - StackTrace: {e.StackTrace.ToString()}");

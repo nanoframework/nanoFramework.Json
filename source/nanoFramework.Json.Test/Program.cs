@@ -16,7 +16,7 @@ namespace nanoFramework.Test
         public int one { get; set; }
         public int two { get; set; }
         public int three { get; set; }
-        public int four; //<- Fails to get populated on deserialization...
+        public int four;
 
         public override string ToString()
         {
