@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using nanoFramework.Runtime.Native;
 
 
 namespace nanoFramework.Json
@@ -47,14 +48,14 @@ namespace nanoFramework.Json
 		public static JsonObjectAttribute Serialize(Type type, object oSource)
 		{
 			indent += "      ";         // Indent the debug output - this helps to show recursion
-			DebugHelper.DisplayDebug($"JObject.Serialize() - Start - type: {type.Name}    oSource.GetType(): {oSource.GetType().Name}");
+			Debug.WriteLine($"JObject.Serialize() - Start - type: {type.Name}    oSource.GetType(): {oSource.GetType().Name}");
 			var result = new JsonObjectAttribute();
 			MethodInfo[] methods;
 			Type elementType;
 			if (type.IsArray)
 			{
 				elementType = type.GetElementType();
-				DebugHelper.DisplayDebug($"JObject.Serialize() - type is Array - elementType: {elementType?.Name ?? "null"} ");
+				Debug.WriteLine($"JObject.Serialize() - type is Array - elementType: {elementType?.Name ?? "null"} ");
 			}
 			// Loop through all of this type's methods - find a get_ method that can be used to serialize oSource
 			methods = type.GetMethods();
@@ -79,35 +80,35 @@ namespace nanoFramework.Json
 				// Code would be pretty simple without all this debug - maybe get rid of it at some point after things have been well proven
 				
 				//TODO: debug helper does not handle null objects. Commented out for the time being!
-				//DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - method: {m.Name}   methodResult.GetType(): {methodResult.GetType().Name}  methodResult: {methodResult.ToString()}  m.DeclaringType: {m.DeclaringType.Name}");
+				//Debug.WriteLine($"JObject.Serialize() - methods loop - method: {m.Name}   methodResult.GetType(): {methodResult.GetType().Name}  methodResult: {methodResult.ToString()}  m.DeclaringType: {m.DeclaringType.Name}");
 				if (methodResult == null)
 				{
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - methodResult is null.  Calling JValue.Serialize({m.ReturnType.Name}, null) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - methodResult is null.  Calling JValue.Serialize({m.ReturnType.Name}, null) ");
 					result._members.Add(name, new JsonPropertyAttribute(name, JsonValue.Serialize(m.ReturnType, null)));
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (m.ReturnType.IsValueType || m.ReturnType == typeof(string))
 				{
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - m.ReturnType is ValueType or string. Calling JValue.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType or string. Calling JValue.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
 					result._members.Add(name, new JsonPropertyAttribute(name, JsonValue.Serialize(m.ReturnType, methodResult)));
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (m.ReturnType.IsArray)
 				{	// Original code checked m.DeclaringType - this didn't work very well - checking m.ReturnType made all the difference
 					elementType = methodResult.GetType().GetElementType();
 					// Tried lots of combinations to get this to work - used 'json2csharp.com' to verify the serialized result string - leave this debug here in case future testing reveals trouble  
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
 					result._members.Add(name, new JsonPropertyAttribute(name, JsonArrayAttribute.Serialize(m.ReturnType, methodResult)));
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - added JProperty({elementType.Name}, JArray.Serialize(...)) results to result._members[]");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({elementType.Name}, JArray.Serialize(...)) results to result._members[]");
 				}
 				else
 				{
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - calling JObject.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - calling JObject.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
 					result._members.Add(name, new JsonPropertyAttribute(name, JsonObjectAttribute.Serialize(m.ReturnType, methodResult)));
-					DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop - added JProperty({name}, JObject.Serialize(...)) results to result._members[]");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JObject.Serialize(...)) results to result._members[]");
 				}
 			}   // end of method loop
-			DebugHelper.DisplayDebug($"JObject.Serialize() - methods loop finished - start fields loop");
+			Debug.WriteLine($"JObject.Serialize() - methods loop finished - start fields loop");
 
 			var fields = type.GetFields();
 			foreach (var f in fields)
@@ -145,8 +146,8 @@ namespace nanoFramework.Json
 						break;
 				}
 			}
-			DebugHelper.DisplayDebug($"JObject.Serialize() - fields loop finished");
-			DebugHelper.DisplayDebug($"JObject.Serialize() - Finished - type: {type.Name}");
+			Debug.WriteLine($"JObject.Serialize() - fields loop finished");
+			Debug.WriteLine($"JObject.Serialize() - Finished - type: {type.Name}");
 			indent = indent.Substring(6);     // 'Outdent' before returning
 			return result;
 		}

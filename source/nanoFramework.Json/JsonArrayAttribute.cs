@@ -6,6 +6,7 @@
 
 using System;
 using System.Text;
+using nanoFramework.Runtime.Native;
 
 namespace nanoFramework.Json
 {
@@ -23,11 +24,11 @@ namespace nanoFramework.Json
 		// Made a lot of changes here to get Array serialization working
 		private JsonArrayAttribute(Array source)
 		{
-			DebugHelper.DisplayDebug($"JArray(Array source) - Start - source type: {source.GetType().Name}  length: {source.Length}  value: {source.GetValue(0)}");
+			Debug.WriteLine($"JArray(Array source) - Start - source type: {source.GetType().Name}  length: {source.Length}  value: {source.GetValue(0)}");
 			Items = new JsonToken[source.Length];
 			for (int i = 0; i < source.Length; ++i)
 			{
-				DebugHelper.DisplayDebug($"JArray(Array source) - _contents loop - i: {i}");
+				Debug.WriteLine($"JArray(Array source) - _contents loop - i: {i}");
 				var value = source.GetValue(i);
 				if (value == null) //TODO: handle nulls
 				{
@@ -38,24 +39,24 @@ namespace nanoFramework.Json
 				{
 					throw new Exception($"JArray(Array source) - value.GetType() returned null");
 				}
-				DebugHelper.DisplayDebug($"JArray(Array source) - valueType: {valueType.Name} ");
+				Debug.WriteLine($"JArray(Array source) - valueType: {valueType.Name} ");
 				if ((valueType.IsValueType) || (valueType == typeof(string)))
 				{
-					DebugHelper.DisplayDebug($"JArray(Array source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
+					Debug.WriteLine($"JArray(Array source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
 					Items[i] = JsonValue.Serialize(valueType, value);
 				}
 				else if (valueType.IsArray)
 				{
-					DebugHelper.DisplayDebug($"JArray(Array source) - valueType is Array - calling JArray.Serialize(valueType, value)");
+					Debug.WriteLine($"JArray(Array source) - valueType is Array - calling JArray.Serialize(valueType, value)");
 					Items[i] = JsonArrayAttribute.Serialize(valueType, value);
 				}
 				else
 				{
-					DebugHelper.DisplayDebug($"JArray(Array source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
+					Debug.WriteLine($"JArray(Array source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
 					Items[i] = JsonObjectAttribute.Serialize(valueType, value); ;
 				}
 			}
-			DebugHelper.DisplayDebug($"JArray(Array source) - Finished");
+			Debug.WriteLine($"JArray(Array source) - Finished");
 		}
 
 		public int Length
