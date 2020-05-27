@@ -1,28 +1,10 @@
 trigger:
   branches:
-    include:
-    - master
-    - develop
-    - release-/*
-    - refs/tags/*
+    include: ["master", "develop", "release*", "refs/tags/*" ]
   paths:
-    exclude:
-    - CHANGELOG.md
-    - /*.md
-    - .gitignore
-    - appveyor.yml
-  # waiting for feature to become available
-  # tags:
-  #   include:
-  #   - v/*
+    exclude: [ "doc", "*.md", ".gitignore", "README.md" ]
 
-pr:
-  branches:
-    include:
-    - master
-    - develop
-    - release/*
-  autoCancel: true
+# no pr config, we want to trigger builds for all PRs on all branches
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
@@ -31,48 +13,29 @@ resources:
       type: github
       name: nanoframework/nf-tools
       endpoint: nanoframework
-     
-jobs:
 
-##############################
-- job: Build_Library
-  condition: eq(variables['StartReleaseCandidate'], 'true')
-  pool:
-    vmImage: 'VS2017-Win2016'
+pool:
+  vmImage: 'windows-2019'
 
-  variables:
-    solution: '**/source/*.sln'
-    buildPlatform: 'Any CPU'
-    buildConfiguration: 'Release'
-    nugetPackageName: 'nanoFramework.Json'
-    repoName: 'lib-nanoFramework.Json'
+variables:
+  solution: '**/source/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  nugetPackageName: 'nanoFramework.Json'
+  repoName: 'lib-nanoFramework.Json'
 
-  steps:
+steps:
 
-  # step from template @ nf-tools repo
-  # all build, update and publish steps
-  - template: azure-pipelines-templates/class-lib-build.yml@templates
-    parameters:
-      sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
-   
-##################################
-# report build failure to Discord
-- job: Report_Build_Failure
+# step from template @ nf-tools repo
+# all build, update and publish steps
+- template: azure-pipelines-templates/class-lib-build.yml@templates
+  parameters:
+    sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
 
-  dependsOn:
-  - Build_Library
-  condition: failed('Build_Library')
-
-  pool:
-    vmImage: 'VS2017-Win2016'
-  steps:
-
-  - checkout: self
-      
-  # step from template @ nf-tools repo
-  # report error
-  - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
-    parameters:
-      status: 'failure'
-      webhookUrl: '$(DiscordWebhook)'
-      message: ''
+# step from template @ nf-tools repo
+# report error
+- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+  parameters:
+    status: 'failure'
+    webhookUrl: '$(DiscordWebhook)'
+    message: ''
