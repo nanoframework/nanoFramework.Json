@@ -8,7 +8,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
-using nanoFramework.Runtime.Native;
+using System.Diagnostics;
 
 
 namespace nanoFramework.Json
