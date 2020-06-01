@@ -6,7 +6,7 @@
 
 using System;
 using System.Text;
-using nanoFramework.Runtime.Native;
+using System.Diagnostics;
 
 namespace nanoFramework.Json
 {

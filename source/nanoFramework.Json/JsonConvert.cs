@@ -10,7 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Windows.Storage.Streams;
-using nanoFramework.Runtime.Native;
+using System.Diagnostics;
 
 namespace nanoFramework.Json
 {
