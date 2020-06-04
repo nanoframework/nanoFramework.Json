@@ -27,46 +27,56 @@ namespace nanoFramework.Test
 
     public class TestClassNaN
     {
-        public float nF { get; set; } //<- fails on deserialization
+        public float nF { get; set; } //<- fails on deserialization if NaN
     }
 
     public class TestClass
     {
-        public int i { get; set; }
+        public int aInteger { get; set; }
+        public short aShort { get; set; } //<- fails on deserialization
         public string aString { get; set; }
+        public float aFloat { get; set; }
+        public bool aBoolean { get; set; }
         public DateTime Timestamp { get; set; }
         public DateTime FixedTimestamp { get; set; }
         public int[] intArray { get; set; }
         public string[] stringArray { get; set; }
+        public short[] shortArray { get; set; } //<- fails on serialization/deserialization
+        public float[] floatArray { get; set; }
         public ChildClass child1;
         public ChildClass Child { get; set; }
         public object nullObject { get; set; }
-        //public float nanFloat { get; set; } //<- fails on serialization
-        public float f { get; set; }
-        public bool b { get; set; }
+        public float nanFloat { get; set; } //<- fails on serialization
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
         private string dontSerialize { get; set; } = "dontPublish";
     }
 
+    //[TestFixture]
     public class Program
     {
+        //[SetUp]
         public static void Main()
         {
             Debug.WriteLine("nanoFramework Json Test Program.");
 
-            DoArrayTest();
-            DoSimpleObjectTest();
-            DoFloatNaNObjectTest();
-            DoComplexObjectTest();
+            Can_serialize_int_array();
+            Can_serialize_short_array();
+
+            Can_serialize_and_deserialize_nan_float();
+
+            Can_serialize_and_deserialize_simple_object();
+            Can_serialize_and_deserialize_complex_object();
+
 
             Thread.Sleep(Timeout.Infinite);
         }
 
-        private static void DoArrayTest()
+        //[Test]
+        private static void Can_serialize_int_array()
         {
-            Debug.WriteLine("Starting Array Test...");
+            Debug.WriteLine("Starting Int Array Serialize Test...");
             int[] intArray = new[] { 1, 3, 5, 7, 9 };
 
             var result = JsonConvert.SerializeObject(intArray);
@@ -75,15 +85,28 @@ namespace nanoFramework.Test
             Debug.WriteLine("Array test succeeded");
         }
 
-        private static void DoSimpleObjectTest()
+        //[Test]
+        private static void Can_serialize_short_array()
         {
-            Debug.WriteLine("Starting Simple Object Test...");
+            Debug.WriteLine("Starting short Array Serialize Test...");
+            short[] shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 };
+
+            var result = JsonConvert.SerializeObject(shortArray);
+            Debug.WriteLine($"Serialized Array: {result}");
+
+            Debug.WriteLine("Array test succeeded");
+        }
+
+        //[Test]
+        private static void Can_serialize_and_deserialize_simple_object()
+        {
+            Debug.WriteLine("Starting Simple Object Serialize and Deserialize Test...");
             var source = new ChildClass()
             {
                 one = 1,
                 two = 2,
                 three = 3,
-                four = 4, //<- fails because not a property
+                four = 4,
             };
 
             var serialized = JsonConvert.SerializeObject(source);
@@ -97,23 +120,26 @@ namespace nanoFramework.Test
             Debug.WriteLine("Simple Object Test succeeded");
         }
 
-        private static void DoComplexObjectTest()
+        //[Test]
+        private static void Can_serialize_and_deserialize_complex_object()
         {
-            Debug.WriteLine("Starting Complex Object Test...");
+            Debug.WriteLine("Starting Serialize and Deserialize Complex Object Test...");
             var test = new TestClass()
             {
                 aString = "A string",
-                i = 10,
+                aInteger = 10,
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
                 stringArray = new[] { "two", "four", "six", "eight" },
+                shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
+                floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
                 child1 = new ChildClass() { one = 1, two = 2, three = 3 },
                 Child = new ChildClass() { one = 100, two = 200, three = 300 },
                 nullObject = null,
-                //nanFloat = float.NaN,
-                f = 1.2345f,
-                b = true
+                nanFloat = float.NaN,
+                aFloat = 1.2345f,
+                aBoolean = true
             };
             var result = JsonConvert.SerializeObject(test);
             Debug.WriteLine($"Serialized Object: {result}");
@@ -136,7 +162,8 @@ namespace nanoFramework.Test
             Debug.WriteLine("Complex Object Test succeeded");
         }
 
-        private static void DoFloatNaNObjectTest()
+        //[Test]
+        private static void Can_serialize_and_deserialize_nan_float()
         {
             Debug.WriteLine("Starting float NaN Object Test...");
             var test = new TestClassNaN()
@@ -156,21 +183,22 @@ namespace nanoFramework.Test
 
         }
 
-            private static bool ArraysAreEqual(Array a1, Array a2)
-        {
-            if (a1 == null && a2 == null)
-                return true;
-            if (a1 == null || a2 == null)
-                return false;
-            if (a1.Length != a2.Length)
-                return false;
-            for (int i = 0; i < a1.Length; ++i)
-            {
-                if (!a1.GetValue(i).Equals(a2.GetValue(i)))
-                    return false;
-            }
-            return true;
-        }
+        //[Test]
+        //private static bool ArraysAreEqual(Array a1, Array a2)
+        //{
+        //    if (a1 == null && a2 == null)
+        //        return true;
+        //    if (a1 == null || a2 == null)
+        //        return false;
+        //    if (a1.Length != a2.Length)
+        //        return false;
+        //    for (int i = 0; i < a1.Length; ++i)
+        //    {
+        //        if (!a1.GetValue(i).Equals(a2.GetValue(i)))
+        //            return false;
+        //    }
+        //    return true;
+        //}
 
     }
 }
