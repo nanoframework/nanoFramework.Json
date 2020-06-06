@@ -5,8 +5,9 @@
 
 using System;
 using System.Threading;
-using nanoFramework.Json;
 using System.Diagnostics;
+using nanoFramework.Json;
+
 
 
 namespace nanoFramework.Test
@@ -34,6 +35,7 @@ namespace nanoFramework.Test
     {
         public int aInteger { get; set; }
         public short aShort { get; set; } //<- fails on deserialization
+        public byte aByte { get; set; }
         public string aString { get; set; }
         public float aFloat { get; set; }
         public bool aBoolean { get; set; }
@@ -59,7 +61,8 @@ namespace nanoFramework.Test
         //[SetUp]
         public static void Main()
         {
-            Debug.WriteLine("nanoFramework Json Test Program.");
+            Console.WriteLine("nanoFramework Json Test Program.");
+            Thread.Sleep(10000);
 
             Can_serialize_int_array();
             Can_serialize_short_array();
