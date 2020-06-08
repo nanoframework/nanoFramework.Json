@@ -61,7 +61,7 @@ namespace nanoFramework.Test
         //[SetUp]
         public static void Main()
         {
-            Console.WriteLine("nanoFramework Json Test Program.");
+            Debug.WriteLine("nanoFramework Json Test Program.");
             Thread.Sleep(10000);
 
             Can_serialize_int_array();
