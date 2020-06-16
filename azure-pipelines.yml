@@ -1,10 +1,12 @@
 trigger:
   branches:
-    include: ["master", "develop", "release*", "refs/tags/*" ]
+    include: [master, develop, "release-*" ]
   paths:
-    exclude: [ "doc", "*.md", ".gitignore", "README.md" ]
+    exclude: ["*.md", .gitignore]
+  tags:
+    include: ["v*"]
 
-# no pr config, we want to trigger builds for all PRs on all branches
+# PR always trigger build
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
@@ -18,6 +20,7 @@ pool:
   vmImage: 'VS2017-Win2016'
 
 variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   solution: '**/source/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
