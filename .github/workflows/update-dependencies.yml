@@ -8,7 +8,7 @@ name: Daily update dependencies
 on:
   schedule:
   # At 00:00 UTC every day.
-  - cron:  '10 * * * *'
+  - cron:  '15 * * * *'
   issue_comment:
     types: [created]
 
@@ -40,4 +40,3 @@ jobs:
           body: ${{ env.PR_MESSAGE }}
           labels: 'Type: dependencies'
           committer: 'nfbot <nanoframework@outlook.com>'
-          branch: ${{ env.BRANCH_NAME }}
