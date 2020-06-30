@@ -40,3 +40,4 @@ jobs:
           body: ${{ env.PR_MESSAGE }}
           labels: 'Type: dependencies'
           committer: 'nfbot <nanoframework@outlook.com>'
+          branch: ${{ env.BRANCH_NAME }}
