@@ -21,7 +21,7 @@ jobs:
     name: Update .NET nanoFramework dependencies
     timeout-minutes: 15
     runs-on: windows-latest
-    if: ${{ github.event_name == '' }} || ( ${{ github.event_name == 'issue_comment' }} && contains( ${{ github.event.payload.comment.body }}, '/ud') )
+    if: ${{ github.event_name == '' }} || ( ${{ github.event_name == 'issue_comment' }} && startsWith( ${{ github.event.payload.comment.body }}, '/ud') )
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1
