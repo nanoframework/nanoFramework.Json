@@ -38,9 +38,13 @@ jobs:
         uses: peter-evans/create-pull-request@v2.8.1
         if: env.CREATE_PR == 'true'
         with:
-          title: ${{ env.PR_TITLE }}
-          body: ${{ env.PR_MESSAGE }}
-          labels: 'Type: dependencies'
+          title: '${{ env.PR_TITLE }}'
+          body: |
+            ${{ env.PR_MESSAGE }}
+            
+            [version update]
+            
+            ### :warning: This is an automated update. :warning:
           committer: 'nfbot <nanoframework@outlook.com>'
           branch: ${{ env.BRANCH_NAME }}
           path: main
