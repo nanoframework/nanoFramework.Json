@@ -177,6 +177,8 @@ namespace nanoFramework.Json
 									throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
 								}
 								memberIsProperty = true;
+								Debug.WriteLine($"{debugIndent}     memberType:  {memberType.Name} ");
+								Debug.WriteLine($"{debugIndent}     memberPropGetMethod.Name:  {memberPropGetMethod.Name}  memberPropGetMethod.ReturnType:  {memberPropGetMethod.ReturnType.Name}");
 							}
 						}
 						// Process the member based on JObject, JValue, or JArray
@@ -230,8 +232,30 @@ namespace nanoFramework.Json
 								{
 									if (memberIsProperty)
 									{
-										memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
-									}
+										JsonValue val = (JsonValue)memberProperty.Value;
+										Debug.WriteLine($"{debugIndent}     setting value with memberPropSetMethod: {memberPropSetMethod.Name}   Declaring Type: {memberPropSetMethod.DeclaringType}  Value: {((JsonValue)memberProperty.Value).Value}");
+										Debug.WriteLine($"{debugIndent}     memberProperty.Value.Value.Type: {val.Value.GetType().Name}  memberProperty.Value.Value: {val.Value}");
+										if (val.Value.GetType() != memberType) 
+										{
+											Debug.WriteLine($"{debugIndent}     need to change memberProperty.Value.Value.Type to {memberType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
+											switch (memberType.Name) 
+											{
+												case nameof(Int16):
+													memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
+													break;
+												case nameof(Byte):
+													memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
+													break;
+												default:
+													memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
+													break;
+											}
+										} 
+										else 
+										{
+											memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
+										}
+									} 
 									else
 									{
 										memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
@@ -274,9 +298,29 @@ namespace nanoFramework.Json
 							{
 								if (item is JsonValue)
 								{
-									Debug.WriteLine($"{debugIndent}         item is a JsonValue: {((JsonValue)item).Value} - Add it to memberValueArrayList");
-									memberValueArrayList.Add(((JsonValue)item).Value);
-									Debug.WriteLine($"{debugIndent}         item JValue added to memberValueArrayList");
+									Debug.WriteLine($"{debugIndent}         item is a JsonValue: {((JsonValue)item).Value}  type: {((JsonValue)item).Value.GetType().Name}- add it to memberValueArrayList");
+									if (((JsonValue)item).Value.GetType() != memberPropGetMethod.ReturnType) {
+										Debug.WriteLine($"{debugIndent}         need to change item.Value.Type to {memberPropGetMethod.ReturnType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
+										if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
+										{
+											memberValueArrayList.Add(Convert.ToInt16(((JsonValue)item).Value.ToString()));
+											Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to Int16 & added to memberValueArrayList");
+										}
+										else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
+										{
+											memberValueArrayList.Add(Convert.ToByte(((JsonValue)item).Value.ToString()));
+											Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
+										} 
+										else
+										{
+											memberValueArrayList.Add(((JsonValue)item).Value);
+											Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
+										}
+
+									} else {
+										memberValueArrayList.Add(((JsonValue)item).Value);
+										Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
+									}
 								}
 								else if (item is JsonToken)
 								{
@@ -287,8 +331,9 @@ namespace nanoFramework.Json
 									Debug.WriteLine($"{debugIndent}         memberType: {memberType.Name}   memberElementType: {memberElementType.Name} ");
 									Debug.WriteLine($"{debugIndent}         calling PopulateObject(JsonToken item, {memberElementType.Name}, {memberElementPath}) ");
 									var itemObj = PopulateObject(item, memberElementType, memberElementPath);
+									Debug.WriteLine($"{debugIndent}         item is a JsonToken - add it to memberValueArrayList");
 									memberValueArrayList.Add(itemObj);
-									Debug.WriteLine($"{debugIndent}         item added to memberValueArrayList");
+									Debug.WriteLine($"{debugIndent}         item is a JsonToken - added to memberValueArrayList");
 								}
 								else
 								{
@@ -340,12 +385,33 @@ namespace nanoFramework.Json
 					{
 						if (item is JsonValue)
 						{
-							Debug.WriteLine($"{debugIndent} item type: {item.GetType().Name}.   Adding it to rootArrayList");
-							rootArrayList.Add(((JsonValue)item).Value);
+							Debug.WriteLine($"{debugIndent} item.Type is JsonValue  -  item.Value type: {((JsonValue)item).Value.GetType().Name}.   Adding it to rootArrayList");
+							if (((JsonValue)item).Value.GetType() != rootType.GetElementType()) {
+								Debug.WriteLine($"{debugIndent}     need to change item.Value.Type to {rootType.GetElementType()} to match rootType.GetElementType() - why are these are different?!?");
+								switch (rootType.GetElementType().Name) {
+									case nameof(Int16):
+										rootArrayList.Add(Convert.ToInt16(((JsonValue)item).Value.ToString()));
+										Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - Converted to Int16 & added to rootArrayList");
+										break;
+									case nameof(Byte):
+										rootArrayList.Add(Convert.ToByte(((JsonValue)item).Value.ToString()));
+										Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - Converted to Byte & added to rootArrayList");
+										break;
+									default:
+										rootArrayList.Add(((JsonValue)item).Value);
+										Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");
+										break;
+								}
+							} 
+							else 
+							{
+								rootArrayList.Add(((JsonValue)item).Value);
+								Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");
+							}
 						}
 						else
 						{
-							Debug.WriteLine($"{debugIndent} item type: {item.GetType().Name} - use rootElementType to call PopulateObject()");
+							Debug.WriteLine($"{debugIndent} item.Type is {item.GetType().Name} - use rootElementType to call PopulateObject()");
 							// Pass rootElementType and rootPath with rootElementType appended to PopulateObject for this item 
 							string itemPath = rootPath;
 							if (itemPath[itemPath.Length - 1] == '/')
@@ -368,6 +434,7 @@ namespace nanoFramework.Json
 						throw new Exception($"PopulateObject() - CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}");
 					}
 					Debug.WriteLine($"{debugIndent} created Array targetArray by calling CreateInstance() with rootType.GetElementType()");
+					Debug.WriteLine($"{debugIndent} copying rootArrayList to targetArray.   rootArrayList.Type: {rootArrayList.GetType().Name}  targetArray.Type {targetArray.GetType().Name}");
 					rootArrayList.CopyTo(targetArray);
 					Debug.WriteLine($"{debugIndent} populated targetArray with the contents of rootArrayList");
 					debugIndent = debugIndent.Substring(debugOutdent);     // 'Outdent' before returning
