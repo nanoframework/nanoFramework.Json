@@ -20,8 +20,8 @@ namespace nanoFramework.Json
 			Value = value;
 		}
 
-		public string Name { get; set; }
-		public JsonToken Value { get; set; }
+		public string	 Name	{ get; set; }
+		public JsonToken Value	{ get; set; }
 
 		public override string ToString()
 		{
