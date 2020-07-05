@@ -5,8 +5,8 @@
 
 using System;
 using System.Threading;
-using nanoFramework.Json;
 using System.Diagnostics;
+using nanoFramework.Json;
 
 
 namespace nanoFramework.Test
