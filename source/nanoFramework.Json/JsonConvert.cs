@@ -298,6 +298,11 @@ namespace nanoFramework.Json
 							{
 								if (item is JsonValue)
 								{
+									if (memberPropGetMethod == null) 
+									{
+										Debug.WriteLine($"{debugIndent}         memberPropGetMethod is null - item is a JsonValue: {((JsonValue)item).Value}  type: {((JsonValue)item).Value.GetType().Name} - THIS SHOULD NEVER HAPPEN ********************");
+										throw new NotSupportedException($"PopulateObject() - {rootType.Name} must have a valid Property Get Method");
+									}
 									Debug.WriteLine($"{debugIndent}         item is a JsonValue: {((JsonValue)item).Value}  type: {((JsonValue)item).Value.GetType().Name}- add it to memberValueArrayList");
 									if (((JsonValue)item).Value.GetType() != memberPropGetMethod.ReturnType) {
 										Debug.WriteLine($"{debugIndent}         need to change item.Value.Type to {memberPropGetMethod.ReturnType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
