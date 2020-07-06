@@ -15,30 +15,81 @@ resources:
       type: github
       name: nanoframework/nf-tools
       endpoint: nanoframework
+     
+jobs:
 
-pool:
-  vmImage: 'VS2017-Win2016'
+##############################
+- job: Build_Library
+  condition: or( eq(variables['UPDATE_DEPENDENTS'], 'false'), eq(variables['StartReleaseCandidate'], 'true') )
+  pool:
+    vmImage: 'VS2017-Win2016'
 
-variables:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  solution: '**/source/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  nugetPackageName: 'nanoFramework.Json'
-  repoName: 'lib-nanoFramework.Json'
+  variables:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    solution: '**/source/*.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
+    nugetPackageName: 'nanoFramework.Json'
+    repoName: 'lib-nanoFramework.Json'
 
-steps:
+  steps:
 
-# step from template @ nf-tools repo
-# all build, update and publish steps
-- template: azure-pipelines-templates/class-lib-build.yml@templates
-  parameters:
-    sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
+  # step from template @ nf-tools repo
+  # all build, update and publish steps
+  - template: azure-pipelines-templates/class-lib-build.yml@templates
+    parameters:
+      sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
 
-# step from template @ nf-tools repo
-# report error
-- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
-  parameters:
-    status: 'failure'
-    webhookUrl: '$(DiscordWebhook)'
-    message: ''
+##############################
+- job: Update_Dependencies
+  condition: or( and( succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'), eq(variables['StartReleaseCandidate'], 'false') ), and( succeeded(), contains(variables['getCommitMessage.COMMIT_MESSAGE'], '***UPDATE_DEPENDENTS***'), eq(variables['StartReleaseCandidate'], 'false') ), eq(variables['UPDATE_DEPENDENTS'], 'true') )
+
+  dependsOn:
+  - Build_Library
+
+  pool:
+    vmImage: 'VS2017-Win2016'
+
+  variables:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+  steps:
+
+  - checkout: none
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: '5.4.0'
+    displayName: 'Install specific version of NuGet'
+
+  # update dependencies
+#  - task: UpdatenFDependencies@1
+#    inputs:
+#      gitHubToken: $(GitHubToken)
+#      repositoriesToUpdate: |
+#        lib-nanoFramework.System.Net
+#        paho.mqtt.m2mqtt
+#    displayName: Update dependent class libs
+   
+##################################
+# report build failure to Discord
+- job: Report_Build_Failure
+
+  dependsOn:
+  - Build_Library
+  - Update_Dependencies
+  condition: or( failed('Build_Library'), failed('Update_Dependencies'))
+
+  pool:
+    vmImage: 'VS2017-Win2016'
+  steps:
+
+  - checkout: self
+      
+  # step from template @ nf-tools repo
+  # report error
+  - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+    parameters:
+      status: 'failure'
+      webhookUrl: '$(DiscordWebhook)'
+      message: ''
