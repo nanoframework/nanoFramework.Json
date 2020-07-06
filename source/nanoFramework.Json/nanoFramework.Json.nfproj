@@ -62,7 +62,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="key.snk" />
     <None Include="packages.config" />
   </ItemGroup>

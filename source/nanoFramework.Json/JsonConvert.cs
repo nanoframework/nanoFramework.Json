@@ -235,10 +235,10 @@ namespace nanoFramework.Json
 										JsonValue val = (JsonValue)memberProperty.Value;
 										Debug.WriteLine($"{debugIndent}     setting value with memberPropSetMethod: {memberPropSetMethod.Name}   Declaring Type: {memberPropSetMethod.DeclaringType}  Value: {((JsonValue)memberProperty.Value).Value}");
 										Debug.WriteLine($"{debugIndent}     memberProperty.Value.Value.Type: {val.Value.GetType().Name}  memberProperty.Value.Value: {val.Value}");
-										if (val.Value.GetType() != memberType) 
+										if (val.Value.GetType() != memberType)
 										{
 											Debug.WriteLine($"{debugIndent}     need to change memberProperty.Value.Value.Type to {memberType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
-											switch (memberType.Name) 
+											switch (memberType.Name)
 											{
 												case nameof(Int16):
 													memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
@@ -250,12 +250,12 @@ namespace nanoFramework.Json
 													memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
 													break;
 											}
-										} 
-										else 
+										}
+										else
 										{
 											memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
 										}
-									} 
+									}
 									else
 									{
 										memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
@@ -298,13 +298,14 @@ namespace nanoFramework.Json
 							{
 								if (item is JsonValue)
 								{
-									if (memberPropGetMethod == null) 
+									if (memberPropGetMethod == null)
 									{
 										Debug.WriteLine($"{debugIndent}         memberPropGetMethod is null - item is a JsonValue: {((JsonValue)item).Value}  type: {((JsonValue)item).Value.GetType().Name} - THIS SHOULD NEVER HAPPEN ********************");
 										throw new NotSupportedException($"PopulateObject() - {rootType.Name} must have a valid Property Get Method");
 									}
 									Debug.WriteLine($"{debugIndent}         item is a JsonValue: {((JsonValue)item).Value}  type: {((JsonValue)item).Value.GetType().Name}- add it to memberValueArrayList");
-									if (((JsonValue)item).Value.GetType() != memberPropGetMethod.ReturnType) {
+									if (((JsonValue)item).Value.GetType() != memberPropGetMethod.ReturnType)
+									{
 										Debug.WriteLine($"{debugIndent}         need to change item.Value.Type to {memberPropGetMethod.ReturnType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
 										if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
 										{
@@ -315,14 +316,15 @@ namespace nanoFramework.Json
 										{
 											memberValueArrayList.Add(Convert.ToByte(((JsonValue)item).Value.ToString()));
 											Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
-										} 
+										}
 										else
 										{
 											memberValueArrayList.Add(((JsonValue)item).Value);
 											Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
 										}
-
-									} else {
+									}
+									else
+									{
 										memberValueArrayList.Add(((JsonValue)item).Value);
 										Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
 									}
@@ -393,7 +395,8 @@ namespace nanoFramework.Json
 							Debug.WriteLine($"{debugIndent} item.Type is JsonValue  -  item.Value type: {((JsonValue)item).Value.GetType().Name}.   Adding it to rootArrayList");
 							if (((JsonValue)item).Value.GetType() != rootType.GetElementType()) {
 								Debug.WriteLine($"{debugIndent}     need to change item.Value.Type to {rootType.GetElementType()} to match rootType.GetElementType() - why are these are different?!?");
-								switch (rootType.GetElementType().Name) {
+								switch (rootType.GetElementType().Name)
+								{
 									case nameof(Int16):
 										rootArrayList.Add(Convert.ToInt16(((JsonValue)item).Value.ToString()));
 										Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - Converted to Int16 & added to rootArrayList");
@@ -407,8 +410,8 @@ namespace nanoFramework.Json
 										Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");
 										break;
 								}
-							} 
-							else 
+							}
+							else
 							{
 								rootArrayList.Add(((JsonValue)item).Value);
 								Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");

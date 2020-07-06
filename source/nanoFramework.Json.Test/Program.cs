@@ -171,7 +171,7 @@ namespace nanoFramework.Test
         private static void Can_serialize_and_deserialize_complex_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting complex object serialize and deserialize test...");
-            var test = new TestClass() 
+            var test = new TestClass()
             {
                 aString = "A string",
                 aInteger = 10,
@@ -202,28 +202,28 @@ namespace nanoFramework.Test
             Debug.WriteLine($"   Timestamp: {dserResult.Timestamp.ToString()} ");
             Debug.WriteLine($"   FixedTimestamp: {dserResult.FixedTimestamp.ToString()} ");
             Debug.Write($"   intArray: ");
-            foreach (int i in dserResult.intArray) 
+            foreach (int i in dserResult.intArray)
             {
                 Debug.Write($"{i.ToString()}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   stringArray: ");
-            foreach (string i in dserResult.stringArray) 
+            foreach (string i in dserResult.stringArray)
             {
                 Debug.Write($"{i.ToString()}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   shortArray: ");
-            foreach (short i in dserResult.shortArray) 
+            foreach (short i in dserResult.shortArray)
             {
                 Debug.Write($"{i.ToString()}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   byteArray: ");
-            foreach (byte i in dserResult.byteArray) 
+            foreach (byte i in dserResult.byteArray)
             {
                 Debug.Write($"{i.ToString()}, ");
             }
@@ -239,11 +239,11 @@ namespace nanoFramework.Test
             Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
             Debug.WriteLine($"   Child: {dserResult.Child.ToString()} ");
 
-            if (dserResult.nullObject == null) 
+            if (dserResult.nullObject == null)
             {
                 Debug.WriteLine($"   nullObject is null");
             }
-            else 
+            else
             {
                 Debug.WriteLine($"   nullObject: {dserResult.nullObject}");
             }
