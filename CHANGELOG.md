@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/lib-nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.0-preview.30...HEAD)
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.4...HEAD)
+
+**Implemented enhancements:**
+
+- Added support for short, short\[\], byte & byte\[\] [\#23](https://github.com/nanoframework/lib-nanoFramework.Json/pull/23)
+
+## [v2.0.1-preview.4](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.4) (2020-07-07)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.0-preview.30...v2.0.1-preview.4)
 
 **Documentation and other chores:**
 
