@@ -393,7 +393,8 @@ namespace nanoFramework.Json
 						if (item is JsonValue)
 						{
 							Debug.WriteLine($"{debugIndent} item.Type is JsonValue  -  item.Value type: {((JsonValue)item).Value.GetType().Name}.   Adding it to rootArrayList");
-							if (((JsonValue)item).Value.GetType() != rootType.GetElementType()) {
+							if (((JsonValue)item).Value.GetType() != rootType.GetElementType())
+							{
 								Debug.WriteLine($"{debugIndent}     need to change item.Value.Type to {rootType.GetElementType()} to match rootType.GetElementType() - why are these are different?!?");
 								switch (rootType.GetElementType().Name)
 								{

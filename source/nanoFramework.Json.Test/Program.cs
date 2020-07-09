@@ -11,10 +11,11 @@ using nanoFramework.Json;
 
 namespace nanoFramework.Test
 {
+
     public class ChildClass
     {
-        public int one   { get; set; }
-        public int two   { get; set; }
+        public int one { get; set; }
+        public int two { get; set; }
         public int three { get; set; }
         public int four;
 
@@ -31,27 +32,27 @@ namespace nanoFramework.Test
 
     public class TestClass
     {
-        public int        aInteger       { get; set; }
-        public short      aShort         { get; set; }
-        public byte       aByte          { get; set; }
-        public string     aString        { get; set; }
-        public float      aFloat         { get; set; }
-        public bool       aBoolean       { get; set; }
-        public DateTime   Timestamp      { get; set; }
-        public DateTime   FixedTimestamp { get; set; }
-        public int[]      intArray       { get; set; }
-        public short[]    shortArray     { get; set; }
-        public byte[]     byteArray      { get; set; }
-        public string[]   stringArray    { get; set; }
-        public float[]    floatArray     { get; set; }
+        public int aInteger { get; set; }
+        public short aShort { get; set; }
+        public byte aByte { get; set; }
+        public string aString { get; set; }
+        public float aFloat { get; set; }
+        public bool aBoolean { get; set; }
+        public DateTime Timestamp { get; set; }
+        public DateTime FixedTimestamp { get; set; }
+        public int[] intArray { get; set; }
+        public short[] shortArray { get; set; }
+        public byte[] byteArray { get; set; }
+        public string[] stringArray { get; set; }
+        public float[] floatArray { get; set; }
         public ChildClass child1;
-        public ChildClass Child          { get; set; }
-        public object     nullObject     { get; set; }
-        //public float    nanFloat       { get; set; } //<- fails on serialization
-#pragma warning disable   0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
-        private string    dontSerializeStr = "dontPublish";
-#pragma warning restore   0414
-        private string    dontSerialize  { get; set; } = "dontPublish";
+        public ChildClass Child { get; set; }
+        public object nullObject { get; set; }
+        //public float nanFloat { get; set; } //<- fails on serialization
+#pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
+        private string dontSerializeStr = "dontPublish";
+#pragma warning restore 0414
+        private string dontSerialize { get; set; } = "dontPublish";
     }
 
     //[TestFixture]
@@ -61,9 +62,7 @@ namespace nanoFramework.Test
         public static void Main()
         {
             Debug.WriteLine("nanoFramework Json Test Program.");
-            //int_test();         // This will fail.  Object to be serialized/deserialized not defined in a class
-            //short_test();       // This will fail.  Object to be serialized/deserialized not defined in a class
-
+            
             Can_serialize_int_array();
             Can_serialize_short_array();
 
@@ -77,45 +76,9 @@ namespace nanoFramework.Test
         }
 
         //[Test]
-
-        //[Test]
-        private static void int_test() {
-            Debug.WriteLine("int_test() - Starting int serialize test...");
-            int aInt = 3;
-
-            var result = JsonConvert.SerializeObject(aInt);
-            Debug.WriteLine($"Serialized int: {result}");
-
-            var dserResult = (int)JsonConvert.DeserializeObject(result, typeof(int));
-
-            Debug.WriteLine("After int deserialization:");
-            Debug.WriteLine(dserResult.ToString());
-
-            Debug.WriteLine("int_test() - Finished - int serialize test succeeded");
-            Debug.WriteLine("");
-        }
-
-        //[Test]
-        private static void short_test() {
-            Debug.WriteLine("short_test() - Starting short serialize test...");
-            short aShort = (short)3;
-
-            var result = JsonConvert.SerializeObject(aShort);
-            Debug.WriteLine($"Serialized short: {result}");
-
-            var dserResult = (short)JsonConvert.DeserializeObject(result, typeof(short));
-
-            Debug.WriteLine("After short deserialization:");
-            Debug.WriteLine(dserResult.ToString());
-
-            Debug.WriteLine("short_test() - Finished - short serialize test succeeded");
-            Debug.WriteLine("");
-        }
-
-        //[Test]
         private static void Can_serialize_int_array()
         {
-            Debug.WriteLine("Can_serialize_int_array() - Starting int array serialize test...");
+            Debug.WriteLine("Can_serialize_int_array() - Starting test...");
             int[] intArray = new[] { 1, 3, 5, 7, 9 };
 
             var result = JsonConvert.SerializeObject(intArray);
@@ -124,14 +87,14 @@ namespace nanoFramework.Test
             var dserResult = (int[])JsonConvert.DeserializeObject(result, typeof(int[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
-            Debug.WriteLine("Can_serialize_int_array() - Finished - int array serialize test succeeded");
+            Debug.WriteLine("Can_serialize_int_array() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
         //[Test]
         private static void Can_serialize_short_array()
         {
-            Debug.WriteLine("Can_serialize_short_array() - Starting short array serialize test...");
+            Debug.WriteLine("Can_serialize_short_array() - Starting test...");
             short[] shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 };
 
             var result = JsonConvert.SerializeObject(shortArray);
@@ -140,14 +103,14 @@ namespace nanoFramework.Test
             var dserResult = (short[])JsonConvert.DeserializeObject(result, typeof(short[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
-            Debug.WriteLine("Can_serialize_short_array() - Finished - short array serialize test succeeded");
+            Debug.WriteLine("Can_serialize_short_array() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
         //[Test]
         private static void Can_serialize_and_deserialize_simple_object()
         {
-            Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Starting simple object serialize and deserialize Test...");
+            Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Starting test...");
             var source = new ChildClass()
             {
                 one = 1,
@@ -163,25 +126,25 @@ namespace nanoFramework.Test
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
-            Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - simple object serialize and deserialize test succeeded");
+            Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
 
         //[Test]
         private static void Can_serialize_and_deserialize_complex_object()
         {
-            Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting complex object serialize and deserialize test...");
+            Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
             var test = new TestClass()
             {
                 aString = "A string",
                 aInteger = 10,
-                aByte = 5,
+                aByte = 0x05,
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
                 stringArray = new[] { "two", "four", "six", "eight" },
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
-                byteArray = new[] {(byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26},
+                byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
                 child1 = new ChildClass() { one = 1, two = 2, three = 3 },
                 Child = new ChildClass() { one = 100, two = 200, three = 300 },
@@ -260,7 +223,7 @@ namespace nanoFramework.Test
             //    !ArraysAreEqual(test.stringArray, newInstance.stringArray)
             //    )
             //    throw new Exception("complex object test failed");
-            Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - complex object serialize and deserialize test succeeded");
+            Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
 

@@ -5,7 +5,6 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Text;
 
 namespace nanoFramework.Json
@@ -18,7 +17,7 @@ namespace nanoFramework.Json
 			if (type == typeof(byte))
 			{
 				buffer[offset++] = (byte)arg;
-			} 
+			}
 			else if (type == typeof(Int16))
 			{
 				buffer[offset++] = (byte)(((Int16)arg) & 0xff);
