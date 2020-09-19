@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/lib-nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.4...HEAD)
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.6...HEAD)
+
+**Documentation and other chores:**
+
+- Update dependencies [\#26](https://github.com/nanoframework/lib-nanoFramework.Json/pull/26)
+
+## [v2.0.1-preview.6](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.6) (2020-07-09)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.4...v2.0.1-preview.6)
 
 **Implemented enhancements:**
 
