@@ -1,5 +1,5 @@
 ﻿//
-// Copyright (c) 2020 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Pervasive Digital LLC
 // See LICENSE file in the project root for full license information.
 //

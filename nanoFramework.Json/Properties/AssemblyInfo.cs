@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("nanoFramework Contributors")]
 [assembly: AssemblyProduct("nanoFramework.Json")]
-[assembly: AssemblyCopyright("Copyright © nanoFramework Contributors 2020")]
+[assembly: AssemblyCopyright("Copyright (c) .NET Foundation and Contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
