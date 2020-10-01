@@ -20,7 +20,7 @@
     <summary>nanoFramework.Json it's a helper class library for nanoFramework C# projects</summary>
     <tags>nanoFramework C# csharp netmf netnf nanoframework json</tags>
     <dependencies>
-      <dependency id="nanoFramework.CoreLibrary" version="1.8.0-preview.6" />
+      <dependency id="nanoFramework.CoreLibrary" version="1.9.0-preview.5" />
       <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.3" />
       <dependency id="nanoFramework.System.Text" version="1.1.1-preview.2" />
       <dependency id="nanoFramework.Windows.Storage.Streams" version="1.10.1-preview.8" />
