@@ -2,7 +2,25 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/lib-nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.24...HEAD)
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.29...HEAD)
+
+**Documentation and other chores:**
+
+- Update dependencies [\#40](https://github.com/nanoframework/lib-nanoFramework.Json/pull/40)
+- Update 2 NuGet dependencies [\#39](https://github.com/nanoframework/lib-nanoFramework.Json/pull/39)
+
+## [v2.0.1-preview.29](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.29) (2020-10-21)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.26...v2.0.1-preview.29)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#38](https://github.com/nanoframework/lib-nanoFramework.Json/pull/38)
+- Update 2 NuGet dependencies [\#37](https://github.com/nanoframework/lib-nanoFramework.Json/pull/37)
+
+## [v2.0.1-preview.26](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.26) (2020-10-20)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.24...v2.0.1-preview.26)
 
 **Documentation and other chores:**
 
