@@ -17,7 +17,7 @@ resources:
       endpoint: nanoframework
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2019'
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
