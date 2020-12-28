@@ -2,7 +2,24 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/lib-nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.36...HEAD)
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.40...HEAD)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#45](https://github.com/nanoframework/lib-nanoFramework.Json/pull/45)
+- Update 2 NuGet dependencies [\#44](https://github.com/nanoframework/lib-nanoFramework.Json/pull/44)
+
+## [v2.0.1-preview.40](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.40) (2020-12-07)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.38...v2.0.1-preview.40)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#43](https://github.com/nanoframework/lib-nanoFramework.Json/pull/43)
+
+## [v2.0.1-preview.38](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.38) (2020-12-07)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.36...v2.0.1-preview.38)
 
 **Documentation and other chores:**
 
@@ -74,7 +91,6 @@
 **Documentation and other chores:**
 
 - Update dependencies [\#31](https://github.com/nanoframework/lib-nanoFramework.Json/pull/31)
-- Update 2 NuGet dependencies [\#11](https://github.com/nanoframework/lib-nanoFramework.Json/pull/11)
 
 ## [v2.0.1-preview.16](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.16) (2020-09-26)
 
@@ -161,16 +177,13 @@
 
 [Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.0-preview.19...v2.0.0-preview.20)
 
-**Documentation and other chores:**
-
-- Update 5 NuGet dependencies [\#7](https://github.com/nanoframework/lib-nanoFramework.Json/pull/7)
-
 ## [v2.0.0-preview.19](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.0-preview.19) (2020-06-01)
 
 [Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.0-preview.18...v2.0.0-preview.19)
 
 **Documentation and other chores:**
 
+- Update 2 NuGet dependencies [\#11](https://github.com/nanoframework/lib-nanoFramework.Json/pull/11)
 - Use System.Diagnostics for Debug [\#5](https://github.com/nanoframework/lib-nanoFramework.Json/pull/5)
 
 ## [v2.0.0-preview.18](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.0-preview.18) (2020-05-27)
@@ -179,6 +192,7 @@
 
 **Documentation and other chores:**
 
+- Update 5 NuGet dependencies [\#7](https://github.com/nanoframework/lib-nanoFramework.Json/pull/7)
 - Improve NuGet summary and description [\#4](https://github.com/nanoframework/lib-nanoFramework.Json/pull/4)
 - Adds support for fields and null values [\#2](https://github.com/nanoframework/lib-nanoFramework.Json/pull/2)
 
