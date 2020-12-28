@@ -25,8 +25,8 @@
     <ProjectReference Include="..\nanoFramework.Json\nanoFramework.Json.nfproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.10.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.0-preview.4\lib\mscorlib.dll</HintPath>
+    <Reference Include="mscorlib, Version=1.10.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.CoreLibrary.1.10.1-preview.6\lib\mscorlib.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.System.Text, Version=1.1.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
@@ -34,7 +34,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Windows.Storage.Streams, Version=1.10.1.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Windows.Storage.Streams.1.10.1-preview.14\lib\Windows.Storage.Streams.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Windows.Storage.Streams.1.10.1-preview.16\lib\Windows.Storage.Streams.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
