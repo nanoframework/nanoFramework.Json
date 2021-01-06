@@ -21,8 +21,8 @@
     <tags>nanoFramework C# csharp netmf netnf nanoframework json</tags>
     <dependencies>
       <dependency id="nanoFramework.CoreLibrary" version="1.10.1-preview.9" />
-      <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.22" />
-      <dependency id="nanoFramework.System.Text" version="1.1.1-preview.22" />
+      <dependency id="nanoFramework.System.Collections" version="1.2.0-preview.24" />
+      <dependency id="nanoFramework.System.Text" version="1.1.1-preview.24" />
       <dependency id="nanoFramework.Windows.Storage.Streams" version="1.10.1-preview.16" />
     </dependencies>
   </metadata>
