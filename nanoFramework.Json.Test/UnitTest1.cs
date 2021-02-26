@@ -1,15 +1,8 @@
-﻿//
-// Copyright (c) .NET Foundation and Contributors
-// See LICENSE file in the project root for full license information.
-//
-
+using nanoFramework.TestFramework;
 using System;
-using System.Threading;
 using System.Diagnostics;
-using nanoFramework.Json;
 
-
-namespace nanoFramework.Test
+namespace nanoFramework.Json.Test
 {
 
     public class ChildClass
@@ -30,7 +23,7 @@ namespace nanoFramework.Test
         public float nF { get; set; } //<- fails on deserialization if NaN
     }
 
-    public class TestClass
+    public class JsonTestClass
     {
         public int aInteger { get; set; }
         public short aShort { get; set; }
@@ -55,28 +48,28 @@ namespace nanoFramework.Test
         private string dontSerialize { get; set; } = "dontPublish";
     }
 
-    //[TestFixture]
+    [TestClass]
     public class Program
     {
-        //[SetUp]
+        [Setup]
         public static void Main()
         {
             Debug.WriteLine("nanoFramework Json Test Program.");
-            
-            Can_serialize_int_array();
-            Can_serialize_short_array();
 
-            //Can_serialize_and_deserialize_nan_float();    // <-- Not implemented yet
+            //Can_serialize_int_array();
+            //Can_serialize_short_array();
 
-            Can_serialize_and_deserialize_simple_object();
-            Can_serialize_and_deserialize_complex_object();
+            ////Can_serialize_and_deserialize_nan_float();    // <-- Not implemented yet
+
+            //Can_serialize_and_deserialize_simple_object();
+            //Can_serialize_and_deserialize_complex_object();
 
 
-            Thread.Sleep(Timeout.Infinite);
+            //Thread.Sleep(Timeout.Infinite);
         }
 
-        //[Test]
-        private static void Can_serialize_int_array()
+        [TestMethod]
+        public void Can_serialize_int_array()
         {
             Debug.WriteLine("Can_serialize_int_array() - Starting test...");
             int[] intArray = new[] { 1, 3, 5, 7, 9 };
@@ -91,8 +84,8 @@ namespace nanoFramework.Test
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_short_array()
+        [TestMethod]
+        public void Can_serialize_short_array()
         {
             Debug.WriteLine("Can_serialize_short_array() - Starting test...");
             short[] shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 };
@@ -107,8 +100,8 @@ namespace nanoFramework.Test
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_simple_object()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_simple_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Starting test...");
             var source = new ChildClass()
@@ -130,11 +123,11 @@ namespace nanoFramework.Test
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_complex_object()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_complex_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
-            var test = new TestClass()
+            var test = new JsonTestClass()
             {
                 aString = "A string",
                 aInteger = 10,
@@ -157,7 +150,7 @@ namespace nanoFramework.Test
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (TestClass)JsonConvert.DeserializeObject(result, typeof(TestClass));
+            var dserResult = (JsonTestClass)JsonConvert.DeserializeObject(result, typeof(JsonTestClass));
             Debug.WriteLine($"After Type deserialization:");
             Debug.WriteLine($"   aString:   {dserResult.aString} ");
             Debug.WriteLine($"   aInteger:  {dserResult.aInteger} ");
@@ -227,8 +220,8 @@ namespace nanoFramework.Test
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_nan_float()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_nan_float()
         {
             Debug.WriteLine("Starting float NaN Object Test...");
             var test = new TestClassNaN()
@@ -246,7 +239,7 @@ namespace nanoFramework.Test
             Debug.WriteLine("");
         }
 
-        //[Test]
+        //[TestMethod]
         //private static bool ArraysAreEqual(Array a1, Array a2)
         //{
         //    if (a1 == null && a2 == null)

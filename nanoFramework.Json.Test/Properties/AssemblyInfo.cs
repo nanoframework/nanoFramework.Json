@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("nanoFramework.Json.Test")]
+[assembly: AssemblyTitle("CSharp.TestApplication")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("nanoFramework Contributors")]
-[assembly: AssemblyProduct("nanoFramework.Json.Test")]
-[assembly: AssemblyCopyright("Copyright (c) .NET Foundation and Contributors")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("CSharp.TestApplication")]
+[assembly: AssemblyCopyright("Copyright © ")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
