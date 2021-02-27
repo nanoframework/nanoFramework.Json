@@ -233,7 +233,7 @@ namespace nanoFramework.Json.Test
 
 
             var dserResult = (TestClassNaN)JsonConvert.DeserializeObject(result, typeof(TestClassNaN));
-            Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
