@@ -49,10 +49,10 @@ namespace nanoFramework.Json.Test
     }
 
     [TestClass]
-    public class Program
+    public class TestJson
     {
         [Setup]
-        public static void Main()
+        public void Main()
         {
             Debug.WriteLine("nanoFramework Json Test Program.");
 
