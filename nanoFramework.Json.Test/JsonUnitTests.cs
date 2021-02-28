@@ -41,7 +41,7 @@ namespace nanoFramework.Json.Test
         public ChildClass child1;
         public ChildClass Child { get; set; }
         public object nullObject { get; set; }
-        //public float nanFloat { get; set; } //<- fails on serialization
+        public float nanFloat { get; set; } //<- fails on serialization
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
@@ -49,23 +49,12 @@ namespace nanoFramework.Json.Test
     }
 
     [TestClass]
-    public class TestJson
+    public class JsonUnitTests
     {
         [Setup]
         public void Main()
         {
-            Debug.WriteLine("nanoFramework Json Test Program.");
-
-            //Can_serialize_int_array();
-            //Can_serialize_short_array();
-
-            ////Can_serialize_and_deserialize_nan_float();    // <-- Not implemented yet
-
-            //Can_serialize_and_deserialize_simple_object();
-            //Can_serialize_and_deserialize_complex_object();
-
-
-            //Thread.Sleep(Timeout.Infinite);
+            Debug.WriteLine("nanoFramework Json Library Tests.");
         }
 
         [TestMethod]
@@ -142,7 +131,7 @@ namespace nanoFramework.Json.Test
                 child1 = new ChildClass() { one = 1, two = 2, three = 3 },
                 Child = new ChildClass() { one = 100, two = 200, three = 300 },
                 nullObject = null,
-                //nanFloat = float.NaN,
+                nanFloat = float.NaN,
                 aFloat = 1.2345f,
                 aBoolean = true
             };
@@ -203,7 +192,7 @@ namespace nanoFramework.Json.Test
             {
                 Debug.WriteLine($"   nullObject: {dserResult.nullObject}");
             }
-            //Debug.WriteLine($"   nanFloat: {dserResult.nanFloat.ToString()} ");
+            Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
 
