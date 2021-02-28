@@ -41,7 +41,7 @@ namespace nanoFramework.Json.Test
         public ChildClass child1;
         public ChildClass Child { get; set; }
         public object nullObject { get; set; }
-        public float nanFloat { get; set; } //<- fails on serialization
+        public float nanFloat { get; set; }
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
@@ -196,15 +196,6 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
 
-            //var newInstance = (TestClass)JsonConvert.DeserializeObject(stringValue, typeof(TestClass));
-            //if (test.i != newInstance.i ||
-            //    test.Timestamp.ToString() != newInstance.Timestamp.ToString() ||
-            //    test.aString != newInstance.aString ||
-            //    test.someName != newInstance.someName ||
-            //    !ArraysAreEqual(test.intArray, newInstance.intArray) ||
-            //    !ArraysAreEqual(test.stringArray, newInstance.stringArray)
-            //    )
-            //    throw new Exception("complex object test failed");
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
@@ -227,23 +218,5 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
         }
-
-        //[TestMethod]
-        //private static bool ArraysAreEqual(Array a1, Array a2)
-        //{
-        //    if (a1 == null && a2 == null)
-        //        return true;
-        //    if (a1 == null || a2 == null)
-        //        return false;
-        //    if (a1.Length != a2.Length)
-        //        return false;
-        //    for (int i = 0; i < a1.Length; ++i)
-        //    {
-        //        if (!a1.GetValue(i).Equals(a2.GetValue(i)))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-
     }
 }
