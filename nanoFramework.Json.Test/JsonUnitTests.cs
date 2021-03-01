@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace nanoFramework.Json.Test
 {
 
-    public class ChildClass
+    public class JsonTestClassChild
     {
         public int one { get; set; }
         public int two { get; set; }
@@ -18,12 +18,12 @@ namespace nanoFramework.Json.Test
         }
     }
 
-    public class TestClassNaN
+    public class JsonTestClassFloatNaN
     {
         public float nF { get; set; } //<- fails on deserialization if NaN
     }
 
-    public class JsonTestClass
+    public class JsonTestClassComplex
     {
         public int aInteger { get; set; }
         public short aShort { get; set; }
@@ -38,8 +38,8 @@ namespace nanoFramework.Json.Test
         public byte[] byteArray { get; set; }
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
-        public ChildClass child1;
-        public ChildClass Child { get; set; }
+        public JsonTestClassChild child1;
+        public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
         public float nanFloat { get; set; }
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
@@ -52,9 +52,15 @@ namespace nanoFramework.Json.Test
     public class JsonUnitTests
     {
         [Setup]
-        public void Main()
+        public void Initialize()
         {
-            Debug.WriteLine("nanoFramework Json Library Tests.");
+            Debug.WriteLine("Json Library tests initialized.");
+        }
+
+        [Cleanup]
+        public void CleanUp()
+        {
+            Debug.WriteLine("Cleaning up after Json Library tests.");
         }
 
         [TestMethod]
@@ -71,6 +77,8 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine("Can_serialize_int_array() - Finished - test succeeded.");
             Debug.WriteLine("");
+
+            //Assert.Same(intArray, dserResult);
         }
 
         [TestMethod]
@@ -87,13 +95,15 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine("Can_serialize_short_array() - Finished - test succeeded.");
             Debug.WriteLine("");
+
+            //Assert.Equal(shortArray, dserResult);
         }
 
         [TestMethod]
         public void Can_serialize_and_deserialize_simple_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Starting test...");
-            var source = new ChildClass()
+            var source = new JsonTestClassChild()
             {
                 one = 1,
                 two = 2,
@@ -104,19 +114,20 @@ namespace nanoFramework.Json.Test
             var serialized = JsonConvert.SerializeObject(source);
             Debug.WriteLine($"Serialized Object: {serialized}");
 
-            var dserResult = (ChildClass)JsonConvert.DeserializeObject(serialized, typeof(ChildClass));
+            var dserResult = (JsonTestClassChild)JsonConvert.DeserializeObject(serialized, typeof(JsonTestClassChild));
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
+            //Assert.Same(source, dserResult);
         }
 
         [TestMethod]
         public void Can_serialize_and_deserialize_complex_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
-            var test = new JsonTestClass()
+            var test = new JsonTestClassComplex()
             {
                 aString = "A string",
                 aInteger = 10,
@@ -128,8 +139,8 @@ namespace nanoFramework.Json.Test
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
-                child1 = new ChildClass() { one = 1, two = 2, three = 3 },
-                Child = new ChildClass() { one = 100, two = 200, three = 300 },
+                child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
+                Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
                 nullObject = null,
                 nanFloat = float.NaN,
                 aFloat = 1.2345f,
@@ -139,7 +150,7 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (JsonTestClass)JsonConvert.DeserializeObject(result, typeof(JsonTestClass));
+            var dserResult = (JsonTestClassComplex)JsonConvert.DeserializeObject(result, typeof(JsonTestClassComplex));
             Debug.WriteLine($"After Type deserialization:");
             Debug.WriteLine($"   aString:   {dserResult.aString} ");
             Debug.WriteLine($"   aInteger:  {dserResult.aInteger} ");
@@ -198,13 +209,14 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
+            //Assert.Same(test, result);
         }
 
         [TestMethod]
         public void Can_serialize_and_deserialize_nan_float()
         {
             Debug.WriteLine("Starting float NaN Object Test...");
-            var test = new TestClassNaN()
+            var test = new JsonTestClassFloatNaN()
             {
                 nF = float.NaN,
             };
@@ -212,11 +224,12 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (TestClassNaN)JsonConvert.DeserializeObject(result, typeof(TestClassNaN));
+            var dserResult = (JsonTestClassFloatNaN)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloatNaN));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
+            //Assert.Equal(test.nF, dserResult = null) ;
         }
     }
 }
