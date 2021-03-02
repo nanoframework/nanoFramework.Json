@@ -23,6 +23,12 @@ namespace nanoFramework.Json.Test
         public float nF { get; set; }
     }
 
+    public class JsonTestClassTimestamp
+    {
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime FixedTimestamp { get; set; }
+    }
+
     public class JsonTestClassComplex
     {
         public int aInteger { get; set; }
@@ -75,10 +81,37 @@ namespace nanoFramework.Json.Test
             var dserResult = (int[])JsonConvert.DeserializeObject(result, typeof(int[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
+            Assert.Equal(intArray, dserResult);
+
             Debug.WriteLine("Can_serialize_int_array() - Finished - test succeeded.");
             Debug.WriteLine("");
+        }
 
-            //Assert.Same(intArray, dserResult);
+        [TestMethod]
+        public void Can_serialize_deserialize_timestamp()
+        {
+            Debug.WriteLine("Can_serialize_deserialize_timestamp() - Starting test...");
+            var timestampTests = new JsonTestClassTimestamp()
+            {
+                Timestamp = DateTime.UtcNow,
+                FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00)
+            };
+
+            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp.ToString()}");
+            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp.ToString()}");
+
+            var result = JsonConvert.SerializeObject(timestampTests);
+            Debug.WriteLine($"Serialized Array: {result}");
+
+            var dserResult = (JsonTestClassTimestamp)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimestamp));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+
+            Assert.Equal(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
+            Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
+
+            Debug.WriteLine("Can_serialize_deserialize_timestamp() - Finished - test succeeded.");
+            Debug.WriteLine("");
         }
 
         [TestMethod]
@@ -93,10 +126,10 @@ namespace nanoFramework.Json.Test
             var dserResult = (short[])JsonConvert.DeserializeObject(result, typeof(short[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
+            Assert.Equal(shortArray, dserResult);
+
             Debug.WriteLine("Can_serialize_short_array() - Finished - test succeeded.");
             Debug.WriteLine("");
-
-            //Assert.Equal(shortArray, dserResult);
         }
 
         [TestMethod]
@@ -118,9 +151,10 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
+            //Assert.Same(source, dserResult);
+
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
-            //Assert.Same(source, dserResult);
         }
 
         [TestMethod]
@@ -207,9 +241,10 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
 
+            //Assert.Same(test, result);
+
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
-            //Assert.Same(test, result);
         }
 
         [TestMethod]
@@ -227,10 +262,11 @@ namespace nanoFramework.Json.Test
             var dserResult = (JsonTestClassFloatNaN)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloatNaN));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
+            Assert.Equal(result, "{\"nF\":null}", "Serialized result is null");
+            Assert.Equal(true, float.IsNaN(dserResult.nF), "Deserialized Result is NaN");
+
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
-            //Assert.True(result, null);
-            //Assert.True(dserResult.nF, float.NaN);
         }
     }
 }
