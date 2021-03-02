@@ -20,7 +20,7 @@ namespace nanoFramework.Json.Test
 
     public class JsonTestClassFloatNaN
     {
-        public float nF { get; set; } //<- fails on deserialization if NaN
+        public float nF { get; set; }
     }
 
     public class JsonTestClassComplex
@@ -229,7 +229,8 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
-            //Assert.Equal(test.nF, dserResult = null) ;
+            //Assert.True(result, null);
+            //Assert.True(dserResult.nF, float.NaN);
         }
     }
 }
