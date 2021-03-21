@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/lib-nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.62...HEAD)
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.64...HEAD)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.CoreLibrary from 1.10.1-preview.11 to 1.10.3-preview.7 [\#61](https://github.com/nanoframework/lib-nanoFramework.Json/pull/61)
+
+## [v2.0.1-preview.64](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.64) (2021-03-18)
+
+[Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.62...v2.0.1-preview.64)
 
 **Documentation and other chores:**
 
@@ -190,10 +198,13 @@
 
 [Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.5...v2.0.1-preview.7)
 
+**Implemented enhancements:**
+
+- Added support for short, short\[\], byte & byte\[\] [\#23](https://github.com/nanoframework/lib-nanoFramework.Json/pull/23)
+
 **Documentation and other chores:**
 
 - Update 2 NuGet dependencies [\#27](https://github.com/nanoframework/lib-nanoFramework.Json/pull/27)
-- Update 2 NuGet dependencies [\#11](https://github.com/nanoframework/lib-nanoFramework.Json/pull/11)
 
 ## [v2.0.1-preview.5](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.5) (2020-09-19)
 
@@ -206,10 +217,6 @@
 ## [v2.0.1-preview.6](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.6) (2020-07-09)
 
 [Full Changelog](https://github.com/nanoframework/lib-nanoframework.Json/compare/v2.0.1-preview.4...v2.0.1-preview.6)
-
-**Implemented enhancements:**
-
-- Added support for short, short\[\], byte & byte\[\] [\#23](https://github.com/nanoframework/lib-nanoFramework.Json/pull/23)
 
 ## [v2.0.1-preview.4](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.1-preview.4) (2020-07-07)
 
@@ -233,6 +240,7 @@
 
 **Documentation and other chores:**
 
+- Update 2 NuGet dependencies [\#11](https://github.com/nanoframework/lib-nanoFramework.Json/pull/11)
 - Update 2 NuGet dependencies [\#10](https://github.com/nanoframework/lib-nanoFramework.Json/pull/10)
 
 ## [v2.0.0-preview.23](https://github.com/nanoframework/lib-nanoframework.Json/tree/v2.0.0-preview.23) (2020-06-11)
