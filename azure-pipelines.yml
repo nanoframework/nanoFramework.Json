@@ -25,7 +25,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   nugetPackageName: 'nanoFramework.Json'
-  repoName: 'lib-nanoFramework.Json'
+  repoName: 'nanoFramework.Json'
 
 steps:
 
