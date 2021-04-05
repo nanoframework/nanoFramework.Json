@@ -1,18 +1,11 @@
-﻿//
-// Copyright (c) .NET Foundation and Contributors
-// See LICENSE file in the project root for full license information.
-//
-
+using nanoFramework.TestFramework;
 using System;
-using System.Threading;
 using System.Diagnostics;
-using nanoFramework.Json;
 
-
-namespace nanoFramework.Test
+namespace nanoFramework.Json.Test
 {
 
-    public class ChildClass
+    public class JsonTestClassChild
     {
         public int one { get; set; }
         public int two { get; set; }
@@ -25,12 +18,18 @@ namespace nanoFramework.Test
         }
     }
 
-    public class TestClassNaN
+    public class JsonTestClassFloatNaN
     {
-        public float nF { get; set; } //<- fails on deserialization if NaN
+        public float nF { get; set; }
     }
 
-    public class TestClass
+    public class JsonTestClassTimestamp
+    {
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime FixedTimestamp { get; set; }
+    }
+
+    public class JsonTestClassComplex
     {
         public int aInteger { get; set; }
         public short aShort { get; set; }
@@ -45,38 +44,33 @@ namespace nanoFramework.Test
         public byte[] byteArray { get; set; }
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
-        public ChildClass child1;
-        public ChildClass Child { get; set; }
+        public JsonTestClassChild child1;
+        public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
-        //public float nanFloat { get; set; } //<- fails on serialization
+        public float nanFloat { get; set; }
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
         private string dontSerialize { get; set; } = "dontPublish";
     }
 
-    //[TestFixture]
-    public class Program
+    [TestClass]
+    public class JsonUnitTests
     {
-        //[SetUp]
-        public static void Main()
+        [Setup]
+        public void Initialize()
         {
-            Debug.WriteLine("nanoFramework Json Test Program.");
-            
-            Can_serialize_int_array();
-            Can_serialize_short_array();
-
-            //Can_serialize_and_deserialize_nan_float();    // <-- Not implemented yet
-
-            Can_serialize_and_deserialize_simple_object();
-            Can_serialize_and_deserialize_complex_object();
-
-
-            Thread.Sleep(Timeout.Infinite);
+            Debug.WriteLine("Json Library tests initialized.");
         }
 
-        //[Test]
-        private static void Can_serialize_int_array()
+        [Cleanup]
+        public void CleanUp()
+        {
+            Debug.WriteLine("Cleaning up after Json Library tests.");
+        }
+
+        [TestMethod]
+        public void Can_serialize_int_array()
         {
             Debug.WriteLine("Can_serialize_int_array() - Starting test...");
             int[] intArray = new[] { 1, 3, 5, 7, 9 };
@@ -87,12 +81,41 @@ namespace nanoFramework.Test
             var dserResult = (int[])JsonConvert.DeserializeObject(result, typeof(int[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
+            Assert.Equal(intArray, dserResult);
+
             Debug.WriteLine("Can_serialize_int_array() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_short_array()
+        [TestMethod]
+        public void Can_serialize_deserialize_timestamp()
+        {
+            Debug.WriteLine("Can_serialize_deserialize_timestamp() - Starting test...");
+            var timestampTests = new JsonTestClassTimestamp()
+            {
+                Timestamp = DateTime.UtcNow,
+                FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00)
+            };
+
+            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp.ToString()}");
+            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp.ToString()}");
+
+            var result = JsonConvert.SerializeObject(timestampTests);
+            Debug.WriteLine($"Serialized Array: {result}");
+
+            var dserResult = (JsonTestClassTimestamp)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimestamp));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+
+            Assert.Equal(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
+            Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
+
+            Debug.WriteLine("Can_serialize_deserialize_timestamp() - Finished - test succeeded.");
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_serialize_short_array()
         {
             Debug.WriteLine("Can_serialize_short_array() - Starting test...");
             short[] shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 };
@@ -103,15 +126,17 @@ namespace nanoFramework.Test
             var dserResult = (short[])JsonConvert.DeserializeObject(result, typeof(short[]));
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
+            Assert.Equal(shortArray, dserResult);
+
             Debug.WriteLine("Can_serialize_short_array() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_simple_object()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_simple_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Starting test...");
-            var source = new ChildClass()
+            var source = new JsonTestClassChild()
             {
                 one = 1,
                 two = 2,
@@ -122,19 +147,21 @@ namespace nanoFramework.Test
             var serialized = JsonConvert.SerializeObject(source);
             Debug.WriteLine($"Serialized Object: {serialized}");
 
-            var dserResult = (ChildClass)JsonConvert.DeserializeObject(serialized, typeof(ChildClass));
+            var dserResult = (JsonTestClassChild)JsonConvert.DeserializeObject(serialized, typeof(JsonTestClassChild));
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+
+            //Assert.Same(source, dserResult);
 
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_complex_object()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_complex_object()
         {
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
-            var test = new TestClass()
+            var test = new JsonTestClassComplex()
             {
                 aString = "A string",
                 aInteger = 10,
@@ -146,10 +173,10 @@ namespace nanoFramework.Test
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
-                child1 = new ChildClass() { one = 1, two = 2, three = 3 },
-                Child = new ChildClass() { one = 100, two = 200, three = 300 },
+                child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
+                Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
                 nullObject = null,
-                //nanFloat = float.NaN,
+                nanFloat = float.NaN,
                 aFloat = 1.2345f,
                 aBoolean = true
             };
@@ -157,7 +184,7 @@ namespace nanoFramework.Test
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (TestClass)JsonConvert.DeserializeObject(result, typeof(TestClass));
+            var dserResult = (JsonTestClassComplex)JsonConvert.DeserializeObject(result, typeof(JsonTestClassComplex));
             Debug.WriteLine($"After Type deserialization:");
             Debug.WriteLine($"   aString:   {dserResult.aString} ");
             Debug.WriteLine($"   aInteger:  {dserResult.aInteger} ");
@@ -210,28 +237,21 @@ namespace nanoFramework.Test
             {
                 Debug.WriteLine($"   nullObject: {dserResult.nullObject}");
             }
-            //Debug.WriteLine($"   nanFloat: {dserResult.nanFloat.ToString()} ");
+            Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
 
-            //var newInstance = (TestClass)JsonConvert.DeserializeObject(stringValue, typeof(TestClass));
-            //if (test.i != newInstance.i ||
-            //    test.Timestamp.ToString() != newInstance.Timestamp.ToString() ||
-            //    test.aString != newInstance.aString ||
-            //    test.someName != newInstance.someName ||
-            //    !ArraysAreEqual(test.intArray, newInstance.intArray) ||
-            //    !ArraysAreEqual(test.stringArray, newInstance.stringArray)
-            //    )
-            //    throw new Exception("complex object test failed");
+            //Assert.Same(test, result);
+
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
 
-        //[Test]
-        private static void Can_serialize_and_deserialize_nan_float()
+        [TestMethod]
+        public void Can_serialize_and_deserialize_nan_float()
         {
             Debug.WriteLine("Starting float NaN Object Test...");
-            var test = new TestClassNaN()
+            var test = new JsonTestClassFloatNaN()
             {
                 nF = float.NaN,
             };
@@ -239,29 +259,14 @@ namespace nanoFramework.Test
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (TestClassNaN)JsonConvert.DeserializeObject(result, typeof(TestClassNaN));
-            Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+            var dserResult = (JsonTestClassFloatNaN)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloatNaN));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+            Assert.Equal(result, "{\"nF\":null}", "Serialized result is null");
+            Assert.Equal(true, float.IsNaN(dserResult.nF), "Deserialized Result is NaN");
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
         }
-
-        //[Test]
-        //private static bool ArraysAreEqual(Array a1, Array a2)
-        //{
-        //    if (a1 == null && a2 == null)
-        //        return true;
-        //    if (a1 == null || a2 == null)
-        //        return false;
-        //    if (a1.Length != a2.Length)
-        //        return false;
-        //    for (int i = 0; i < a1.Length; ++i)
-        //    {
-        //        if (!a1.GetValue(i).Equals(a2.GetValue(i)))
-        //            return false;
-        //    }
-        //    return true;
-        //}
-
     }
 }
