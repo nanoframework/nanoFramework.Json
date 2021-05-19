@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.99...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.101...HEAD)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.CoreLibrary from 1.10.4-preview.4 to 1.10.4-preview.11 [\#84](https://github.com/nanoframework/nanoFramework.Json/pull/84)
+
+## [v2.0.1-preview.101](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.101) (2021-05-15)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.99...v2.0.1-preview.101)
 
 **Documentation and other chores:**
 
