@@ -179,8 +179,9 @@ namespace nanoFramework.Json.Test
                 aByte = 0x05,
                 aString = "A string",
                 aFloat = 1.2345f,
-                aDouble = 1.2345,
+                aDouble = 1.2345d,
                 aBoolean = true,
+
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
@@ -194,9 +195,6 @@ namespace nanoFramework.Json.Test
                 nullObject = null,
                 nanFloat = float.NaN,
                 nanDouble = double.NaN,
-                aFloat = 1.2345f,
-                aDouble = 1.2345d,
-                aBoolean = true
             };
             var result = JsonConvert.SerializeObject(test);
             Debug.WriteLine($"Serialized Object: {result}");
