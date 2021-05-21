@@ -195,7 +195,7 @@ namespace nanoFramework.Json.Test
                 nanFloat = float.NaN,
                 nanDouble = double.NaN,
                 aFloat = 1.2345f,
-                aDouble = 1.2345,
+                aDouble = 1.2345d,
                 aBoolean = true
             };
             var result = JsonConvert.SerializeObject(test);
