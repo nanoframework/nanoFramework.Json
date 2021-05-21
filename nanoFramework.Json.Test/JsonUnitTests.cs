@@ -171,15 +171,20 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
             var test = new JsonTestClassComplex()
             {
-                aString = "A string",
                 aInteger = 10,
+                aShort = 254,
                 aByte = 0x05,
+                aString = "A string",
+                aFloat = 1.2345f,
+                aDouble = 1.2345d,
+                aBoolean = true,
+
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
-                stringArray = new[] { "two", "four", "six", "eight" },
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
+                stringArray = new[] { "two", "four", "six", "eight" },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
                 doubleArray = new[] { 1.1d, 3.3d, 5.5d, 7.7d, 9.9d },
                 child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
@@ -187,9 +192,6 @@ namespace nanoFramework.Json.Test
                 nullObject = null,
                 nanFloat = float.NaN,
                 nanDouble = double.NaN,
-                aFloat = 1.2345f,
-                aDouble = 1.2345d,
-                aBoolean = true
             };
             var result = JsonConvert.SerializeObject(test);
             Debug.WriteLine($"Serialized Object: {result}");
