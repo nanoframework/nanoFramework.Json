@@ -239,6 +239,11 @@ namespace nanoFramework.Json.Test
             {
                 Debug.Write($"{i.ToString()}, ");
             }
+            Debug.Write($"   doubleArray: ");
+            foreach (double i in dserResult.doubleArray)
+            {
+                Debug.Write($"{i.ToString()}, ");
+            }
             Debug.WriteLine("");
 
             Debug.Write($"   doubleArray: ");

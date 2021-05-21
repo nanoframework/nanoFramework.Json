@@ -38,6 +38,13 @@ namespace nanoFramework.Json
 					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
 				}
 			}
+			else if (type.Name == "Double")
+			{
+				if (double.IsNaN(oValue))
+				{
+					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
+				}
+			}
 			return new JsonValue() { Value = oValue };
 		}
 
