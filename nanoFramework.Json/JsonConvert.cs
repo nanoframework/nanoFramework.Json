@@ -646,11 +646,11 @@ namespace nanoFramework.Json
             }
             else if (token.TType == TokenType.Number)
             {
-                if (token.TValue.IndexOfAny(new char[] { 'e', 'E' }) != -1)
+                if (token.TValue.IndexOfAny(new char[] { 'd', 'D', 'e', 'E' }) != -1)
                 {
                     return new JsonValue(double.Parse(token.TValue));
                 }
-                if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F' }) != -1)
+                else if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F' }) != -1)
                 {
                     return new JsonValue(float.Parse(token.TValue));
                 }
