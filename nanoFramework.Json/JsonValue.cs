@@ -33,7 +33,7 @@ namespace nanoFramework.Json
 			}
 			else if (type.Name == "Double")
 			{
-				if (double.IsNaN(oValue))
+				if (double.IsNaN((float)oValue)) //TODO: this should be a double, but need to work out implications
 				{
 					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
 				}
