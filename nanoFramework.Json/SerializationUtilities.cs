@@ -93,14 +93,14 @@ namespace nanoFramework.Json
 					buffer[offset++] = b;
 				}
 			}
-			//else if (type == typeof(double)) //TODO!!!
-			//{
-			//    var bytes = BitConverter.GetBytes((double)arg);
-			//    foreach (var b in bytes)
-			//    {
-			//        buffer[offset++] = b;
-			//    }
-			//}
+			else if (type == typeof(double))
+			{
+			   var bytes = BitConverter.GetBytes((double)arg);
+			   foreach (var b in bytes)
+			   {
+			       buffer[offset++] = b;
+			   }
+			}
 			else
 				throw new Exception("unsupported type for Marshall");
 		}

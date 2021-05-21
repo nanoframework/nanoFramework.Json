@@ -647,7 +647,7 @@ namespace nanoFramework.Json
             }
             else if (token.TType == TokenType.Number)
             {
-                if (token.TValue.IndexOfAny(new char[] { 'e', 'E' }) != -1) // TODO nF doesnt support Double out of the box, use float instead
+                if (token.TValue.IndexOfAny(new char[] { 'e', 'E' }) != -1)
                 {
                     return new JsonValue(double.Parse(token.TValue));
                 }
