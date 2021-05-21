@@ -215,7 +215,6 @@ namespace nanoFramework.Json
                                 Debug.WriteLine($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
                                 if (((JsonValue)memberProperty.Value).Value == null)
                                 {
-                                    // This doesn't work for float members that have a value of NaN - check for this and handle it separately
                                     Debug.WriteLine($"{debugIndent}     memberProperty.Value is null");
                                     if (memberIsProperty)
                                     {
