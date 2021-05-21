@@ -46,7 +46,7 @@ namespace nanoFramework.Json.Test
         public byte aByte { get; set; }
         public string aString { get; set; }
         public float aFloat { get; set; }
-        public double aDouble { get; set; }
+        //public double aDouble { get; set; }
         public bool aBoolean { get; set; }
         public DateTime Timestamp { get; set; }
         public DateTime FixedTimestamp { get; set; }
@@ -55,7 +55,7 @@ namespace nanoFramework.Json.Test
         public byte[] byteArray { get; set; }
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
-        public double[] doubleArray { get; set; }
+        //public double[] doubleArray { get; set; }
         public JsonTestClassChild child1;
         public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
@@ -239,11 +239,13 @@ namespace nanoFramework.Json.Test
             {
                 Debug.Write($"{i.ToString()}, ");
             }
-            Debug.Write($"   doubleArray: ");
-            foreach (double i in dserResult.doubleArray)
-            {
-                Debug.Write($"{i.ToString()}, ");
-            }
+            Debug.WriteLine("");
+
+            //Debug.Write($"   doubleArray: ");
+            //foreach (double i in dserResult.doubleArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
             Debug.WriteLine("");
 
             Debug.Write($"   doubleArray: ");
@@ -274,7 +276,7 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
             Debug.WriteLine($"   nanDouble: {dserResult.nanDouble} ");
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
-            Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
+            //Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
 
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
