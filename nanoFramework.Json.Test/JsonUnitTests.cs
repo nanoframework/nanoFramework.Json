@@ -41,7 +41,7 @@ namespace nanoFramework.Json.Test
         public byte aByte { get; set; }
         public string aString { get; set; }
         public float aFloat { get; set; }
-        public double aDouble { get; set; }
+        //public double aDouble { get; set; }
         public bool aBoolean { get; set; }
         public DateTime Timestamp { get; set; }
         public DateTime FixedTimestamp { get; set; }
@@ -50,7 +50,7 @@ namespace nanoFramework.Json.Test
         public byte[] byteArray { get; set; }
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
-        public double[] doubleArray { get; set; }
+        //public double[] doubleArray { get; set; }
         public JsonTestClassChild child1;
         public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
@@ -159,8 +159,6 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
-            //Assert.Same(source, dserResult);
-
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
@@ -176,9 +174,8 @@ namespace nanoFramework.Json.Test
                 aByte = 0x05,
                 aString = "A string",
                 aFloat = 1.2345f,
-                aDouble = 1.2345d,
+                //aDouble = 1.2345d,
                 aBoolean = true,
-
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
@@ -186,7 +183,7 @@ namespace nanoFramework.Json.Test
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
                 stringArray = new[] { "two", "four", "six", "eight" },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
-                doubleArray = new[] { 1.1d, 3.3d, 5.5d, 7.7d, 9.9d },
+                //doubleArray = new[] { 1.1d, 3.3d, 5.5d, 7.7d, 9.9d },
                 child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
                 Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
                 nullObject = null,
@@ -237,11 +234,13 @@ namespace nanoFramework.Json.Test
             {
                 Debug.Write($"{i.ToString()}, ");
             }
-            Debug.Write($"   doubleArray: ");
-            foreach (double i in dserResult.doubleArray)
-            {
-                Debug.Write($"{i.ToString()}, ");
-            }
+            Debug.WriteLine("");
+
+            //Debug.Write($"   doubleArray: ");
+            //foreach (double i in dserResult.doubleArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
             Debug.WriteLine("");
 
             Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
@@ -258,10 +257,8 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
             Debug.WriteLine($"   nanDouble: {dserResult.nanDouble} ");
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
-            Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
+            //Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
-
-            //Assert.Same(test, result);
 
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
