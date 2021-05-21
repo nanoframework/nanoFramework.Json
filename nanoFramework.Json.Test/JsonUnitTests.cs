@@ -181,14 +181,14 @@ namespace nanoFramework.Json.Test
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
-                doubleArray = new[] { 1.1e, 3.3e, 5.5e, 7.7e, 9.9e },
+                doubleArray = new[] { 1.1, 3.3, 5.5, 7.7, 9.9 },
                 child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
                 Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
                 nullObject = null,
                 nanFloat = float.NaN,
                 nanDouble = double.NaN,
                 aFloat = 1.2345f,
-                aDouble = 1.2345e,
+                aDouble = 1.2345,
                 aBoolean = true
             };
             var result = JsonConvert.SerializeObject(test);
