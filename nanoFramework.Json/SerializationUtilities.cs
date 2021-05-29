@@ -93,14 +93,14 @@ namespace nanoFramework.Json
 					buffer[offset++] = b;
 				}
 			}
-			//else if (type == typeof(double)) //TODO!!!
-			//{
-			//    var bytes = BitConverter.GetBytes((double)arg);
-			//    foreach (var b in bytes)
-			//    {
-			//        buffer[offset++] = b;
-			//    }
-			//}
+			else if (type == typeof(double))
+			{
+				var bytes = BitConverter.GetBytes((double)arg);
+				foreach (var b in bytes)
+				{
+					buffer[offset++] = b;
+				}
+			}
 			else
 				throw new Exception("unsupported type for Marshall");
 		}
@@ -158,13 +158,13 @@ namespace nanoFramework.Json
 					result = JsonToken.ConvertToString(buffer, offset, idxNul - offset);
 					offset = idxNul + 1;
 					break;
-				//case TypeCode.Double: //TODO!!!
-				//    var i64 = (Int64)(((UInt64)buffer[offset]) | ((UInt64)buffer[offset + 1]) << 8 | ((UInt64)buffer[offset + 2]) << 16 | ((UInt64)buffer[offset + 3]) << 24 |
-				//                     ((UInt64)buffer[offset + 4]) << 32 | ((UInt64)buffer[offset + 5]) << 40 | ((UInt64)buffer[offset + 6]) << 48 | ((UInt64)buffer[offset + 7]) << 56);
-				//    result = BitConverter.Int64BitsToDouble(i64);
-				//    offset += 8;
-				//    break;
-				default:
+                case TypeCode.Double:
+                    var i64 = (Int64)(((UInt64)buffer[offset]) | ((UInt64)buffer[offset + 1]) << 8 | ((UInt64)buffer[offset + 2]) << 16 | ((UInt64)buffer[offset + 3]) << 24 |
+                                     ((UInt64)buffer[offset + 4]) << 32 | ((UInt64)buffer[offset + 5]) << 40 | ((UInt64)buffer[offset + 6]) << 48 | ((UInt64)buffer[offset + 7]) << 56);
+                    result = BitConverter.Int64BitsToDouble(i64);
+                    offset += 8;
+                    break;
+                default:
 					throw new Exception("Unsupported type");
 			}
 			return result;

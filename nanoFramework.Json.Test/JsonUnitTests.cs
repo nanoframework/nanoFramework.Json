@@ -10,7 +10,7 @@ namespace nanoFramework.Json.Test
         public int one { get; set; }
         public int two { get; set; }
         public int three { get; set; }
-        public int four;
+        public int four; //not a property on purpose!
 
         public override string ToString()
         {
@@ -18,9 +18,14 @@ namespace nanoFramework.Json.Test
         }
     }
 
-    public class JsonTestClassFloatNaN
+    public class JsonTestClassFloat
     {
-        public float nF { get; set; }
+        public float aFloat { get; set; }
+    }
+
+    public class JsonTestClassDouble
+    {
+        public double aDouble { get; set; }
     }
 
     public class JsonTestClassTimestamp
@@ -36,6 +41,7 @@ namespace nanoFramework.Json.Test
         public byte aByte { get; set; }
         public string aString { get; set; }
         public float aFloat { get; set; }
+        public double aDouble { get; set; }
         public bool aBoolean { get; set; }
         public DateTime Timestamp { get; set; }
         public DateTime FixedTimestamp { get; set; }
@@ -44,10 +50,12 @@ namespace nanoFramework.Json.Test
         public byte[] byteArray { get; set; }
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
+        public double[] doubleArray { get; set; }
         public JsonTestClassChild child1;
         public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
         public float nanFloat { get; set; }
+        public double nanDouble { get; set; }
 #pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
@@ -151,8 +159,6 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
 
-            //Assert.Same(source, dserResult);
-
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
@@ -163,22 +169,26 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
             var test = new JsonTestClassComplex()
             {
-                aString = "A string",
                 aInteger = 10,
+                aShort = 254,
                 aByte = 0x05,
+                aString = "A string",
+                aFloat = 1.2345f,
+                aDouble = 1.2345,
+                aBoolean = true,
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
                 intArray = new[] { 1, 3, 5, 7, 9 },
-                stringArray = new[] { "two", "four", "six", "eight" },
                 shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
                 byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
+                stringArray = new[] { "two", "four", "six", "eight" },
                 floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
+                doubleArray = new[] { 1.12345, 3.3456, 5.56789, 7.78910, 9.910111213 },
                 child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
                 Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
                 nullObject = null,
                 nanFloat = float.NaN,
-                aFloat = 1.2345f,
-                aBoolean = true
+                nanDouble = double.NaN,
             };
             var result = JsonConvert.SerializeObject(test);
             Debug.WriteLine($"Serialized Object: {result}");
@@ -226,6 +236,13 @@ namespace nanoFramework.Json.Test
             }
             Debug.WriteLine("");
 
+            Debug.Write($"   doubleArray: ");
+            foreach (double i in dserResult.doubleArray)
+            {
+                Debug.Write($"{i.ToString()}, ");
+            }
+            Debug.WriteLine("");
+
             Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
             Debug.WriteLine($"   Child: {dserResult.Child.ToString()} ");
 
@@ -238,35 +255,100 @@ namespace nanoFramework.Json.Test
                 Debug.WriteLine($"   nullObject: {dserResult.nullObject}");
             }
             Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
+            Debug.WriteLine($"   nanDouble: {dserResult.nanDouble} ");
             Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
+            Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
             Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
-
-            //Assert.Same(test, result);
 
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
         }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_nan_float()
+        public void Can_serialize_and_deserialize_float()
         {
-            Debug.WriteLine("Starting float NaN Object Test...");
-            var test = new JsonTestClassFloatNaN()
+            Debug.WriteLine("Starting float Object Test...");
+            var test = new JsonTestClassFloat()
             {
-                nF = float.NaN,
+                aFloat = 2567.454f, //TODO Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
             };
             var result = JsonConvert.SerializeObject(test);
             Debug.WriteLine($"Serialized Object: {result}");
 
 
-            var dserResult = (JsonTestClassFloatNaN)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloatNaN));
+            var dserResult = (JsonTestClassFloat)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloat));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"nF\":null}", "Serialized result is null");
-            Assert.Equal(true, float.IsNaN(dserResult.nF), "Deserialized Result is NaN");
+            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal"); //TODO: better str handling!
+            Assert.Equal(test.aFloat, dserResult.aFloat, "Deserialized float Result is Equal");
+
+            Debug.WriteLine("float Object Test Test succeeded");
+            Debug.WriteLine("");
+        }
+
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_nan_float()
+        {
+            Debug.WriteLine("Starting float NaN Object Test...");
+            var test = new JsonTestClassFloat()
+            {
+                aFloat = float.NaN,
+            };
+            var result = JsonConvert.SerializeObject(test);
+            Debug.WriteLine($"Serialized Object: {result}");
+
+
+            var dserResult = (JsonTestClassFloat)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloat));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+            Assert.Equal(result, "{\"aFloat\":null}", "Serialized float result is null");
+            Assert.Equal(true, float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
         }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_double()
+        {
+            Debug.WriteLine("Starting double Object Test...");
+            var test = new JsonTestClassDouble()
+            {
+                aDouble = 123.4567,
+            };
+            var result = JsonConvert.SerializeObject(test);
+            Debug.WriteLine($"Serialized Object: {result}");
+
+            var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double"); //TODO: possible conversion issue (but can happen with conversions)
+
+            Debug.WriteLine("double Object Test Test succeeded");
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_nan_double()
+        {
+            Debug.WriteLine("Starting double NaN Object Test...");
+            var test = new JsonTestClassDouble()
+            {
+                aDouble = double.NaN,
+            };
+            var result = JsonConvert.SerializeObject(test);
+            Debug.WriteLine($"Serialized Object: {result}");
+
+
+            var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+            Assert.Equal(result, "{\"aDouble\":null}", "Serialized double result is null");
+            Assert.Equal(true, double.IsNaN(dserResult.aDouble), "Deserialized double Result is NaN");
+
+            Debug.WriteLine("double NaN Object Test Test succeeded");
+            Debug.WriteLine("");
+        }
     }
-}
+    }

@@ -215,7 +215,6 @@ namespace nanoFramework.Json
                                 Debug.WriteLine($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
                                 if (((JsonValue)memberProperty.Value).Value == null)
                                 {
-                                    // This doesn't work for float members that have a value of NaN - check for this and handle it separately
                                     Debug.WriteLine($"{debugIndent}     memberProperty.Value is null");
                                     if (memberIsProperty)
                                     {
@@ -264,6 +263,9 @@ namespace nanoFramework.Json
                                                     break;
                                                 case nameof(Byte):
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
+                                                    break;
+                                                case nameof(Single):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
                                                     break;
                                                 default:
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
@@ -335,6 +337,11 @@ namespace nanoFramework.Json
                                         else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                         {
                                             memberValueArrayList.Add(Convert.ToByte(((JsonValue)item).Value.ToString()));
+                                            Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToSingle(((JsonValue)item).Value.ToString()));
                                             Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
                                         }
                                         else
@@ -647,13 +654,9 @@ namespace nanoFramework.Json
             }
             else if (token.TType == TokenType.Number)
             {
-                if (token.TValue.IndexOfAny(new char[] { 'e', 'E' }) != -1) // TODO nF doesnt support Double out of the box, use float instead
+                if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F', 'd', 'D', 'e', 'E' }) != -1)
                 {
                     return new JsonValue(double.Parse(token.TValue));
-                }
-                if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F' }) != -1)
-                {
-                    return new JsonValue(float.Parse(token.TValue));
                 }
                 else
                 {
