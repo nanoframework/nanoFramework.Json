@@ -396,7 +396,7 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_double()
+        public void Can_serialize_and_deserialize_double() //TODO: currently fails with `CLR_E_WRONG_TYPE (1)` probably due to the number being handled as a single!
         {
             Debug.WriteLine("Starting double Object Test...");
             var test = new JsonTestClassDouble()
