@@ -42,14 +42,17 @@
     <Reference Include="nanoFramework.TestFramework, Version=1.0.122.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.TestFramework.1.0.122\lib\nanoFramework.TestFramework.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="nanoFramework.UnitTestLauncher, Version=0.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.TestFramework.1.0.122\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="Windows.Storage.Streams, Version=1.12.2.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Windows.Storage.Streams.1.12.2-preview.5\lib\Windows.Storage.Streams.dll</HintPath>
       <Private>True</Private>
+      <SpecificVersion>True</SpecificVersion>
     </Reference>
   </ItemGroup>
   <ItemGroup>
