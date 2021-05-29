@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.115...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.117...HEAD)
+
+**Implemented enhancements:**
+
+- Attempt to handle doubles correctly [\#88](https://github.com/nanoframework/nanoFramework.Json/pull/88)
+
+## [v2.0.1-preview.117](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.117) (2021-05-29)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.115...v2.0.1-preview.117)
 
 **Documentation and other chores:**
 
