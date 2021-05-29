@@ -264,6 +264,9 @@ namespace nanoFramework.Json
                                                 case nameof(Byte):
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
                                                     break;
+                                                case nameof(Single):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
+                                                    break;
                                                 default:
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
                                                     break;
@@ -334,6 +337,11 @@ namespace nanoFramework.Json
                                         else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                         {
                                             memberValueArrayList.Add(Convert.ToByte(((JsonValue)item).Value.ToString()));
+                                            Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToSingle(((JsonValue)item).Value.ToString()));
                                             Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
                                         }
                                         else
