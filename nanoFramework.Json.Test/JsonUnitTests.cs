@@ -337,8 +337,8 @@ namespace nanoFramework.Json.Test
             var dserResult = (JsonTestClassFloat)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloat));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aFloat\":null}", "Serialized result is null");
-            Assert.Equal(true, float.IsNaN(dserResult.aFloat), "Deserialized Result is NaN");
+            Assert.Equal(result, "{\"aFloat\":null}", "Serialized float result is null");
+            Assert.Equal(true, float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
 
             Debug.WriteLine("float NaN Object Test Test succeeded");
             Debug.WriteLine("");
@@ -358,7 +358,7 @@ namespace nanoFramework.Json.Test
             var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":123.4567}", "Serialized result is a double");
+            Assert.Equal(result, "{\"aDouble\":123.4567}", "Serialized double result is a double");
 
             Debug.WriteLine("double Object Test Test succeeded");
             Debug.WriteLine("");
@@ -379,8 +379,8 @@ namespace nanoFramework.Json.Test
             var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":null}", "Serialized result is null");
-            Assert.Equal(true, double.IsNaN(dserResult.aDouble), "Deserialized Result is NaN");
+            Assert.Equal(result, "{\"aDouble\":null}", "Serialized double result is null");
+            Assert.Equal(true, double.IsNaN(dserResult.aDouble), "Deserialized double Result is NaN");
 
             Debug.WriteLine("double NaN Object Test Test succeeded");
             Debug.WriteLine("");
