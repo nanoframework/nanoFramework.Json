@@ -38,12 +38,9 @@ namespace nanoFramework.Json
 					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
 				}
 			}
-			else if (type.Name == "Double")
+			else if (type.Name == "Double" && double.IsNaN((double)oValue))
 			{
-				if (double.IsNaN((double)oValue))
-				{
-					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
-				}
+				return new JsonValue() { Value = null }; //Unfortunately JSON does not understand "float.NaN". This is the next best option!
 			}
 			return new JsonValue() { Value = oValue };
 		}
