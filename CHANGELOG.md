@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.127...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.130...HEAD)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.System.Text from 1.1.1-preview.51 to 1.1.1-preview.57 [\#98](https://github.com/nanoframework/nanoFramework.Json/pull/98)
+
+## [v2.0.1-preview.130](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.130) (2021-06-01)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.127...v2.0.1-preview.130)
 
 **Documentation and other chores:**
 
