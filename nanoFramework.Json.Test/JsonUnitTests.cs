@@ -1,5 +1,6 @@
 using nanoFramework.TestFramework;
 using System;
+using System.Collections;
 using System.Diagnostics;
 
 namespace nanoFramework.Json.Test
@@ -65,6 +66,19 @@ namespace nanoFramework.Json.Test
         private string dontSerializeStr = "dontPublish";
 #pragma warning restore 0414
         private string dontSerialize { get; set; } = "dontPublish";
+    }
+
+    public class InvocationReceiveMessage
+    {
+        public int type { get; set; }
+        public Hashtable headers { get; set; }
+        public string invocationId { get; set; }
+        public string target { get; set; }
+        public ArrayList arguments { get; set; }
+        public string[] streamIds { get; set; }
+        public string error { get; set; }
+        public bool allowReconnect { get; set; }
+        public object result { get; set; }
     }
 
     [TestClass]
@@ -436,6 +450,134 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("double NaN Object Test Test succeeded");
             Debug.WriteLine("");
         }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_InvocationReceiveMessage_object()
+        {
+            //Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
+            //var test = new JsonTestClassComplex()
+            //{
+            //    aInteger = 10,
+            //    aShort = 254,
+            //    aByte = 0x05,
+            //    aString = "A string",
+            //    aFloat = 1.2345f,
+            //    aDouble = 1.2345,
+            //    aBoolean = true,
+            //    Timestamp = DateTime.UtcNow,
+            //    FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
+            //    intArray = new[] { 1, 3, 5, 7, 9 },
+            //    shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
+            //    byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
+            //    stringArray = new[] { "two", "four", "six", "eight" },
+            //    floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
+            //    doubleArray = new[] { 1.12345, 3.3456, 5.56789, 7.78910, 9.910111213 },
+            //    child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
+            //    Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
+            //    nullObject = null,
+            //    nanFloat = float.NaN,
+            //    nanDouble = double.NaN,
+            //};
+            //var result = JsonConvert.SerializeObject(test);
+            //Debug.WriteLine($"Serialized Object: {result}");
+
+
+            //var dserResult = (JsonTestClassComplex)JsonConvert.DeserializeObject(result, typeof(JsonTestClassComplex));
+            //Debug.WriteLine($"After Type deserialization:");
+            //Debug.WriteLine($"   aString:   {dserResult.aString} ");
+            //Debug.WriteLine($"   aInteger:  {dserResult.aInteger} ");
+            //Debug.WriteLine($"   aByte:     {dserResult.aByte} ");
+            //Debug.WriteLine($"   Timestamp: {dserResult.Timestamp.ToString()} ");
+            //Debug.WriteLine($"   FixedTimestamp: {dserResult.FixedTimestamp.ToString()} ");
+            //Debug.Write($"   intArray: ");
+            //foreach (int i in dserResult.intArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.Write($"   stringArray: ");
+            //foreach (string i in dserResult.stringArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.Write($"   shortArray: ");
+            //foreach (short i in dserResult.shortArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.Write($"   byteArray: ");
+            //foreach (byte i in dserResult.byteArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.Write($"   floatArray: ");
+            //foreach (float i in dserResult.floatArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.Write($"   doubleArray: ");
+            //foreach (double i in dserResult.doubleArray)
+            //{
+            //    Debug.Write($"{i.ToString()}, ");
+            //}
+            //Debug.WriteLine("");
+
+            //Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
+            //Debug.WriteLine($"   Child: {dserResult.Child.ToString()} ");
+
+            //if (dserResult.nullObject == null)
+            //{
+            //    Debug.WriteLine($"   nullObject is null");
+            //}
+            //else
+            //{
+            //    Debug.WriteLine($"   nullObject: {dserResult.nullObject}");
+            //}
+            //Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
+            //Debug.WriteLine($"   nanDouble: {dserResult.nanDouble} ");
+            //Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
+            //Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
+            //Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
+
+            //Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
+            //Debug.WriteLine("");
+
+            string testJson = @"{
+    ""type"": 1,
+    ""headers"": {
+        ""Foo"": ""Bar""
+    },
+    ""invocationId"": ""123"",
+    ""target"": ""Send""
+    ""arguments"": [
+        42,
+        ""Test Message"",
+    ]
+    }";
+            InvocationReceiveMessage testClass = new InvocationReceiveMessage()
+            {
+                type = 1,
+                invocationId = "123",
+                target = "Send"
+            };
+            testClass.headers = new Hashtable();
+            testClass.headers.Add("Foo", "Bar");
+
+            testClass.arguments = new ArrayList();
+
+           var invocationMessage = JsonConvert.DeserializeObject(testJson, new InvocationReceiveMessage().GetType()) as InvocationReceiveMessage;
+
+
+        }
+
     }
-    }
-    }
+}
