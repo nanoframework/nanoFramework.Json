@@ -350,5 +350,42 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("double NaN Object Test Test succeeded");
             Debug.WriteLine("");
         }
+
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_twin_properties()
+        {
+
+            var testString = "{\"desired\":{\"TimeToSleep\":5,\"$version\":2},\"reported\":{\"Firmware\":\"nanoFramework\",\"TimeToSleep\":2,\"$version\":94}}";
+
+            var dserResult = (TwinProperties)JsonConvert.DeserializeObject(testString, typeof(TwinProperties));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Debug.WriteLine("");
+        }
+
+        #region Test classes
+
+        public class TwinProperties
+        {
+            public Desired desired { get; set; }
+            public Reported reported { get; set; }
+        }
+
+        public class Desired
+        {
+            public int TimeToSleep { get; set; }
+        }
+
+        public class Reported
+        {
+            public string Firmware { get; set; }
+
+            public int TimeToSleep { get; set; }
+        }
+
+        #endregion
+
     }
     }
