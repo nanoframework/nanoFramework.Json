@@ -166,7 +166,8 @@ namespace nanoFramework.Json
                             memberPropGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
                             if (memberPropGetMethod == null)
                             {
-                                throw new Exception($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null");
+                                Debug.WriteLine($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null. Possibly this property doesn't exist.");
+                                continue;
                             }
                             else
                             {
@@ -174,7 +175,7 @@ namespace nanoFramework.Json
                                 memberPropSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
                                 if (memberType == null)
                                 {
-                                    throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
+                                    throw new Exception($"PopulateObject() - failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.");
                                 }
                                 memberIsProperty = true;
                                 Debug.WriteLine($"{debugIndent}     memberType:  {memberType.Name} ");
