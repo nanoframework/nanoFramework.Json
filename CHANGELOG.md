@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.136...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.138...HEAD)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.System.Collections from 1.2.0-preview.62 to 1.2.0-preview.65 [\#104](https://github.com/nanoframework/nanoFramework.Json/pull/104)
+
+## [v2.0.1-preview.138](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.138) (2021-06-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.136...v2.0.1-preview.138)
 
 **Documentation and other chores:**
 
