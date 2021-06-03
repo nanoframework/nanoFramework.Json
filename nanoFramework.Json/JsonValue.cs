@@ -25,22 +25,13 @@ namespace nanoFramework.Json
 		{
 			if (type.Name == "Single" && float.IsNaN((float)oValue))
 			{
-				return new JsonValue() { Value = null }; //Unfortunately JSON does not understand "float.NaN". This is the next best option!
+			    	//Unfortunately JSON does not understand "float.NaN". This is the next best option!
+				return new JsonValue() { Value = null }; 
 			}
 			else if (type.Name == "Double" && double.IsNaN((double)oValue))
 			{
-				return new JsonValue() { Value = null }; //Unfortunately JSON does not understand "float.NaN". This is the next best option!
-			}
-			else if (type.Name == "Double")
-			{
-				if (double.IsNaN((double)oValue))
-				{
-					return new JsonValue() { Value = null }; //the other option would be to return a string of "NaN"
-				}
-			}
-			else if (type.Name == "Double" && double.IsNaN((double)oValue))
-			{
-				return new JsonValue() { Value = null }; //Unfortunately JSON does not understand "float.NaN". This is the next best option!
+				//Unfortunately JSON does not understand "float.NaN". This is the next best option!
+				return new JsonValue() { Value = null }; 
 			}
 			return new JsonValue() { Value = oValue };
 		}
