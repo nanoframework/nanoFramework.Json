@@ -2,7 +2,39 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.132...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.140...HEAD)
+
+**Implemented enhancements:**
+
+- Parser can now handle ArrayList and Hashtable properties [\#102](https://github.com/nanoframework/nanoFramework.Json/pull/102)
+
+## [v2.0.1-preview.140](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.140) (2021-06-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.138...v2.0.1-preview.140)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.System.Collections from 1.2.0-preview.62 to 1.2.0-preview.65 [\#104](https://github.com/nanoframework/nanoFramework.Json/pull/104)
+
+## [v2.0.1-preview.138](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.138) (2021-06-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.136...v2.0.1-preview.138)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.CoreLibrary from 1.10.5-preview.4 to 1.10.5-preview.10 [\#103](https://github.com/nanoframework/nanoFramework.Json/pull/103)
+
+## [v2.0.1-preview.136](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.136) (2021-06-02)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.134...v2.0.1-preview.136)
+
+**Implemented enhancements:**
+
+- Fix parsing non existing properties [\#101](https://github.com/nanoframework/nanoFramework.Json/pull/101)
+
+## [v2.0.1-preview.134](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.134) (2021-06-02)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.132...v2.0.1-preview.134)
 
 **Documentation and other chores:**
 

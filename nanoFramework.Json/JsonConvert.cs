@@ -9,8 +9,10 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Windows.Storage.Streams;
 using System.Diagnostics;
+#if NANOFRAMEWORK_1_0
+using Windows.Storage.Streams;
+#endif
 
 namespace nanoFramework.Json
 {
@@ -76,6 +78,8 @@ namespace nanoFramework.Json
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
+#if NANOFRAMEWORK_1_0
+
         /// <summary>
         /// Deserializes a Json string into an object.
         /// </summary>
@@ -99,6 +103,21 @@ namespace nanoFramework.Json
             var dserResult = Deserialize(dr);
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
+
+        private static object Deserialize(DataReader dr)
+        {
+            // Read the DataReader into jsonBytes[]
+            jsonBytes = new byte[dr.UnconsumedBufferLength];
+            jsonPos = 0;
+            while (dr.UnconsumedBufferLength > 0)
+            {
+                jsonBytes[jsonPos++] = dr.ReadByte();
+            }
+            jsonPos = 0;
+            return Deserialize();
+        }
+
+#endif
 
         private static string debugIndent = $"PopulateObject() - ";      // PopulateObject() goes recursive - this cleans up the debug output
         private static int debugOutdent = 10;
@@ -166,7 +185,8 @@ namespace nanoFramework.Json
                             memberPropGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
                             if (memberPropGetMethod == null)
                             {
-                                throw new Exception($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null");
+                                Debug.WriteLine($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null. Possibly this property doesn't exist.");
+                                continue;
                             }
                             else
                             {
@@ -174,7 +194,7 @@ namespace nanoFramework.Json
                                 memberPropSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
                                 if (memberType == null)
                                 {
-                                    throw new Exception($"PopulateObject() - failed to create memberType from {rootType.Name}.GetMethod ");
+                                    throw new Exception($"PopulateObject() - failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.");
                                 }
                                 memberIsProperty = true;
                                 Debug.WriteLine($"{debugIndent}     memberType:  {memberType.Name} ");
@@ -186,7 +206,9 @@ namespace nanoFramework.Json
                         {
                             // Call PopulateObject() for this member - i.e. recursion
                             Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
+                        
                             var memberPath = rootPath;
+                            
                             if (memberPath[memberPath.Length - 1] == '/')
                             {
                                 memberPath += memberProperty.Name;                      // Don't need to add a slash before appending rootElementType
@@ -195,7 +217,28 @@ namespace nanoFramework.Json
                             {
                                 memberPath = memberPath + '/' + memberProperty.Name;    // Need to add a slash before appending rootElementType
                             }
-                            var memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
+
+                            object memberObject = null;
+
+                            // check if property type it's HashTable
+                            if (memberType.FullName == "System.Collections.Hashtable")
+                            {
+                                Hashtable table = new Hashtable();
+
+                                foreach (JsonPropertyAttribute v in ((JsonObjectAttribute)memberProperty.Value).Members)
+                                {
+                                    table.Add(v.Name, v.Value);
+                                }
+
+                                memberObject = table;
+
+                                Debug.WriteLine($"{debugIndent}     populated the {memberProperty.Name} Hashtable");
+                            }
+                            else
+                            {
+                                memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
+                            }
+                            
                             if (memberIsProperty)
                             {
                                 memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
@@ -204,6 +247,7 @@ namespace nanoFramework.Json
                             {
                                 memberFieldInfo.SetValue(rootInstance, memberObject);
                             }
+                            
                             Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
                         }
                         else if (memberProperty.Value is JsonValue)
@@ -311,11 +355,29 @@ namespace nanoFramework.Json
                         else if (memberProperty.Value is JsonArrayAttribute)
                         {
                             Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
-                            Type memberElementType = memberType.GetElementType();    // Need this type when we try to populate the array elements
-                            var memberValueArray = (JsonArrayAttribute)memberProperty.Value;   // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                            var memberValueArrayList = new ArrayList();             // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                            JsonToken[] memberItems = memberValueArray.Items;          // Create a JToken[] array for Items associated for this memberProperty.Value
+
+                            // Need this type when we try to populate the array elements
+                            Type memberElementType = memberType.GetElementType();
+                            bool isArrayList = false;
+
+                            if(memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
+                            {
+                                memberElementType = memberType;
+
+                                isArrayList = true;
+                            }
+
+                            // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
+                            var memberValueArray = (JsonArrayAttribute)memberProperty.Value;
+
+                            // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
+                            var memberValueArrayList = new ArrayList();
+
+                            // Create a JToken[] array for Items associated for this memberProperty.Value
+                            JsonToken[] memberItems = memberValueArray.Items;          
+
                             Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
+                            
                             foreach (JsonToken item in memberItems)
                             {
                                 if (item is JsonValue)
@@ -358,15 +420,28 @@ namespace nanoFramework.Json
                                 }
                                 else if (item is JsonToken)
                                 {
+                                    // sanity check for null memberElementType
+                                    if(memberElementType == null)
+                                    {
+                                        Debug.WriteLine($"{debugIndent}         memberElementType is null - THIS SHOULD NEVER HAPPEN ********************");
+                                        throw new NotSupportedException($"PopulateObject() - memberElementType for memberType: {memberType.Name} is null and this can't happen.");
+                                    }
+
                                     // Since memberProperty.Value is a JsonnArray:
                                     // 		memberType        is the array   type (i.e. foobar[])
                                     // 		memberElementType is the element type (i.e. foobar)		- use this to call PopulateObject()
+
                                     string memberElementPath = rootPath + "/" + memberProperty.Name + "/" + memberElementType.Name;
+                                    
                                     Debug.WriteLine($"{debugIndent}         memberType: {memberType.Name}   memberElementType: {memberElementType.Name} ");
                                     Debug.WriteLine($"{debugIndent}         calling PopulateObject(JsonToken item, {memberElementType.Name}, {memberElementPath}) ");
+                                    
                                     var itemObj = PopulateObject(item, memberElementType, memberElementPath);
+                                    
                                     Debug.WriteLine($"{debugIndent}         item is a JsonToken - add it to memberValueArrayList");
+                                    
                                     memberValueArrayList.Add(itemObj);
+                                    
                                     Debug.WriteLine($"{debugIndent}         item is a JsonToken - added to memberValueArrayList");
                                 }
                                 else
@@ -374,28 +449,60 @@ namespace nanoFramework.Json
                                     Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
                                 }
                             }
+
                             Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
 
-                            // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
-                            Debug.WriteLine($"{debugIndent}       create targetArray - an Array of memberElementType: {memberElementType} objects - use Array.CreateInstance({memberElementType}, {memberValueArray.Length}");
-                            Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
-                            if (targetArray == null)
-                            {
-                                throw new Exception("PopulateObject() - failed to create Array of type: {memberElementType}[]");
-                            }
-                            Debug.WriteLine($"{debugIndent}       targetArray created using CreateInstance().  targetArray.GetType().Name: {(targetArray?.GetType()?.Name != null ? targetArray.GetType().Name : "null")}");
                             // Fill targetArray with the memberValueArrayList
-                            memberValueArrayList.CopyTo(targetArray);
-                            Debug.WriteLine($"{debugIndent}       copied memberValueArrayList into the targetArray");
-                            // Populate rootInstance
-                            if (memberIsProperty)
+                            if (isArrayList)
                             {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                ArrayList targetArray = new ArrayList();
+
+                                for (int i = 0; i < memberValueArrayList.Count; i++)
+                                {
+                                    targetArray.Add(memberValueArrayList[i]);
+                                }
+
+                                Debug.WriteLine($"{debugIndent}       copied memberValueArrayList into the targetArray");
+
+                                // Populate rootInstance
+                                if (memberIsProperty)
+                                {
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                }
+                                else
+                                {
+                                    memberFieldInfo.SetValue(rootInstance, targetArray);
+                                }
                             }
                             else
                             {
-                                memberFieldInfo.SetValue(rootInstance, targetArray);
+                                // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
+                                Debug.WriteLine($"{debugIndent}       create targetArray - an Array of memberElementType: {memberElementType} objects - use Array.CreateInstance({memberElementType}, {memberValueArray.Length}");
+                                
+                                Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
+                                
+                                if (targetArray == null)
+                                {
+                                    throw new Exception("PopulateObject() - failed to create Array of type: {memberElementType}[]");
+                                }
+                                
+                                Debug.WriteLine($"{debugIndent}       targetArray created using CreateInstance().  targetArray.GetType().Name: {(targetArray?.GetType()?.Name != null ? targetArray.GetType().Name : "null")}");
+                                
+                                memberValueArrayList.CopyTo(targetArray);
+
+                                Debug.WriteLine($"{debugIndent}       copied memberValueArrayList into the targetArray");
+                            
+                                // Populate rootInstance
+                                if (memberIsProperty)
+                                {
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                }
+                                else
+                                {
+                                    memberFieldInfo.SetValue(rootInstance, targetArray);
+                                }
                             }
+
                             Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
                         }
                     }
@@ -511,18 +618,6 @@ namespace nanoFramework.Json
             return Deserialize();
         }
 
-        private static object Deserialize(DataReader dr)
-        {
-            // Read the DataReader into jsonBytes[]
-            jsonBytes = new byte[dr.UnconsumedBufferLength];
-            jsonPos = 0;
-            while (dr.UnconsumedBufferLength > 0)
-            {
-                jsonBytes[jsonPos++] = dr.ReadByte();
-            }
-            jsonPos = 0;
-            return Deserialize();
-        }
         // Deserialize() now assumes that the input has been copied int jsonBytes[]
         // Keep track of position with jsonPos
         private static JsonToken Deserialize()
