@@ -244,6 +244,20 @@ namespace nanoFramework.Json.Test
             }
             Debug.WriteLine("");
 
+            Debug.Write($"   doubleArray: ");
+            foreach (double i in dserResult.doubleArray)
+            {
+                Debug.Write($"{i.ToString()}, ");
+            }
+            Debug.WriteLine("");
+
+            Debug.Write($"   doubleArray: ");
+            foreach (double i in dserResult.doubleArray)
+            {
+                Debug.Write($"{i.ToString()}, ");
+            }
+            Debug.WriteLine("");
+
             Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
             Debug.WriteLine($"   Child: {dserResult.Child.ToString()} ");
 
@@ -304,9 +318,9 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Assert.Equal(result, "{\"aFloat\":null}", "Serialized float result is null");
-            Assert.Equal(true, float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
+            Assert.True(float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
 
-            Debug.WriteLine("float NaN Object Test Test succeeded");
+            Debug.WriteLine("float Object Test Test succeeded");
             Debug.WriteLine("");
         }
 
@@ -439,4 +453,4 @@ namespace nanoFramework.Json.Test
         #endregion
 
     }
-    }
+}
