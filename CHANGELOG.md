@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.138...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.140...HEAD)
+
+**Implemented enhancements:**
+
+- Parser can now handle ArrayList and Hashtable properties [\#102](https://github.com/nanoframework/nanoFramework.Json/pull/102)
+
+## [v2.0.1-preview.140](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.140) (2021-06-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.138...v2.0.1-preview.140)
 
 **Documentation and other chores:**
 
