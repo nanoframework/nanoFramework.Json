@@ -1,5 +1,6 @@
 using nanoFramework.TestFramework;
 using System;
+using System.Collections;
 using System.Diagnostics;
 
 namespace nanoFramework.Json.Test
@@ -365,6 +366,43 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+        [TestMethod]
+        public void Can_deserialize_InvocationReceiveMessage_01()
+        {
+
+            var testString = "{\"type\":6}";
+
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_deserialize_InvocationReceiveMessage_02()
+        {
+
+            var testString = @"{
+    ""type"": 1,
+    ""headers"": {
+        ""Foo"": ""Bar""
+    },
+    ""invocationId"": ""123"",
+    ""target"": ""Send""
+    ""arguments"": [
+        42,
+        ""Test Message"",
+    ]
+    }"; ;
+
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Debug.WriteLine("");
+        }
+
         #region Test classes
 
         public class TwinProperties
@@ -383,6 +421,19 @@ namespace nanoFramework.Json.Test
             public string Firmware { get; set; }
 
             public int TimeToSleep { get; set; }
+        }
+
+        public class InvocationReceiveMessage
+        {
+            public int type { get; set; }
+            public Hashtable headers { get; set; }
+            public string invocationId { get; set; }
+            public string target { get; set; }
+            public ArrayList arguments { get; set; }
+            public string[] streamIds { get; set; }
+            public string error { get; set; }
+            public bool allowReconnect { get; set; }
+            public object result { get; set; }
         }
 
         #endregion
