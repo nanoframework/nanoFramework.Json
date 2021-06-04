@@ -588,6 +588,10 @@ namespace nanoFramework.Json
                             {
                                 rootArrayList.Add(((JsonValue)item).Value);
                             }
+                            else if (item is JsonToken)
+                            {
+                                rootArrayList = PopulateArrayList(item);
+                            }
                             else
                             {
                                 throw new NotImplementedException();
