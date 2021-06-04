@@ -743,6 +743,13 @@ namespace nanoFramework.Json
 
                     var memberProperty = (JsonPropertyAttribute)m;
 
+                    if(memberProperty == null)
+                    {
+                        Debug.WriteLine($"memberProperty is null and can't be");
+
+                        throw new NotSupportedException();
+                    }
+
                     Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
                     // Process the member based on JObject, JValue, or JArray
