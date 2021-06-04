@@ -100,21 +100,21 @@ namespace nanoFramework.Json.Test
         public void Can_serialize_deserialize_timestamp()
         {
             Debug.WriteLine("Can_serialize_deserialize_timestamp() - Starting test...");
+            
             var timestampTests = new JsonTestClassTimestamp()
             {
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00)
             };
 
-            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp.ToString()}");
-            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp.ToString()}");
+            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp}");
+            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp}");
 
             var result = JsonConvert.SerializeObject(timestampTests);
             Debug.WriteLine($"Serialized Array: {result}");
 
             var dserResult = (JsonTestClassTimestamp)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimestamp));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
-
 
             Assert.Equal(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
             Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
@@ -301,7 +301,6 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
-
         [TestMethod]
         public void Can_serialize_and_deserialize_nan_float()
         {
@@ -366,9 +365,143 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+        [TestMethod]
+        public void BasicSerializationTest()
+        {
+            ICollection collection = new ArrayList() { 1, null, 2, "blah", false };
+           
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("collection", collection);
+            hashtable.Add("nulltest", null);
+            hashtable.Add("stringtest", "hello world");
+           
+            object[] array = new object[] { hashtable };
+
+            string json = JsonConvert.SerializeObject(array);
+            
+            string correctValue = "[{\"collection\":[1,null,2,\"blah\",false],\"nulltest\":null,\"stringtest\":\"hello world\"}]";
+
+            Assert.Equal(json, correctValue, "Values did not match");
+
+            Debug.WriteLine("");
+        }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_twin_properties()
+        public void BasicDeserializationTest()
+        {
+            string json = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[-1,null,24.565657576,\"blah\",false]}]";
+            
+            ArrayList arrayList = (ArrayList)JsonConvert.DeserializeObject(json, typeof(ArrayList));
+            
+            Hashtable hashtable = arrayList[0] as Hashtable;
+            string stringtest = hashtable["stringtest"].ToString();
+            object nulltest = hashtable["nulltest"];
+            
+            ArrayList collection = hashtable["collection"] as ArrayList;
+            int a = (int)collection[0];
+            object b = collection[1];
+            double c = (double)collection[2];
+            string d = collection[3].ToString();
+            bool e = (bool)collection[4];
+
+            Assert.Equal(arrayList.Count, 1, "arrayList count did not match");
+  
+            Assert.Equal(hashtable.Count, 3, "hashtable count did not match");
+
+            Assert.Equal(stringtest, "hello world", "stringtest did not match");
+
+            Assert.Null(nulltest, "nulltest did not match");
+
+            Assert.Equal(collection.Count, 5, "collection count did not match");
+
+            Assert.Equal(a, -1, "a value did not match");
+
+            Assert.Null(b, "b value did not match");
+
+            Assert.Equal(c, 24.565657576, "c value did not match");
+
+            Assert.Equal(d, "blah", "d value did not match");
+
+            Assert.False(e, "e value did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void SerializeDeserializeDateTest()
+        {
+            DateTime testTime = new DateTime(2015, 04, 22, 11, 56, 39, 456);
+
+
+            ICollection collection = new ArrayList() { testTime };
+
+            string jsonString = JsonConvert.SerializeObject(collection);
+
+            ArrayList convertTime = (ArrayList)JsonConvert.DeserializeObject(jsonString, typeof(ArrayList));
+
+            Assert.Equal(testTime.Ticks, ((DateTime)convertTime[0]).Ticks, "Values did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void SerializeSimpleClassTest()
+        {
+            Person friend = new Person()
+            {
+                FirstName = "Bob",
+                LastName = "Smith",
+                Birthday = new DateTime(1983, 7, 3),
+                ID = 2,
+                Address = "123 Some St",
+                ArrayProperty = new string[] { "hi", "planet" },
+            };
+
+            Person person = new Person()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Birthday = new DateTime(1988, 4, 23),
+                ID = 27,
+                Address = null,
+                ArrayProperty = new string[] { "hello", "world" },
+                Friend = friend
+            };
+
+            string json = JsonConvert.SerializeObject(person);
+            
+            string correctValue = "{\"Address\":null,\"ArrayProperty\":[\"hello\",\"world\"],\"ID\":27,\"Birthday\":\"1988-04-23T00:00:00.000Z\",\"LastName\":\"Doe\",\"Friend\""
+                + ":{\"Address\":\"123 Some St\",\"ArrayProperty\":[\"hi\",\"planet\"],\"ID\":2,\"Birthday\":\"1983-07-03T00:00:00.000Z\",\"LastName\":\"Smith\",\"Friend\":null,\"FirstName\":\"Bob\"}"
+                + ",\"FirstName\":\"John\"}";
+
+            Assert.Equal(json, correctValue, "Values did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void SerializeAbstractClassTest()
+        {
+            AbstractClass a = new RealClass() { ID = 12 };
+            string json = JsonConvert.SerializeObject(a);
+            
+            string correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+            
+            Assert.Equal(json, correctValue, "Value for AbstractClass did not match");
+
+            RealClass b = new RealClass() { ID = 12 };
+            
+            json = JsonConvert.SerializeObject(b);
+            
+            correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+
+            Assert.Equal(json, correctValue, "Values for RealClass did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void CanSerializeAndDeserializeTwinProperties_01()
         {
 
             var testString = "{\"desired\":{\"TimeToSleep\":5,\"$version\":2},\"reported\":{\"Firmware\":\"nanoFramework\",\"TimeToSleep\":2,\"$version\":94}}";
@@ -381,7 +514,7 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_deserialize_InvocationReceiveMessage_01()
+        public void CanDeserializeInvocationReceiveMessage_01()
         {
 
             var testString = "{\"type\":6}";
@@ -394,9 +527,8 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_deserialize_InvocationReceiveMessage_02()
+        public void CanDeserializeInvocationReceiveMessage_02()
         {
-
             var testString = @"{
     ""type"": 1,
     ""headers"": {
@@ -413,6 +545,15 @@ namespace nanoFramework.Json.Test
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 1, "type value is not correct");
+            Assert.Equal(dserResult.invocationId, "123", "invocationId value is not correct");
+            Assert.Equal(dserResult.target, "Send", "target value is not correct");
+
+            Assert.Equal((int)dserResult.arguments[0], 42, "arguments[0] value is not correct");
+            Assert.Equal((string)dserResult.arguments[1], "Test Message", "arguments[1] value is not correct");
+
+            Assert.Equal(dserResult.headers.Count, 1, "headers count is not correct");
 
             Debug.WriteLine("");
         }
@@ -448,6 +589,29 @@ namespace nanoFramework.Json.Test
             public string error { get; set; }
             public bool allowReconnect { get; set; }
             public object result { get; set; }
+        }
+
+        public class Person
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Address { get; set; }
+            public DateTime Birthday { get; set; }
+            public int ID { get; set; }
+            public string[] ArrayProperty { get; set; }
+            public Person Friend { get; set; }
+        }
+
+        public abstract class AbstractClass
+        {
+            public int ID { get; set; }
+            public abstract string Test { get; }
+            public virtual string Test2 { get { return "test2"; } }
+        }
+
+        public class RealClass : AbstractClass
+        {
+            public override string Test { get { return "test"; } }
         }
 
         #endregion

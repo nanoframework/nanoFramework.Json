@@ -22,7 +22,9 @@ namespace nanoFramework.Json
                 {
                     JsonConvert.SerializationContext = new JsonConvert.SerializationCtx();
                     JsonConvert.SerializationContext.Indent = 0;
+                    
                     Monitor.Enter(JsonConvert.SerializationContext);
+
                     _fOwnsContext = true;
                 }
             }
@@ -37,6 +39,7 @@ namespace nanoFramework.Json
                     var monitorObj = JsonConvert.SerializationContext;
                     JsonConvert.SerializationContext = null;
                     _fOwnsContext = false;
+
                     Monitor.Exit(monitorObj);
                 }
             }
@@ -45,11 +48,19 @@ namespace nanoFramework.Json
         protected void MarshallEName(string ename, byte[] buffer, ref int offset)
         {
             var name = Encoding.UTF8.GetBytes(ename);
+
             if (buffer != null && ename.Length > 0)
+            {
                 Array.Copy(name, 0, buffer, offset, name.Length);
+            }
+
             offset += name.Length;
+
             if (buffer != null)
+            {
                 buffer[offset] = 0;
+            }
+
             ++offset;
         }
 
@@ -57,20 +68,35 @@ namespace nanoFramework.Json
         {
             var _chars = new char[byteArray.Length];
             int _bytesUsed, _charsUsed;
-            Encoding.UTF8.GetDecoder().Convert(byteArray, start, count, _chars, 0, byteArray.Length, false, out _bytesUsed, out _charsUsed, out bool _completed);
+            
+            Encoding.UTF8.GetDecoder().Convert(
+                byteArray,
+                start,
+                count,
+                _chars,
+                0,
+                byteArray.Length,
+                false,
+                out _bytesUsed,
+                out _charsUsed,
+                out bool _completed);
+            
             return new string(_chars, 0, _charsUsed);
         }
 
         public static int FindNul(byte[] buffer, int start)
         {
             int current = start;
+
             while (current < buffer.Length)
             {
                 if (buffer[current++] == 0)
+                {
                     return current - 1;
+                }
             }
+
             return -1;
         }
-
     }
 }

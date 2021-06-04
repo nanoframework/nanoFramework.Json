@@ -14,9 +14,54 @@ namespace nanoFramework.Json
 		{
 		}
 
-		public JsonValue(object value)
+		public JsonValue(object value, bool isDateTime = false)
 		{
-			Value = value;
+			if (isDateTime)
+			{
+				DateTime dtValue = DateTime.MinValue;
+
+				try
+				{
+					dtValue = DateTimeExtensions.FromIso8601((string)value);
+				}
+				catch
+				{
+					// intended, to catch failed conversion attempt
+				}
+
+				if (dtValue == DateTime.MinValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromASPNetAjax((string)value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue == DateTime.MinValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromiCalendar((string)value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue != DateTime.MinValue)
+				{
+					Value = dtValue;
+				}
+			}
+			else
+			{
+				Value = value;
+			}
 		}
 
 		public object Value { get; set; }
@@ -39,13 +84,16 @@ namespace nanoFramework.Json
 		public override string ToString()
 		{
 			EnterSerialization();
+
 			try
 			{
 				if (Value == null)
 				{
 					return "null";
 				}
+
 				var type = Value.GetType();
+
 				if (type == typeof(string) || type == typeof(char))
 				{
 					return "\"" + this.Value.ToString() + "\"";
@@ -54,6 +102,11 @@ namespace nanoFramework.Json
 				{
 					return "\"" + DateTimeExtensions.ToIso8601(((DateTime)Value)) + "\"";
 				}
+				else if(type == typeof(Boolean))
+                {
+					// need to convert Boolean values to lower case 
+					return Value.ToString().ToLower();
+                }
 				else
 				{
 					return Value.ToString();
@@ -64,6 +117,5 @@ namespace nanoFramework.Json
 				ExitSerialization();
 			}
 		}
-
 	}
 }
