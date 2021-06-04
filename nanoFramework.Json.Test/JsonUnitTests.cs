@@ -116,7 +116,6 @@ namespace nanoFramework.Json.Test
             var dserResult = (JsonTestClassTimestamp)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimestamp));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
-
             Assert.Equal(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
             Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
 
@@ -302,7 +301,6 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
-
         [TestMethod]
         public void Can_serialize_and_deserialize_nan_float()
         {
@@ -447,6 +445,62 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void SerializeSimpleClassTest()
+        {
+            Person friend = new Person()
+            {
+                FirstName = "Bob",
+                LastName = "Smith",
+                Birthday = new DateTime(1983, 7, 3),
+                ID = 2,
+                Address = "123 Some St",
+                ArrayProperty = new string[] { "hi", "planet" },
+            };
+
+            Person person = new Person()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Birthday = new DateTime(1988, 4, 23),
+                ID = 27,
+                Address = null,
+                ArrayProperty = new string[] { "hello", "world" },
+                Friend = friend
+            };
+
+            string json = JsonConvert.SerializeObject(person);
+            
+            string correctValue = "{\"Address\":null,\"ArrayProperty\":[\"hello\",\"world\"],\"ID\":27,\"Birthday\":\"1988-04-23T00:00:00.000Z\",\"LastName\":\"Doe\",\"Friend\""
+                + ":{\"Address\":\"123 Some St\",\"ArrayProperty\":[\"hi\",\"planet\"],\"ID\":2,\"Birthday\":\"1983-07-03T00:00:00.000Z\",\"LastName\":\"Smith\",\"Friend\":null,\"FirstName\":\"Bob\"}"
+                + ",\"FirstName\":\"John\"}";
+
+            Assert.Equal(json, correctValue, "Values did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void SerializeAbstractClassTest()
+        {
+            AbstractClass a = new RealClass() { ID = 12 };
+            string json = JsonConvert.SerializeObject(a);
+            
+            string correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+            
+            Assert.Equal(json, correctValue, "Value for AbstractClass did not match");
+
+            RealClass b = new RealClass() { ID = 12 };
+            
+            json = JsonConvert.SerializeObject(b);
+            
+            correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+
+            Assert.Equal(json, correctValue, "Values for RealClass did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
         public void CanSerializeAndDeserializeTwinProperties_01()
         {
 
@@ -535,6 +589,29 @@ namespace nanoFramework.Json.Test
             public string error { get; set; }
             public bool allowReconnect { get; set; }
             public object result { get; set; }
+        }
+
+        public class Person
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Address { get; set; }
+            public DateTime Birthday { get; set; }
+            public int ID { get; set; }
+            public string[] ArrayProperty { get; set; }
+            public Person Friend { get; set; }
+        }
+
+        public abstract class AbstractClass
+        {
+            public int ID { get; set; }
+            public abstract string Test { get; }
+            public virtual string Test2 { get { return "test2"; } }
+        }
+
+        public class RealClass : AbstractClass
+        {
+            public override string Test { get { return "test"; } }
         }
 
         #endregion

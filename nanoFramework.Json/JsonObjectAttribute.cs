@@ -74,9 +74,13 @@ namespace nanoFramework.Json
 			
 			foreach (var m in methods)
 			{
-				if (!m.IsPublic)
+				// don't care about:
+				// - non public methods
+				// - use abstract methods
+				if (!m.IsPublic
+					|| m.IsAbstract)
 				{
-					continue;               // Only look at public methods
+					continue;
 				}
 
 				// Modified AS TINY CLR May Have issue with Getter for Chars & Length from String (see post forum)
