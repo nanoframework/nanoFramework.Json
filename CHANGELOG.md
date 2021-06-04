@@ -2,7 +2,19 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.140...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.142...HEAD)
+
+**Implemented enhancements:**
+
+- Improvements in double support [\#100](https://github.com/nanoframework/nanoFramework.Json/pull/100)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#105](https://github.com/nanoframework/nanoFramework.Json/pull/105)
+
+## [v2.0.1-preview.142](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.142) (2021-06-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.140...v2.0.1-preview.142)
 
 **Implemented enhancements:**
 
