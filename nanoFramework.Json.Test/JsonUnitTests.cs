@@ -100,14 +100,15 @@ namespace nanoFramework.Json.Test
         public void Can_serialize_deserialize_timestamp()
         {
             Debug.WriteLine("Can_serialize_deserialize_timestamp() - Starting test...");
+            
             var timestampTests = new JsonTestClassTimestamp()
             {
                 Timestamp = DateTime.UtcNow,
                 FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00)
             };
 
-            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp.ToString()}");
-            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp.ToString()}");
+            Debug.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp}");
+            Debug.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp}");
 
             var result = JsonConvert.SerializeObject(timestampTests);
             Debug.WriteLine($"Serialized Array: {result}");
@@ -424,6 +425,23 @@ namespace nanoFramework.Json.Test
             Assert.Equal(d, "blah", "d value did not match");
 
             Assert.False(e, "e value did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void SerializeDeserializeDateTest()
+        {
+            DateTime testTime = new DateTime(2015, 04, 22, 11, 56, 39, 456);
+
+
+            ICollection collection = new ArrayList() { testTime };
+
+            string jsonString = JsonConvert.SerializeObject(collection);
+
+            ArrayList convertTime = (ArrayList)JsonConvert.DeserializeObject(jsonString, typeof(ArrayList));
+
+            Assert.Equal(testTime.Ticks, ((DateTime)convertTime[0]).Ticks, "Values did not match");
 
             Debug.WriteLine("");
         }

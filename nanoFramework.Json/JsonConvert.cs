@@ -298,6 +298,7 @@ namespace nanoFramework.Json
                         {
                             // Don't need any more info - populate the member using memberSetMethod.Invoke()
                             Debug.WriteLine($"{debugIndent}     memberProperty.Value is JValue");
+                           
                             if (memberType != typeof(DateTime))
                             {
                                 Debug.WriteLine($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
@@ -374,25 +375,16 @@ namespace nanoFramework.Json
                             }
                             else
                             {
-                                DateTime dt;
-                                var sdt = ((JsonValue)memberProperty.Value).Value.ToString();
-                                if (sdt.Contains("Date("))
-                                {
-                                    dt = DateTimeExtensions.FromASPNetAjax(sdt);
-                                }
-                                else
-                                {
-                                    dt = DateTimeExtensions.FromIso8601(sdt);
-                                }
                                 if (memberIsProperty)
                                 {
-                                    memberPropSetMethod.Invoke(rootInstance, new object[] { dt });
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
                                 }
                                 else
                                 {
-                                    memberFieldInfo.SetValue(rootInstance, dt);
+                                    memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
                                 }
-                                Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {dt.ToString()} ");
+
+                                Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {(JsonValue)memberProperty.Value} ");
                             }
                         }
 
@@ -1019,7 +1011,7 @@ namespace nanoFramework.Json
             }
             else if (token.TType == TokenType.Date)
             {
-                throw new NotSupportedException("datetime parsing not supported");
+                return new JsonValue(token.TValue, true);
             }
             else if (token.TType == TokenType.LBrace)
             {
@@ -1155,7 +1147,55 @@ namespace nanoFramework.Json
                                     // We're building a string and we hit a quote character.
                                     // The ch must match openQuote, or otherwise we should have eaten it above as string content
                                     //Debug.Assert(ch == openQuote);
-                                    return new LexToken() { TType = TokenType.String, TValue = sb.ToString() };
+
+                                    var stringValue = sb.ToString();
+                                    DateTime dtValue = DateTime.MinValue;
+
+                                    // check if this could be a DateTime value
+                                    // min lenght is 18 for Java format: "Date(628318530718)": 18
+
+                                    if (stringValue.Length >= 18)
+                                    {
+                                        try
+                                        {
+                                            dtValue = DateTimeExtensions.FromIso8601(stringValue);
+                                        }
+                                        catch
+                                        {
+                                            // intended, to catch failed conversion attempt
+                                        }
+
+                                        if (dtValue == DateTime.MinValue)
+                                        {
+                                            try
+                                            {
+                                                dtValue = DateTimeExtensions.FromASPNetAjax(stringValue);
+                                            }
+                                            catch
+                                            {
+                                                // intended, to catch failed conversion attempt
+                                            }
+                                        }
+
+                                        if (dtValue == DateTime.MinValue)
+                                        {
+                                            try
+                                            {
+                                                dtValue = DateTimeExtensions.FromiCalendar(stringValue);
+                                            }
+                                            catch
+                                            {
+                                                // intended, to catch failed conversion attempt
+                                            }
+                                        }
+
+                                        if (dtValue != DateTime.MinValue)
+                                        {
+                                            return new LexToken() { TType = TokenType.Date, TValue = stringValue };
+                                        }
+                                    }
+
+                                    return new LexToken() { TType = TokenType.String, TValue = stringValue };
                                 }
                                 break;
                             case ' ':

@@ -14,9 +14,54 @@ namespace nanoFramework.Json
 		{
 		}
 
-		public JsonValue(object value)
+		public JsonValue(object value, bool isDateTime = false)
 		{
-			Value = value;
+			if (isDateTime)
+			{
+				DateTime dtValue = DateTime.MinValue;
+
+				try
+				{
+					dtValue = DateTimeExtensions.FromIso8601((string)value);
+				}
+				catch
+				{
+					// intended, to catch failed conversion attempt
+				}
+
+				if (dtValue == DateTime.MinValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromASPNetAjax((string)value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue == DateTime.MinValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromiCalendar((string)value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue != DateTime.MinValue)
+				{
+					Value = dtValue;
+				}
+			}
+			else
+			{
+				Value = value;
+			}
 		}
 
 		public object Value { get; set; }
