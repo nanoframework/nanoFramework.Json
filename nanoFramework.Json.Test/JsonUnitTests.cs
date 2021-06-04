@@ -366,9 +366,70 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+        [TestMethod]
+        public void BasicSerializationTest()
+        {
+            ICollection collection = new ArrayList() { 1, null, 2, "blah", false };
+           
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("collection", collection);
+            hashtable.Add("nulltest", null);
+            hashtable.Add("stringtest", "hello world");
+           
+            object[] array = new object[] { hashtable };
+
+            string json = JsonConvert.SerializeObject(array);
+            
+            string correctValue = "[{\"collection\":[1,null,2,\"blah\",false],\"nulltest\":null,\"stringtest\":\"hello world\"}]";
+
+            Assert.Equal(json, correctValue, "Values did not match");
+
+            Debug.WriteLine("");
+        }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_twin_properties()
+        public void BasicDeserializationTest()
+        {
+            string json = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[-1,null,24.565657576,\"blah\",false]}]";
+            
+            ArrayList arrayList = (ArrayList)JsonConvert.DeserializeObject(json, typeof(ArrayList));
+            
+            Hashtable hashtable = arrayList[0] as Hashtable;
+            string stringtest = hashtable["stringtest"].ToString();
+            object nulltest = hashtable["nulltest"];
+            
+            ArrayList collection = hashtable["collection"] as ArrayList;
+            int a = (int)collection[0];
+            object b = collection[1];
+            double c = (double)collection[2];
+            string d = collection[3].ToString();
+            bool e = (bool)collection[4];
+
+            Assert.Equal(arrayList.Count, 1, "arrayList count did not match");
+  
+            Assert.Equal(hashtable.Count, 3, "hashtable count did not match");
+
+            Assert.Equal(stringtest, "hello world", "stringtest did not match");
+
+            Assert.Null(nulltest, "nulltest did not match");
+
+            Assert.Equal(collection.Count, 5, "collection count did not match");
+
+            Assert.Equal(a, -1, "a value did not match");
+
+            Assert.Null(b, "b value did not match");
+
+            Assert.Equal(c, 24.565657576, "c value did not match");
+
+            Assert.Equal(d, "blah", "d value did not match");
+
+            Assert.False(e, "e value did not match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void CanSerializeAndDeserializeTwinProperties_01()
         {
 
             var testString = "{\"desired\":{\"TimeToSleep\":5,\"$version\":2},\"reported\":{\"Firmware\":\"nanoFramework\",\"TimeToSleep\":2,\"$version\":94}}";
@@ -381,7 +442,7 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_deserialize_InvocationReceiveMessage_01()
+        public void CanDeserializeInvocationReceiveMessage_01()
         {
 
             var testString = "{\"type\":6}";
@@ -394,9 +455,8 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_deserialize_InvocationReceiveMessage_02()
+        public void CanDeserializeInvocationReceiveMessage_02()
         {
-
             var testString = @"{
     ""type"": 1,
     ""headers"": {
@@ -413,6 +473,15 @@ namespace nanoFramework.Json.Test
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 1, "type value is not correct");
+            Assert.Equal(dserResult.invocationId, "123", "invocationId value is not correct");
+            Assert.Equal(dserResult.target, "Send", "target value is not correct");
+
+            Assert.Equal((int)dserResult.arguments[0], 42, "arguments[0] value is not correct");
+            Assert.Equal((string)dserResult.arguments[1], "Test Message", "arguments[1] value is not correct");
+
+            Assert.Equal(dserResult.headers.Count, 1, "headers count is not correct");
 
             Debug.WriteLine("");
         }

@@ -26,27 +26,35 @@ namespace nanoFramework.Json
 		public override string ToString()
 		{
 			EnterSerialization();
+
 			StringBuilder sb = new StringBuilder(); //TODO: why move out of the try?
+			
 			try
 			{
+				//Use minimalist JSON, pretty can be handled on the client!
 				sb.Append('"');
 				sb.Append(Name);
-				sb.Append("\":"); //Use minimalist JSON, pretty can be handled on the client!
+				sb.Append("\":"); 
+
 				JsonToken token = Value;
+
 				if (token is JsonValue j)
-				{	// Not all tokens are JValue - some are JObject or JArray
+				{	
+					// Not all tokens are JValue - some are JObject or JArray
 					if (j.Value != null)
 					{
-						if (j.Value.GetType().Name == "Boolean") //TODO: can this be done on convert rather than here??
+						if (j.Value.GetType().Name == "Boolean") 
 						{
-							// Convert Boolean values to lower case when appending to the JSON string
-							// Lower case JSON convention is described here:  https://www.json.org/json-en.html
+							// need to convert Boolean values to lower case 
 							sb.Append(Value.ToString().ToLower());
+
 							return sb.ToString();
 						}
 					}
 				}
+				
 				sb.Append(Value.ToString());
+				
 				return sb.ToString();
 			}
 			finally
