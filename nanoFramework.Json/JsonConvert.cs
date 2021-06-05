@@ -202,9 +202,9 @@ namespace nanoFramework.Json
                         
                         var memberProperty = (JsonPropertyAttribute)m;
                         
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
+                        Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty.Name ?? "null"} ");
 
-                        string memberPropertyName = memberProperty?.Name;
+                        string memberPropertyName = memberProperty.Name;
 
                         // workaround for for property names that start with '$' like Azure Twins
                         if (memberPropertyName[0] == '$')
