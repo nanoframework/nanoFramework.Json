@@ -281,7 +281,18 @@ namespace nanoFramework.Json
 
                                 foreach (JsonPropertyAttribute v in ((JsonObjectAttribute)memberProperty.Value).Members)
                                 {
-                                    table.Add(v.Name, v.Value);
+                                    if (v.Value is JsonValue)
+                                    {
+                                        table.Add(v.Name, ((JsonValue)v.Value).Value);
+                                    }
+                                    else if (v.Value is JsonObjectAttribute)
+                                    {
+                                        table.Add(v.Name, PopulateHashtable(v.Value));
+                                    }
+                                    else if (v.Value is JsonArrayAttribute)
+                                    {
+                                        throw new NotImplementedException();
+                                    }
                                 }
 
                                 memberObject = table;
@@ -845,6 +856,110 @@ namespace nanoFramework.Json
 
             return result;
         }
+
+        private static Hashtable PopulateHashtable(JsonToken rootToken)
+        {
+            var result = new Hashtable();
+
+            // Process all members for this rootObject
+            Debug.WriteLine($"{debugIndent} Entering rootObject.Members loop ");
+
+            if (rootToken is JsonObjectAttribute)
+            {
+                var rootObject = (JsonObjectAttribute)rootToken;
+
+                foreach (var m in rootObject.Members)
+                {
+                    Debug.WriteLine($"{debugIndent} Process rootObject.Member");
+
+                    var memberProperty = (JsonPropertyAttribute)m;
+
+                    if (memberProperty == null)
+                    {
+                        Debug.WriteLine($"memberProperty is null and can't be");
+
+                        throw new NotSupportedException();
+                    }
+
+                    Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
+
+                    // Process the member based on JObject, JValue, or JArray
+                    if (memberProperty.Value is JsonObjectAttribute)
+                    {
+                        // Call PopulateObject() for this member - i.e. recursion
+                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
+
+                        throw new NotImplementedException();
+
+                        Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
+                    }
+                    else if (memberProperty.Value is JsonValue)
+                    {
+                        if (memberProperty.Value is JsonValue)
+                        {
+                            result.Add(memberProperty.Name, ((JsonValue)memberProperty.Value).Value);
+                        }
+                        else if (memberProperty.Value is JsonObjectAttribute)
+                        {
+                            result.Add(memberProperty.Name, PopulateHashtable((JsonObjectAttribute)memberProperty.Value));
+                        }
+                        else if (memberProperty.Value is JsonArrayAttribute)
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                    else if (memberProperty.Value is JsonArrayAttribute)
+                    {
+                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
+
+                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
+                        var memberValueArray = (JsonArrayAttribute)memberProperty.Value;
+
+                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
+                        var memberValueArrayList = new ArrayList();
+
+                        // Create a JToken[] array for Items associated for this memberProperty.Value
+                        JsonToken[] memberItems = memberValueArray.Items;
+
+                        //Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
+
+                        foreach (JsonToken item in memberItems)
+                        {
+                            if (item is JsonValue)
+                            {
+                                memberValueArrayList.Add(((JsonValue)item).Value);
+                            }
+                            else if (item is JsonToken)
+                            {
+                                throw new NotImplementedException();
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                            }
+                        }
+
+                        Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
+
+                        // add to main table
+                        result.Add(memberProperty.Name, memberValueArrayList);
+
+                        Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
+                    }
+                }
+            }
+            else if (rootToken is JsonArrayAttribute)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return result;
+        }
+
 
         // Trying to deserialize a stream in nanoFramework is problematic.
         // as Stream.Peek() has not been implemented in nanoFramework
