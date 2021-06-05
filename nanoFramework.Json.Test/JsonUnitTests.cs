@@ -501,14 +501,58 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void CanSerializeAndDeserializeTwinProperties_01()
+        public void CanDeserializeAzureTwinProperties_01()
         {
-
             var testString = "{\"desired\":{\"TimeToSleep\":5,\"$version\":2},\"reported\":{\"Firmware\":\"nanoFramework\",\"TimeToSleep\":2,\"$version\":94}}";
 
-            var dserResult = (TwinProperties)JsonConvert.DeserializeObject(testString, typeof(TwinProperties));
+            var twinPayload = (TwinProperties)JsonConvert.DeserializeObject(testString, typeof(TwinProperties));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+
+            Assert.Equal(twinPayload.desired.TimeToSleep, 5, "desired.TimeToSleep doesn't match");
+            Assert.Null(twinPayload.desired._metadata, "desired._metadata doesn't match");
+
+            Assert.Equal(twinPayload.reported.Firmware, "nanoFramework", "reported.Firmware doesn't match");
+            Assert.Equal(twinPayload.reported.TimeToSleep, 2, "reported.TimeToSleep doesn't match");
+            Assert.Null(twinPayload.reported._metadata, "reported._metadata doesn't match");
+
+            Debug.WriteLine("");
+        }
+        
+        [TestMethod]
+        public void CanDeserializeAzureTwinProperties_02()
+        {
+            TwinPayload twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
+
+            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+
+            Assert.Equal(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
+            Assert.Equal(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
+            Assert.Equal(twinPayload.cloudToDeviceMessageCount, 0, "cloudToDeviceMessageCount doesn't match");
+            Assert.Equal(twinPayload.x509Thumbprint.Count, 2, "x509Thumbprint collection count doesn't match");
+            Assert.Equal(twinPayload.version, 381, "version doesn't match");
+            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
+            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void CanDeserializeAzureTwinProperties_03()
+        {
+            TwinPayload twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
+
+            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+
+            Assert.Equal(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
+            Assert.Equal(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
+            Assert.Equal(twinPayload.cloudToDeviceMessageCount, 0, "cloudToDeviceMessageCount doesn't match");
+            Assert.Equal(twinPayload.x509Thumbprint.Count, 2, "x509Thumbprint collection count doesn't match");
+            Assert.Equal(twinPayload.version, 381, "version doesn't match");
+            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
+            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
 
             Debug.WriteLine("");
         }
@@ -560,15 +604,86 @@ namespace nanoFramework.Json.Test
 
         #region Test classes
 
+        private static string s_AzureTwinsJsonTestPayload = @"{
+    ""deviceId"": ""nanoDeepSleep"",
+    ""etag"": ""AAAAAAAAAAc="",
+    ""deviceEtag"": ""Njc2MzYzMTQ5"",
+    ""status"": ""enabled"",
+    ""statusUpdateTime"": ""0001-01-01T00:00:00Z"",
+    ""connectionState"": ""Disconnected"",
+    ""lastActivityTime"": ""2021-06-03T05:52:41.4683112Z"",
+    ""cloudToDeviceMessageCount"": 0,
+    ""authenticationType"": ""sas"",
+    ""x509Thumbprint"": {
+                ""primaryThumbprint"": null,
+        ""secondaryThumbprint"": null
+    },
+    ""modelId"": """",
+    ""version"": 381,
+    ""properties"": {
+                ""desired"": {
+                    ""TimeToSleep"": 30,
+            ""$metadata"": {
+                        ""$lastUpdated"": ""2021-06-03T05:37:11.8120413Z"",
+                ""$lastUpdatedVersion"": 7,
+                ""TimeToSleep"": {
+                            ""$lastUpdated"": ""2021-06-03T05:37:11.8120413Z"",
+                    ""$lastUpdatedVersion"": 7
+                }
+                    },
+            ""$version"": 7
+                },
+        ""reported"": {
+                    ""Firmware"": ""nanoFramework"",
+            ""TimeToSleep"": 30,
+            ""$metadata"": {
+                        ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z"",
+                ""Firmware"": {
+                            ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z""
+                },
+                ""TimeToSleep"": {
+                            ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z""
+                }
+                    },
+            ""$version"": 374
+        }
+            },
+    ""capabilities"": {
+                ""iotEdge"": false
+    }
+        }";
+
+        public class TwinPayload
+        {
+            public string deviceId { get; set; }
+            public string etag { get; set; }
+            public string status { get; set; }
+            public DateTime statusUpdateTime { get; set; }
+            public string connectionState { get; set; }
+            public DateTime lastActivityTime { get; set; }
+            public int cloudToDeviceMessageCount { get; set; }
+            public string authenticationType { get; set; }
+            public Hashtable x509Thumbprint { get; set; }
+            public string modelId { get; set; }
+            public int version { get; set; }
+            public TwinProperties properties { get; set; }
+        }
+
+
+        public class TwinPayloadProperties
+        {
+            public TwinProperties properties { get; set; }
+        }
+
         public class TwinProperties
         {
             public Desired desired { get; set; }
             public Reported reported { get; set; }
         }
-
         public class Desired
         {
             public int TimeToSleep { get; set; }
+            public Hashtable _metadata { get; set; }
         }
 
         public class Reported
@@ -576,7 +691,12 @@ namespace nanoFramework.Json.Test
             public string Firmware { get; set; }
 
             public int TimeToSleep { get; set; }
+
+            public Hashtable _metadata { get; set; }
+
+            public int _version { get; set; }
         }
+
 
         public class InvocationReceiveMessage
         {

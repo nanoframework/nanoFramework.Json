@@ -204,6 +204,14 @@ namespace nanoFramework.Json
                         
                         Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
+                        string memberPropertyName = memberProperty?.Name;
+
+                        // workaround for for property names that start with '$' like Azure Twins
+                        if (memberPropertyName[0] == '$')
+                        {
+                            memberPropertyName = "_" + memberProperty.Name.Substring(1);
+                        }
+
                         // Figure out if we're dealing with a Field or a Property and handle accordingly
                         Type memberType = null;
                         FieldInfo memberFieldInfo = null;
@@ -211,7 +219,7 @@ namespace nanoFramework.Json
                         MethodInfo memberPropGetMethod = null;
                         bool memberIsProperty = false;
 
-                        memberFieldInfo = rootType.GetField(memberProperty.Name);
+                        memberFieldInfo = rootType.GetField(memberPropertyName);
 
                         if (memberFieldInfo != null)
                         {
@@ -220,7 +228,7 @@ namespace nanoFramework.Json
                         }
                         else
                         {
-                            memberPropGetMethod = rootType.GetMethod("get_" + memberProperty.Name);
+                            memberPropGetMethod = rootType.GetMethod("get_" + memberPropertyName);
                             
                             if (memberPropGetMethod == null)
                             {
@@ -231,7 +239,7 @@ namespace nanoFramework.Json
                             else
                             {
                                 memberType = memberPropGetMethod.ReturnType;
-                                memberPropSetMethod = rootType.GetMethod("set_" + memberProperty.Name);
+                                memberPropSetMethod = rootType.GetMethod("set_" + memberPropertyName);
                                 
                                 if (memberType == null)
                                 {
@@ -241,7 +249,7 @@ namespace nanoFramework.Json
                                 memberIsProperty = true;
 
                                 Debug.WriteLine($"{debugIndent}     memberType:  {memberType.Name} ");
-                                Debug.WriteLine($"{debugIndent}     memberPropGetMethod.Name:  {memberPropGetMethod.Name}  memberPropGetMethod.ReturnType:  {memberPropGetMethod.ReturnType.Name}");
+                                Debug.WriteLine($"{debugIndent}     memberPropGetMethod.Name:  {memberPropertyName}  memberPropGetMethod.ReturnType:  {memberPropGetMethod.ReturnType.Name}");
                             }
                         }
 
@@ -255,11 +263,13 @@ namespace nanoFramework.Json
                             
                             if (memberPath[memberPath.Length - 1] == '/')
                             {
-                                memberPath += memberProperty.Name;                      // Don't need to add a slash before appending rootElementType
+                                // Don't need to add a slash before appending rootElementType
+                                memberPath += memberPropertyName;
                             }
                             else
                             {
-                                memberPath = memberPath + '/' + memberProperty.Name;    // Need to add a slash before appending rootElementType
+                                // Need to add a slash before appending rootElementType
+                                memberPath = memberPath + '/' + memberPropertyName;    
                             }
 
                             object memberObject = null;
@@ -276,7 +286,7 @@ namespace nanoFramework.Json
 
                                 memberObject = table;
 
-                                Debug.WriteLine($"{debugIndent}     populated the {memberProperty.Name} Hashtable");
+                                Debug.WriteLine($"{debugIndent}     populated the {memberPropertyName} Hashtable");
                             }
                             else
                             {
@@ -292,7 +302,7 @@ namespace nanoFramework.Json
                                 memberFieldInfo.SetValue(rootInstance, memberObject);
                             }
                             
-                            Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
+                            Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName} to memberObject");
                         }
                         else if (memberProperty.Value is JsonValue)
                         {
@@ -302,9 +312,11 @@ namespace nanoFramework.Json
                             if (memberType != typeof(DateTime))
                             {
                                 Debug.WriteLine($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
+                                
                                 if (((JsonValue)memberProperty.Value).Value == null)
                                 {
                                     Debug.WriteLine($"{debugIndent}     memberProperty.Value is null");
+                                    
                                     if (memberIsProperty)
                                     {
                                         if (!memberPropGetMethod.ReturnType.IsValueType)
@@ -319,9 +331,11 @@ namespace nanoFramework.Json
                                                 case "Single":
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Single.NaN });
                                                     break;
+
                                                 case "Double":
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Double.NaN });
                                                     break;
+
                                                 default:
                                                     break;
                                             }
@@ -333,29 +347,36 @@ namespace nanoFramework.Json
                                         object obj = null;
                                         memberFieldInfo.SetValue(rootInstance, obj);
                                     }
-                                    Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  null");
+                                    Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  null");
                                 }
                                 else
                                 {
                                     if (memberIsProperty)
                                     {
                                         JsonValue val = (JsonValue)memberProperty.Value;
+
                                         Debug.WriteLine($"{debugIndent}     setting value with memberPropSetMethod: {memberPropSetMethod.Name}   Declaring Type: {memberPropSetMethod.DeclaringType}  Value: {((JsonValue)memberProperty.Value).Value}");
+                                        
                                         Debug.WriteLine($"{debugIndent}     memberProperty.Value.Value.Type: {val.Value.GetType().Name}  memberProperty.Value.Value: {val.Value}");
+                                        
                                         if (val.Value.GetType() != memberType)
                                         {
                                             Debug.WriteLine($"{debugIndent}     need to change memberProperty.Value.Value.Type to {memberType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
+                                            
                                             switch (memberType.Name)
                                             {
                                                 case nameof(Int16):
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
                                                     break;
+
                                                 case nameof(Byte):
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
                                                     break;
+
                                                 case nameof(Single):
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
                                                     break;
+
                                                 default:
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { ((JsonValue)memberProperty.Value).Value });
                                                     break;
@@ -370,7 +391,8 @@ namespace nanoFramework.Json
                                     {
                                         memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
                                     }
-                                    Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {((JsonValue)memberProperty.Value).Value} ");
+
+                                    Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  {((JsonValue)memberProperty.Value).Value} ");
                                 }
                             }
                             else
@@ -384,7 +406,7 @@ namespace nanoFramework.Json
                                     memberFieldInfo.SetValue(rootInstance, ((JsonValue)memberProperty.Value).Value);
                                 }
 
-                                Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name}  to  {(JsonValue)memberProperty.Value} ");
+                                Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  {(JsonValue)memberProperty.Value} ");
                             }
                         }
 
