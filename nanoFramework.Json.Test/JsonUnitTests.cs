@@ -558,6 +558,20 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void CanDeserializeAzureTwinProperties_04()
+        {
+            TwinPayloadProperties twinPayload = (TwinPayloadProperties)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadProperties));
+
+            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+
+            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
+            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
+
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_01()
         {
 
