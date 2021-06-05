@@ -281,15 +281,15 @@ namespace nanoFramework.Json
 
                                 foreach (JsonPropertyAttribute v in ((JsonObjectAttribute)memberProperty.Value).Members)
                                 {
-                                    if (v.Value is JsonValue)
+                                    if (v.Value is JsonValue jsonValue)
                                     {
-                                        table.Add(v.Name, ((JsonValue)v.Value).Value);
+                                        table.Add(v.Name, (jsonValue).Value);
                                     }
-                                    else if (v.Value is JsonObjectAttribute)
+                                    else if (v.Value is JsonObjectAttribute jsonObjectAttribute)
                                     {
-                                        table.Add(v.Name, PopulateHashtable(v.Value));
+                                        table.Add(v.Name, PopulateHashtable(jsonObjectAttribute));
                                     }
-                                    else if (v.Value is JsonArrayAttribute)
+                                    else if (v.Value is JsonArrayAttribute jsonArrayAttribute)
                                     {
                                         throw new NotImplementedException();
                                     }
@@ -802,12 +802,12 @@ namespace nanoFramework.Json
 
                         mainTable.Add(memberProperty.Name, ((JsonValue)memberProperty.Value).Value);
                     }
-                    else if (memberProperty.Value is JsonArrayAttribute)
+                    else if (memberProperty.Value is JsonArrayAttribute jsonArrayAttribute)
                     {
                         Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
 
                         // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = (JsonArrayAttribute)memberProperty.Value;
+                        var memberValueArray = jsonArrayAttribute;
 
                         // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
                         var memberValueArrayList = new ArrayList();
@@ -819,11 +819,11 @@ namespace nanoFramework.Json
 
                         foreach (JsonToken item in memberItems)
                         {
-                            if (item is JsonValue)
+                            if (item is JsonValue jsonValue)
                             {
-                                memberValueArrayList.Add(((JsonValue)item).Value);
+                                memberValueArrayList.Add((jsonValue).Value);
                             }
-                            else if (item is JsonToken)
+                            else if (item is JsonToken jsonToken)
                             {
                                 throw new NotImplementedException();
                             }
@@ -864,11 +864,9 @@ namespace nanoFramework.Json
             // Process all members for this rootObject
             Debug.WriteLine($"{debugIndent} Entering rootObject.Members loop ");
 
-            if (rootToken is JsonObjectAttribute)
+            if (rootToken is JsonObjectAttribute rootTokenObjectAttribute)
             {
-                var rootObject = (JsonObjectAttribute)rootToken;
-
-                foreach (var m in rootObject.Members)
+                foreach (var m in rootTokenObjectAttribute.Members)
                 {
                     Debug.WriteLine($"{debugIndent} Process rootObject.Member");
 
@@ -884,7 +882,7 @@ namespace nanoFramework.Json
                     Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
                     // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObjectAttribute)
+                    if (memberProperty.Value is JsonObjectAttribute memberPropertyValue)
                     {
                         // Call PopulateObject() for this member - i.e. recursion
                         Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
@@ -893,27 +891,27 @@ namespace nanoFramework.Json
 
                         Debug.WriteLine($"{debugIndent}     successfully initialized member {memberProperty.Name} to memberObject");
                     }
-                    else if (memberProperty.Value is JsonValue)
+                    else if (memberProperty.Value is JsonValue memberPropertyJsonValue)
                     {
-                        if (memberProperty.Value is JsonValue)
+                        if (memberPropertyJsonValue.Value is JsonValue jsonValue)
                         {
-                            result.Add(memberProperty.Name, ((JsonValue)memberProperty.Value).Value);
+                            result.Add(memberProperty.Name, jsonValue.Value);
                         }
-                        else if (memberProperty.Value is JsonObjectAttribute)
+                        else if (memberPropertyJsonValue.Value is JsonObjectAttribute jsonObjectAttribute)
                         {
-                            result.Add(memberProperty.Name, PopulateHashtable((JsonObjectAttribute)memberProperty.Value));
+                            result.Add(memberProperty.Name, PopulateHashtable(jsonObjectAttribute));
                         }
-                        else if (memberProperty.Value is JsonArrayAttribute)
+                        else if (memberProperty.Value is JsonArrayAttribute jsonArrayAttribute)
                         {
                             throw new NotImplementedException();
                         }
                     }
-                    else if (memberProperty.Value is JsonArrayAttribute)
+                    else if (memberProperty.Value is JsonArrayAttribute jsonArrayAttribute)
                     {
                         Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
 
                         // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = (JsonArrayAttribute)memberProperty.Value;
+                        var memberValueArray = jsonArrayAttribute;
 
                         // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
                         var memberValueArrayList = new ArrayList();
@@ -925,11 +923,11 @@ namespace nanoFramework.Json
 
                         foreach (JsonToken item in memberItems)
                         {
-                            if (item is JsonValue)
+                            if (item is JsonValue jsonValue)
                             {
-                                memberValueArrayList.Add(((JsonValue)item).Value);
+                                memberValueArrayList.Add(jsonValue);
                             }
-                            else if (item is JsonToken)
+                            else if (item is JsonToken jsonToken)
                             {
                                 throw new NotImplementedException();
                             }
