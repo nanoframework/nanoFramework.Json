@@ -18,18 +18,27 @@ namespace nanoFramework.Json
 		{
 			if (isDateTime)
 			{
-				DateTime dtValue = DateTime.MinValue;
-
-				try
+				DateTime dtValue = DateTime.MaxValue;
+				
+				// check for special case of "null" date
+				if ((string)value == "0001-01-01T00:00:00Z")
 				{
-					dtValue = DateTimeExtensions.FromIso8601((string)value);
-				}
-				catch
-				{
-					// intended, to catch failed conversion attempt
+					dtValue = DateTime.MinValue;
 				}
 
-				if (dtValue == DateTime.MinValue)
+				if (dtValue == DateTime.MaxValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromIso8601((string)value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue == DateTime.MaxValue)
 				{
 					try
 					{
@@ -41,7 +50,7 @@ namespace nanoFramework.Json
 					}
 				}
 
-				if (dtValue == DateTime.MinValue)
+				if (dtValue == DateTime.MaxValue)
 				{
 					try
 					{
@@ -53,7 +62,7 @@ namespace nanoFramework.Json
 					}
 				}
 
-				if (dtValue != DateTime.MinValue)
+				if (dtValue != DateTime.MaxValue)
 				{
 					Value = dtValue;
 				}

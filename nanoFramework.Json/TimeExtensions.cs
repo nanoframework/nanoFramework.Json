@@ -100,7 +100,14 @@ namespace nanoFramework.Json
 			string second = (parts.Length > 5) ? parts[5] : "0";
 			string ms = (parts.Length > 6) ? parts[6] : "0";
 
-			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), Convert.ToInt32(ms));
+			// sanity check for bad milliseconds format
+			int milliseconds = Convert.ToInt32(ms);
+			if(milliseconds > 999)
+            {
+				milliseconds = 999;
+			}
+
+			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), milliseconds);
 
 			if (utc)
 			{

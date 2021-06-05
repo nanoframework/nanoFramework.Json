@@ -1160,23 +1160,32 @@ namespace nanoFramework.Json
                                     //Debug.Assert(ch == openQuote);
 
                                     var stringValue = sb.ToString();
-                                    DateTime dtValue = DateTime.MinValue;
+                                    DateTime dtValue = DateTime.MaxValue;
 
                                     // check if this could be a DateTime value
                                     // min lenght is 18 for Java format: "Date(628318530718)": 18
 
                                     if (stringValue.Length >= 18)
                                     {
-                                        try
+                                        // check for special case of "null" date
+                                        if(stringValue == "0001-01-01T00:00:00Z")
                                         {
-                                            dtValue = DateTimeExtensions.FromIso8601(stringValue);
-                                        }
-                                        catch
-                                        {
-                                            // intended, to catch failed conversion attempt
+                                            dtValue = DateTime.MinValue;
                                         }
 
-                                        if (dtValue == DateTime.MinValue)
+                                        if (dtValue == DateTime.MaxValue)
+                                        {
+                                            try
+                                            {
+                                                dtValue = DateTimeExtensions.FromIso8601(stringValue);
+                                            }
+                                            catch
+                                            {
+                                                // intended, to catch failed conversion attempt
+                                            }
+                                        }
+
+                                        if (dtValue == DateTime.MaxValue)
                                         {
                                             try
                                             {
@@ -1188,7 +1197,7 @@ namespace nanoFramework.Json
                                             }
                                         }
 
-                                        if (dtValue == DateTime.MinValue)
+                                        if (dtValue == DateTime.MaxValue)
                                         {
                                             try
                                             {
@@ -1200,7 +1209,7 @@ namespace nanoFramework.Json
                                             }
                                         }
 
-                                        if (dtValue != DateTime.MinValue)
+                                        if (dtValue != DateTime.MaxValue)
                                         {
                                             return new LexToken() { TType = TokenType.Date, TValue = stringValue };
                                         }
