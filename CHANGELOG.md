@@ -2,7 +2,27 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.155...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.159...HEAD)
+
+**Implemented enhancements:**
+
+- Improve deserialize to Hashtable [\#114](https://github.com/nanoframework/nanoFramework.Json/pull/114)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#113](https://github.com/nanoframework/nanoFramework.Json/pull/113)
+
+## [v2.0.1-preview.159](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.159) (2021-06-07)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.157...v2.0.1-preview.159)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#112](https://github.com/nanoframework/nanoFramework.Json/pull/112)
+
+## [v2.0.1-preview.157](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.157) (2021-06-07)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.155...v2.0.1-preview.157)
 
 **Documentation and other chores:**
 
