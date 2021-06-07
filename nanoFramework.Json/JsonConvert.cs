@@ -174,10 +174,6 @@ namespace nanoFramework.Json
 
                             Debug.WriteLine($"{debugIndent} rootType: {rootType.Name}");
                         }
-                        else
-                        {
-                            throw new NotSupportedException($"PopulateObject() - For arrays, type: {rootType.Name} must have a valid element type");
-                        }
                     }
                     else
                     {
