@@ -538,18 +538,14 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_03()
         {
-            TwinPayload twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
+            TwinPayloadProperties twinPayload = (TwinPayloadProperties)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadProperties));
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
-            Assert.Equal(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
-            Assert.Equal(twinPayload.cloudToDeviceMessageCount, 0, "cloudToDeviceMessageCount doesn't match");
-            Assert.Equal(twinPayload.x509Thumbprint.Count, 2, "x509Thumbprint collection count doesn't match");
-            Assert.Equal(twinPayload.version, 381, "version doesn't match");
             Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
             Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
             Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
@@ -560,13 +556,51 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_04()
         {
-            TwinPayloadProperties twinPayload = (TwinPayloadProperties)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadProperties));
+            Hashtable twinPayload = (Hashtable)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(Hashtable));
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
-            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
-            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
+            Assert.Equal((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
+            Assert.Equal(((DateTime)twinPayload["statusUpdateTime"]).Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
+            Assert.Equal((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
+            Assert.Equal(((Hashtable)twinPayload["x509Thumbprint"]).Count, 2, "x509Thumbprint collection count doesn't match");
+            Assert.Equal((int)twinPayload["version"], 381, "version doesn't match");
+
+            // get properties
+            Hashtable properties = (Hashtable)twinPayload["properties"];
+
+            // get hastables with properties
+            Hashtable reported = (Hashtable)properties["reported"];
+            Hashtable desired = (Hashtable)properties["desired"];
+
+            Assert.Equal((int)desired["TimeToSleep"], 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.Equal((int)desired["$version"], 7, "properties.desired.$version doesn't match");
+            Assert.Equal((int)reported["TimeToSleep"], 30, "properties.reported.TimeToSleep doesn't match");
+            Assert.Equal((int)reported["$version"], 374, "properties.reported.$version doesn't match");
+            Assert.Equal((string)reported["Firmware"], "nanoFramework", "properties.reported.Firmware doesn't match");
+
+            Hashtable reportedMetadata = (Hashtable)reported["$metadata"];
+            Hashtable desiredMetadata = (Hashtable)desired["$metadata"];
+
+            Assert.Equal(reportedMetadata.Count, 3, "properties.reported collection count doesn't match");
+            Assert.Equal(desiredMetadata.Count, 3, "properties.desired collection count doesn't match");
+
+            // this requires an aproximation on the milleseconds
+            // becasue .NET DateTime can't Parse milleseconds value bigger than 999
+            DateTime desiredLastUpdated = new DateTime(2021, 06, 03, 05, 37, 11, 999);
+            DateTime reportedLastUpdated = new DateTime(2021, 06, 03, 05, 52, 41, 999);
+
+            Assert.Equal((DateTime)reportedMetadata["$lastUpdated"], reportedLastUpdated, "properties.reported.$metadata.$lastUpdated doesn't match");
+            Assert.Equal((DateTime)desiredMetadata["$lastUpdated"], desiredLastUpdated, "properties.reported.$metadata.$lastUpdated doesn't match");
+
+            Hashtable desiredTimeToSleep = (Hashtable)desiredMetadata["TimeToSleep"];
+
+            // this requires an aproximation on the milleseconds
+            // becasue .NET DateTime can't Parse milleseconds value bigger than 999
+            DateTime desiredTimeToSleepUpdated = new DateTime(2021, 06, 03, 05, 37, 11, 999);
+
+            Assert.Equal((DateTime)desiredTimeToSleep["$lastUpdated"], desiredTimeToSleepUpdated, "properties.reported.$metadata.TimeToSleep.$lastUpdated doesn't match");
+            Assert.Equal((int)desiredTimeToSleep["$lastUpdatedVersion"], 7, "properties.reported.$metadata.TimeToSleep.$lastUpdatedVersion doesn't match");
 
             Debug.WriteLine("");
         }
