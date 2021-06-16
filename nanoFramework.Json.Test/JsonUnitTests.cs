@@ -650,6 +650,44 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+        [TestMethod]
+        public void DeserializeArrayList()
+        {
+            string correctValue = "{\"desired\":{\"Url\":\"https://ellerbachiotstorage.blob.core.windows.net/nano-containers\"," +
+                "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
+                "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}}";
+            
+            Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
+            Hashtable desired = (Hashtable)hash["desired"];
+            
+            Assert.IsType(typeof(string), desired["Authorization"], "Authorization is not a string and it should be.");
+
+            Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)desired["Authorization"], "Authorization string doesn't match original value.");
+            
+            ArrayList files = (ArrayList)desired["Files"];
+            
+            Assert.IsType(typeof(string), files[0]);
+            Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
+        }
+
+        [TestMethod]
+        public void DeserializeArrayListElements()
+        {
+            string correctValue = "{\"Url\":\"https://ellerbachiotstorage.blob.core.windows.net/nano-containers\"," +
+                "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
+                "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}";
+           
+            Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
+            
+            Assert.IsType(typeof(string), hash["Authorization"], "Authorization is not a string and it should be.");
+            Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
+            
+            ArrayList files = (ArrayList)hash["Files"];
+            
+            Assert.IsType(typeof(string), files[0]);
+            Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
+        }
+
         #region Test classes
 
         private static string s_AzureTwinsJsonTestPayload = @"{

@@ -192,6 +192,10 @@ namespace nanoFramework.Json
                             {
                                 rootInstance.Add(memberProperty.Name, jsonValue.Value);
                             }
+                            else if (memberProperty.Value is JsonArrayAttribute jsonArray)
+                            {
+                                rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
+                            }
                             else if (memberProperty.Value is JsonToken jsonToken)
                             {
                                 rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
@@ -892,7 +896,40 @@ namespace nanoFramework.Json
             }
             else if (rootToken is JsonArrayAttribute)
             {
-                throw new NotImplementedException();
+                Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
+
+                // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
+                var memberValueArray = (JsonArrayAttribute)rootToken;
+
+                // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
+                var memberValueArrayList = new ArrayList();
+
+                // Create a JToken[] array for Items associated for this memberProperty.Value
+                JsonToken[] memberItems = memberValueArray.Items;
+
+                //Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
+
+                foreach (JsonToken item in memberItems)
+                {
+                    if (item is JsonValue jsonValue)
+                    {
+                        memberValueArrayList.Add((jsonValue).Value);
+                    }
+                    else if (item is JsonToken jsonToken)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                    }
+                }
+
+                Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
+
+                result = memberValueArrayList;
+
+                Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
             }
             else
             {
@@ -964,7 +1001,7 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue jsonValue)
                             {
-                                memberValueArrayList.Add(jsonValue);
+                                memberValueArrayList.Add(jsonValue.Value);
                             }
                             else if (item is JsonToken jsonToken)
                             {
