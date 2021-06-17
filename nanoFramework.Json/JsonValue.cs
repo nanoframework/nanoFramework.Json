@@ -18,50 +18,8 @@ namespace nanoFramework.Json
 		{
 			if (isDateTime)
 			{
-				DateTime dtValue = DateTime.MaxValue;
+				DateTime dtValue = DateTimeExtensions.ConvertFromString((string)value);
 				
-				// check for special case of "null" date
-				if ((string)value == "0001-01-01T00:00:00Z")
-				{
-					dtValue = DateTime.MinValue;
-				}
-
-				if (dtValue == DateTime.MaxValue)
-				{
-					try
-					{
-						dtValue = DateTimeExtensions.FromIso8601((string)value);
-					}
-					catch
-					{
-						// intended, to catch failed conversion attempt
-					}
-				}
-
-				if (dtValue == DateTime.MaxValue)
-				{
-					try
-					{
-						dtValue = DateTimeExtensions.FromASPNetAjax((string)value);
-					}
-					catch
-					{
-						// intended, to catch failed conversion attempt
-					}
-				}
-
-				if (dtValue == DateTime.MaxValue)
-				{
-					try
-					{
-						dtValue = DateTimeExtensions.FromiCalendar((string)value);
-					}
-					catch
-					{
-						// intended, to catch failed conversion attempt
-					}
-				}
-
 				if (dtValue != DateTime.MaxValue)
 				{
 					Value = dtValue;
@@ -87,6 +45,7 @@ namespace nanoFramework.Json
 				//Unfortunately JSON does not understand "float.NaN". This is the next best option!
 				return new JsonValue() { Value = null }; 
 			}
+
 			return new JsonValue() { Value = oValue };
 		}
 
@@ -111,7 +70,7 @@ namespace nanoFramework.Json
 				{
 					return "\"" + DateTimeExtensions.ToIso8601(((DateTime)Value)) + "\"";
 				}
-				else if(type == typeof(Boolean))
+				else if(type == typeof(bool))
                 {
 					// need to convert Boolean values to lower case 
 					return Value.ToString().ToLower();

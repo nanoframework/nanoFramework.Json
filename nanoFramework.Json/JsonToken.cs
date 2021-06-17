@@ -47,7 +47,7 @@ namespace nanoFramework.Json
 
         protected void MarshallEName(string ename, byte[] buffer, ref int offset)
         {
-            var name = Encoding.UTF8.GetBytes(ename);
+            byte[] name = Encoding.UTF8.GetBytes(ename);
 
             if (buffer != null && ename.Length > 0)
             {
@@ -67,8 +67,7 @@ namespace nanoFramework.Json
         public static string ConvertToString(byte[] byteArray, int start, int count)
         {
             var _chars = new char[byteArray.Length];
-            int _bytesUsed, _charsUsed;
-            
+
             Encoding.UTF8.GetDecoder().Convert(
                 byteArray,
                 start,
@@ -77,10 +76,10 @@ namespace nanoFramework.Json
                 0,
                 byteArray.Length,
                 false,
-                out _bytesUsed,
-                out _charsUsed,
-                out bool _completed);
-            
+                out _,
+                out int _charsUsed,
+                out _);
+
             return new string(_chars, 0, _charsUsed);
         }
 

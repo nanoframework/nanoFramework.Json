@@ -28,9 +28,9 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="JsonArrayAttribute.cs" />
-    <Compile Include="JsonObjectAttribute.cs" />
-    <Compile Include="JsonPropertyAttribute.cs" />
+    <Compile Include="JsonArray.cs" />
+    <Compile Include="JsonObject.cs" />
+    <Compile Include="JsonProperty.cs" />
     <Compile Include="JsonConvert.cs" />
     <Compile Include="JsonToken.cs" />
     <Compile Include="JsonValue.cs" />

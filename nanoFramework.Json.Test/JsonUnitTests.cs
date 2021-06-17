@@ -88,7 +88,7 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"Serialized Array: {result}");
 
             var dserResult = (int[])JsonConvert.DeserializeObject(result, typeof(int[]));
-            Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Assert.Equal(intArray, dserResult);
 
@@ -133,7 +133,7 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"Serialized Array: {result}");
 
             var dserResult = (short[])JsonConvert.DeserializeObject(result, typeof(short[]));
-            Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Assert.Equal(shortArray, dserResult);
 
@@ -158,7 +158,7 @@ namespace nanoFramework.Json.Test
 
             var dserResult = (JsonTestClassChild)JsonConvert.DeserializeObject(serialized, typeof(JsonTestClassChild));
 
-            Debug.WriteLine($"After Type deserialization: {dserResult.ToString()}");
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Debug.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             Debug.WriteLine("");
@@ -200,66 +200,66 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine($"   aString:   {dserResult.aString} ");
             Debug.WriteLine($"   aInteger:  {dserResult.aInteger} ");
             Debug.WriteLine($"   aByte:     {dserResult.aByte} ");
-            Debug.WriteLine($"   Timestamp: {dserResult.Timestamp.ToString()} ");
-            Debug.WriteLine($"   FixedTimestamp: {dserResult.FixedTimestamp.ToString()} ");
+            Debug.WriteLine($"   Timestamp: {dserResult.Timestamp} ");
+            Debug.WriteLine($"   FixedTimestamp: {dserResult.FixedTimestamp} ");
             Debug.Write($"   intArray: ");
             foreach (int i in dserResult.intArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   stringArray: ");
             foreach (string i in dserResult.stringArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   shortArray: ");
             foreach (short i in dserResult.shortArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   byteArray: ");
             foreach (byte i in dserResult.byteArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   floatArray: ");
             foreach (float i in dserResult.floatArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   doubleArray: ");
             foreach (double i in dserResult.doubleArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   doubleArray: ");
             foreach (double i in dserResult.doubleArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
             Debug.Write($"   doubleArray: ");
             foreach (double i in dserResult.doubleArray)
             {
-                Debug.Write($"{i.ToString()}, ");
+                Debug.Write($"{i}, ");
             }
             Debug.WriteLine("");
 
-            Debug.WriteLine($"   child1: {dserResult.child1.ToString()} ");
-            Debug.WriteLine($"   Child: {dserResult.Child.ToString()} ");
+            Debug.WriteLine($"   child1: {dserResult.child1} ");
+            Debug.WriteLine($"   Child: {dserResult.Child} ");
 
             if (dserResult.nullObject == null)
             {
@@ -271,9 +271,9 @@ namespace nanoFramework.Json.Test
             }
             Debug.WriteLine($"   nanFloat: {dserResult.nanFloat} ");
             Debug.WriteLine($"   nanDouble: {dserResult.nanDouble} ");
-            Debug.WriteLine($"   aFloat: {dserResult.aFloat.ToString()} ");
-            Debug.WriteLine($"   aDouble: {dserResult.aDouble.ToString()} ");
-            Debug.WriteLine($"   aBoolean: {dserResult.aBoolean.ToString()} ");
+            Debug.WriteLine($"   aFloat: {dserResult.aFloat} ");
+            Debug.WriteLine($"   aDouble: {dserResult.aDouble} ");
+            Debug.WriteLine($"   aBoolean: {dserResult.aBoolean} ");
 
             Debug.WriteLine("Can_serialize_and_deserialize_complex_object() - Finished - test succeeded");
             Debug.WriteLine("");
@@ -370,7 +370,7 @@ namespace nanoFramework.Json.Test
         {
             ICollection collection = new ArrayList() { 1, null, 2, "blah", false };
            
-            Hashtable hashtable = new Hashtable();
+            Hashtable hashtable = new();
             hashtable.Add("collection", collection);
             hashtable.Add("nulltest", null);
             hashtable.Add("stringtest", "hello world");
@@ -430,7 +430,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void SerializeDeserializeDateTest()
         {
-            DateTime testTime = new DateTime(2015, 04, 22, 11, 56, 39, 456);
+            DateTime testTime = new(2015, 04, 22, 11, 56, 39, 456);
 
 
             ICollection collection = new ArrayList() { testTime };
@@ -447,7 +447,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void SerializeSimpleClassTest()
         {
-            Person friend = new Person()
+            Person friend = new()
             {
                 FirstName = "Bob",
                 LastName = "Smith",
@@ -457,7 +457,7 @@ namespace nanoFramework.Json.Test
                 ArrayProperty = new string[] { "hi", "planet" },
             };
 
-            Person person = new Person()
+            Person person = new()
             {
                 FirstName = "John",
                 LastName = "Doe",
@@ -489,7 +489,7 @@ namespace nanoFramework.Json.Test
             
             Assert.Equal(json, correctValue, "Value for AbstractClass did not match");
 
-            RealClass b = new RealClass() { ID = 12 };
+            RealClass b = new() { ID = 12 };
             
             json = JsonConvert.SerializeObject(b);
             
@@ -587,8 +587,8 @@ namespace nanoFramework.Json.Test
 
             // this requires an aproximation on the milleseconds
             // becasue .NET DateTime can't Parse milleseconds value bigger than 999
-            DateTime desiredLastUpdated = new DateTime(2021, 06, 03, 05, 37, 11, 999);
-            DateTime reportedLastUpdated = new DateTime(2021, 06, 03, 05, 52, 41, 999);
+            DateTime desiredLastUpdated = new(2021, 06, 03, 05, 37, 11, 999);
+            DateTime reportedLastUpdated = new(2021, 06, 03, 05, 52, 41, 999);
 
             Assert.Equal((DateTime)reportedMetadata["$lastUpdated"], reportedLastUpdated, "properties.reported.$metadata.$lastUpdated doesn't match");
             Assert.Equal((DateTime)desiredMetadata["$lastUpdated"], desiredLastUpdated, "properties.reported.$metadata.$lastUpdated doesn't match");
@@ -597,7 +597,7 @@ namespace nanoFramework.Json.Test
 
             // this requires an aproximation on the milleseconds
             // becasue .NET DateTime can't Parse milleseconds value bigger than 999
-            DateTime desiredTimeToSleepUpdated = new DateTime(2021, 06, 03, 05, 37, 11, 999);
+            DateTime desiredTimeToSleepUpdated = new(2021, 06, 03, 05, 37, 11, 999);
 
             Assert.Equal((DateTime)desiredTimeToSleep["$lastUpdated"], desiredTimeToSleepUpdated, "properties.reported.$metadata.TimeToSleep.$lastUpdated doesn't match");
             Assert.Equal((int)desiredTimeToSleep["$lastUpdatedVersion"], 7, "properties.reported.$metadata.TimeToSleep.$lastUpdatedVersion doesn't match");
@@ -812,12 +812,12 @@ namespace nanoFramework.Json.Test
         {
             public int ID { get; set; }
             public abstract string Test { get; }
-            public virtual string Test2 { get { return "test2"; } }
+            public virtual string Test2 => "test2";
         }
 
         public class RealClass : AbstractClass
         {
-            public override string Test { get { return "test"; } }
+            public override string Test => "test";
         }
 
         #endregion
