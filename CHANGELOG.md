@@ -2,7 +2,16 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.161...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.163...HEAD)
+
+**Documentation and other chores:**
+
+- Fix deserialization of nested array and hastable [\#117](https://github.com/nanoframework/nanoFramework.Json/pull/117)
+- Update 1 nuget dependencies [\#116](https://github.com/nanoframework/nanoFramework.Json/pull/116)
+
+## [v2.0.1-preview.163](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.163) (2021-06-08)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.161...v2.0.1-preview.163)
 
 **Documentation and other chores:**
 
