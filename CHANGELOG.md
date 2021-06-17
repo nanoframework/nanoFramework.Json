@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.163...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.166...HEAD)
+
+**Implemented enhancements:**
+
+- Improvements in DateTime deserialization [\#118](https://github.com/nanoframework/nanoFramework.Json/pull/118)
+
+## [v2.0.1-preview.166](https://github.com/nanoframework/nanoframework.Json/tree/v2.0.1-preview.166) (2021-06-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.0.1-preview.163...v2.0.1-preview.166)
 
 **Documentation and other chores:**
 
