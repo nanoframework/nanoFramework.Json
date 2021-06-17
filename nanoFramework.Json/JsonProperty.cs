@@ -8,13 +8,13 @@ using System.Text;
 
 namespace nanoFramework.Json
 {
-	internal class JsonPropertyAttribute : JsonToken
+	internal class JsonProperty : JsonToken
 	{
-		public JsonPropertyAttribute()
+		public JsonProperty()
 		{
 		}
 
-		public JsonPropertyAttribute(string name, JsonToken value)
+		public JsonProperty(string name, JsonToken value)
 		{
 			Name = name;
 			Value = value;
@@ -27,7 +27,7 @@ namespace nanoFramework.Json
 		{
 			EnterSerialization();
 
-			StringBuilder sb = new StringBuilder(); //TODO: why move out of the try?
+			StringBuilder sb = new(); //TODO: why move out of the try?
 			
 			try
 			{

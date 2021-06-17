@@ -18,53 +18,53 @@ namespace nanoFramework.Json
 			{
 				buffer[offset++] = (byte)arg;
 			}
-			else if (type == typeof(Int16))
+			else if (type == typeof(short))
 			{
-				buffer[offset++] = (byte)(((Int16)arg) & 0xff);
-				buffer[offset++] = (byte)(((Int16)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((short)arg) & 0xff);
+				buffer[offset++] = (byte)(((short)arg >> 8) & 0xff);
 			}
-			else if (type == typeof(UInt16))
+			else if (type == typeof(ushort))
 			{
-				buffer[offset++] = (byte)(((UInt16)arg) & 0xff);
-				buffer[offset++] = (byte)(((UInt16)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((ushort)arg) & 0xff);
+				buffer[offset++] = (byte)(((ushort)arg >> 8) & 0xff);
 			}
-			else if (type == typeof(Int32))
+			else if (type == typeof(int))
 			{
-				buffer[offset++] = (byte)(((Int32)arg) & 0xff);
-				buffer[offset++] = (byte)(((Int32)arg >> 8) & 0xff);
-				buffer[offset++] = (byte)(((Int32)arg >> 16) & 0xff);
-				buffer[offset++] = (byte)(((Int32)arg >> 24) & 0xff);
+				buffer[offset++] = (byte)(((int)arg) & 0xff);
+				buffer[offset++] = (byte)(((int)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((int)arg >> 16) & 0xff);
+				buffer[offset++] = (byte)(((int)arg >> 24) & 0xff);
 			}
-			else if (type == typeof(UInt32))
+			else if (type == typeof(uint))
 			{
-				buffer[offset++] = (byte)(((UInt32)arg) & 0xff);
-				buffer[offset++] = (byte)(((UInt32)arg >> 8) & 0xff);
-				buffer[offset++] = (byte)(((UInt32)arg >> 16) & 0xff);
-				buffer[offset++] = (byte)(((UInt32)arg >> 24) & 0xff);
+				buffer[offset++] = (byte)(((uint)arg) & 0xff);
+				buffer[offset++] = (byte)(((uint)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((uint)arg >> 16) & 0xff);
+				buffer[offset++] = (byte)(((uint)arg >> 24) & 0xff);
 			}
-			else if (type == typeof(Int64))
+			else if (type == typeof(long))
 			{
-				buffer[offset++] = (byte)(((Int64)arg) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 8) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 16) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 24) & 0xff);
+				buffer[offset++] = (byte)(((long)arg) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 16) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 24) & 0xff);
 
-				buffer[offset++] = (byte)(((Int64)arg >> 32) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 40) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 48) & 0xff);
-				buffer[offset++] = (byte)(((Int64)arg >> 56) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 32) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 40) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 48) & 0xff);
+				buffer[offset++] = (byte)(((long)arg >> 56) & 0xff);
 			}
-			else if (type == typeof(UInt64))
+			else if (type == typeof(ulong))
 			{
-				buffer[offset++] = (byte)(((UInt64)arg) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 8) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 16) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 24) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 8) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 16) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 24) & 0xff);
 
-				buffer[offset++] = (byte)(((UInt64)arg >> 32) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 40) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 48) & 0xff);
-				buffer[offset++] = (byte)(((UInt64)arg >> 56) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 32) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 40) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 48) & 0xff);
+				buffer[offset++] = (byte)(((ulong)arg >> 56) & 0xff);
 			}
 			else if (type == typeof(DateTime))
 			{
@@ -102,71 +102,118 @@ namespace nanoFramework.Json
 				}
 			}
 			else
+			{
 				throw new Exception("unsupported type for Marshall");
+			}
 		}
 
 		internal static object Unmarshall(byte[] buffer, ref int offset, TypeCode tc)
 		{
-			object result = null;
-			switch (tc)
+            object result;
+
+            switch (tc)
 			{
 				case TypeCode.Empty: // secret code for the argument typecode array
 					var argCount = (int)buffer[offset++];
 					var tcArray = new TypeCode[argCount];
+
 					for (var i = 0; i < argCount; ++i)
 					{
 						tcArray[i] = (TypeCode)buffer[offset++];
 					}
+
 					result = tcArray;
+
 					break;
+
 				case TypeCode.Byte:
 					result = buffer[offset++];
 					break;
+
 				case TypeCode.Int16:
-					result = (Int16)(buffer[offset] | buffer[offset + 1] << 8);
+					result = (short)(buffer[offset] | (buffer[offset + 1] << 8));
 					offset += 2;
 					break;
+
 				case TypeCode.UInt16:
-					result = (UInt16)(buffer[offset] | buffer[offset + 1] << 8);
+					result = (ushort)(buffer[offset] | (buffer[offset + 1] << 8));
 					offset += 2;
 					break;
+
 				case TypeCode.Int32:
-					result = (Int32)(buffer[offset] | buffer[offset + 1] << 8 | buffer[offset + 2] << 16 | buffer[offset + 3] << 24);
+					result = buffer[offset] | (buffer[offset + 1] << 8) | (buffer[offset + 2] << 16) | (buffer[offset + 3] << 24);
 					offset += 4;
 					break;
+
 				case TypeCode.UInt32:
-					result = (UInt32)(buffer[offset] | buffer[offset + 1] << 8 | buffer[offset + 2] << 16 | buffer[offset + 3] << 24);
+					result = (uint)(buffer[offset] | (buffer[offset + 1] << 8) | (buffer[offset + 2] << 16) | (buffer[offset + 3] << 24));
 					offset += 4;
 					break;
+
 				case TypeCode.Int64:
-					result = (Int64)(((UInt64)buffer[offset]) | ((UInt64)buffer[offset + 1]) << 8 | ((UInt64)buffer[offset + 2]) << 16 | ((UInt64)buffer[offset + 3]) << 24 |
-									 ((UInt64)buffer[offset + 4]) << 32 | ((UInt64)buffer[offset + 5]) << 40 | ((UInt64)buffer[offset + 6]) << 48 | ((UInt64)buffer[offset + 7]) << 56);
+					result = (long)(buffer[offset]
+							 | (((ulong)buffer[offset + 1]) << 8)
+							 | (((ulong)buffer[offset + 2]) << 16)
+							 | (((ulong)buffer[offset + 3]) << 24)
+							 | (((ulong)buffer[offset + 4]) << 32)
+							 | (((ulong)buffer[offset + 5]) << 40)
+							 | (((ulong)buffer[offset + 6]) << 48)
+							 | (((ulong)buffer[offset + 7]) << 56));
+
 					offset += 8;
+
 					break;
+
 				case TypeCode.UInt64:
-					result = (UInt64)(((UInt64)buffer[offset]) | ((UInt64)buffer[offset + 1]) << 8 | ((UInt64)buffer[offset + 2]) << 16 | ((UInt64)buffer[offset + 3]) << 24 |
-									 ((UInt64)buffer[offset + 4]) << 32 | ((UInt64)buffer[offset + 5]) << 40 | ((UInt64)buffer[offset + 6]) << 48 | ((UInt64)buffer[offset + 7]) << 56);
+                    result = buffer[offset]
+                             | (((ulong)buffer[offset + 1]) << 8)
+                             | (((ulong)buffer[offset + 2]) << 16)
+                             | (((ulong)buffer[offset + 3]) << 24)
+                             | (((ulong)buffer[offset + 4]) << 32)
+                             | (((ulong)buffer[offset + 5]) << 40)
+                             | (((ulong)buffer[offset + 6]) << 48)
+                             | (((ulong)buffer[offset + 7]) << 56);
+
 					offset += 8;
+
 					break;
+
 				case TypeCode.DateTime:
 					result = new DateTime((long)Unmarshall(buffer, ref offset, TypeCode.Int64));
 					break;
+
 				case TypeCode.String:
 					var idxNul = JsonToken.FindNul(buffer, offset);
+
 					if (idxNul == -1)
+					{
 						throw new Exception("Missing ename terminator");
+					}
+
 					result = JsonToken.ConvertToString(buffer, offset, idxNul - offset);
 					offset = idxNul + 1;
+					
 					break;
+
                 case TypeCode.Double:
-                    var i64 = (Int64)(((UInt64)buffer[offset]) | ((UInt64)buffer[offset + 1]) << 8 | ((UInt64)buffer[offset + 2]) << 16 | ((UInt64)buffer[offset + 3]) << 24 |
-                                     ((UInt64)buffer[offset + 4]) << 32 | ((UInt64)buffer[offset + 5]) << 40 | ((UInt64)buffer[offset + 6]) << 48 | ((UInt64)buffer[offset + 7]) << 56);
-                    result = BitConverter.Int64BitsToDouble(i64);
+                    var i64 = (long)(buffer[offset]
+                                     | (((ulong)buffer[offset + 1]) << 8)
+                                     | (((ulong)buffer[offset + 2]) << 16)
+                                     | (((ulong)buffer[offset + 3]) << 24)
+                                     | (((ulong)buffer[offset + 4]) << 32)
+                                     | (((ulong)buffer[offset + 5]) << 40)
+                                     | (((ulong)buffer[offset + 6]) << 48)
+                                     | (((ulong)buffer[offset + 7]) << 56));
+                    
+					result = BitConverter.Int64BitsToDouble(i64);
                     offset += 8;
-                    break;
+                    
+					break;
+
                 default:
 					throw new Exception("Unsupported type");
 			}
+
 			return result;
 		}
 	}

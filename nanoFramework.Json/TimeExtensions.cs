@@ -8,7 +8,7 @@ using System;
 
 namespace nanoFramework.Json
 {
-	internal static class DateTimeExtensions
+    internal static class DateTimeExtensions
 	{
 		/// <summary>
 		/// Converts a vCal or iCal date string into a DateTime object.
@@ -17,8 +17,9 @@ namespace nanoFramework.Json
 		/// <returns></returns>
 		public static DateTime FromiCalendar(string iCalendar)
 		{
-			string result;
-			if ((iCalendar.Contains("DTSTART")) || (iCalendar.Contains("DTEND")))
+            string result;
+
+            if ((iCalendar.Contains("DTSTART")) || (iCalendar.Contains("DTEND")))
 			{
 				result = iCalendar.Split(':')[1];
 			}
@@ -31,17 +32,18 @@ namespace nanoFramework.Json
 			// Neither means it's localtime
 			bool tzid = iCalendar.Contains("TZID");
 			bool utc = iCalendar.EndsWith("Z");
-			string time;
-			if (tzid)
+            string time;
+
+            if (tzid)
 			{
 				string[] parts = iCalendar.Split(new char[] { ';', '=', ':' });
 
-				// parts[0] == DTSTART or DTEND
-				// parts[1] == TZID
-				// parts[2] == the timezone string
-				// parts[3] == localtime string
-				string tzName = parts[2];
-				time = parts[3];
+                // parts[0] == DTSTART or DTEND
+                // parts[1] == TZID
+                // parts[2] == the timezone string
+                // parts[3] == localtime string
+                _ = parts[2];
+                time = parts[3];
 			}
 			else if (utc)
 			{
@@ -61,7 +63,14 @@ namespace nanoFramework.Json
 			string minute = time.Substring(11, 2);
 			string second = time.Substring(13, 2);
 
-			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second));
+			DateTime dt = new(
+                Convert.ToInt32(year),
+                Convert.ToInt32(month),
+                Convert.ToInt32(day),
+                Convert.ToInt32(hour),
+                Convert.ToInt32(minute),
+                Convert.ToInt32(second));
+
 			if (utc)
 			{
 				// Convert the Kind to DateTimeKind.Utc
@@ -102,12 +111,20 @@ namespace nanoFramework.Json
 
 			// sanity check for bad milliseconds format
 			int milliseconds = Convert.ToInt32(ms);
+
 			if(milliseconds > 999)
             {
 				milliseconds = 999;
 			}
 
-			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), milliseconds);
+			DateTime dt = new(
+                Convert.ToInt32(year),
+                Convert.ToInt32(month),
+                Convert.ToInt32(day),
+                Convert.ToInt32(hour),
+                Convert.ToInt32(minute),
+                Convert.ToInt32(second),
+                milliseconds);
 
 			if (utc)
 			{
@@ -223,10 +240,64 @@ namespace nanoFramework.Json
 			long ticks = Convert.ToInt64(parts[1]);
 
 			// Create a Utc DateTime based on the tick count
-			DateTime dt = new DateTime(ticks, DateTimeKind.Utc);
+			DateTime dt = new(ticks, DateTimeKind.Utc);
 
 			return dt;
 		}
 
+		internal static DateTime ConvertFromString(string value)
+        {
+			// check if this could be a DateTime value
+			// min lenght is 18 for Java format: "Date(628318530718)": 18
+
+			DateTime dtValue = DateTime.MaxValue;
+
+			if (value.Length >= 18)
+			{
+				// check for special case of "null" date
+				if (value == "0001-01-01T00:00:00Z")
+				{
+					dtValue = DateTime.MinValue;
+				}
+
+				if (dtValue == DateTime.MaxValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromIso8601(value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue == DateTime.MaxValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromASPNetAjax(value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+
+				if (dtValue == DateTime.MaxValue)
+				{
+					try
+					{
+						dtValue = DateTimeExtensions.FromiCalendar(value);
+					}
+					catch
+					{
+						// intended, to catch failed conversion attempt
+					}
+				}
+			}
+
+			return dtValue;
+		}
 	}
 }

@@ -6,20 +6,19 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using System.Diagnostics;
-
 
 namespace nanoFramework.Json
 {
-	internal class JsonObjectAttribute : JsonToken
+    internal class JsonObject : JsonToken
 	{
-		private readonly Hashtable _members = new Hashtable();
+		private readonly Hashtable _members = new();
 
-		public JsonPropertyAttribute this[string name]
+		public JsonProperty this[string name]
 		{
-			get { return (JsonPropertyAttribute)_members[name.ToLower()]; }
+			get { return (JsonProperty)_members[name.ToLower()]; }
 			set
 			{
 				if (name.ToLower() != value.Name.ToLower())
@@ -32,26 +31,25 @@ namespace nanoFramework.Json
 
 		public bool Contains(string name) => this._members.Contains(name.ToLower());
 
-		public ICollection Members
-		{
-			get { return _members.Values; }
-		}
+        public ICollection Members => _members.Values;
 
-		public void Add(string name, JsonToken value)
+        public static object JsonObjectAttribute { get; private set; }
+
+        public void Add(string name, JsonToken value)
 		{
-			_members.Add(name.ToLower(), new JsonPropertyAttribute(name, value));
+			_members.Add(name.ToLower(), new JsonProperty(name, value));
 		}
 
 
 		private static string indent = "";
 
-		public static JsonObjectAttribute Serialize(Type type, object oSource)
+		public static JsonObject Serialize(Type type, object oSource)
 		{
 			indent += "      ";         // Indent the debug output - this helps to show recursion
 		
 			Debug.WriteLine($"JObject.Serialize() - Start - type: {type.Name}    oSource.GetType(): {oSource.GetType().Name}");
 			
-			var result = new JsonObjectAttribute();
+			var result = new JsonObject();
 			MethodInfo[] methods;
 			Type elementType;
 
@@ -121,16 +119,16 @@ namespace nanoFramework.Json
 				if (methodResult == null)
 				{
 					Debug.WriteLine($"JObject.Serialize() - methods loop - methodResult is null.  Calling JValue.Serialize({m.ReturnType.Name}, null) ");
-					result._members.Add(name, new JsonPropertyAttribute(name, JsonValue.Serialize(m.ReturnType, null)));
+					result._members.Add(name, new JsonProperty(name, JsonValue.Serialize(m.ReturnType, null)));
 					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (
 					m.ReturnType.IsValueType 
 					|| m.ReturnType == typeof(string))
 				{
-					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType or string. Calling JValue.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType or string. Calling JValue.Serialize({m.ReturnType.Name}, {methodResult}) ");
 					
-					result._members.Add(name, new JsonPropertyAttribute(name, JsonValue.Serialize(m.ReturnType, methodResult)));
+					result._members.Add(name, new JsonProperty(name, JsonValue.Serialize(m.ReturnType, methodResult)));
 					
 					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
@@ -140,17 +138,17 @@ namespace nanoFramework.Json
 					elementType = methodResult.GetType().GetElementType();
 					
 					// Tried lots of combinations to get this to work - used 'json2csharp.com' to verify the serialized result string - leave this debug here in case future testing reveals trouble  
-					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult}) ");
 					
-					result._members.Add(name, new JsonPropertyAttribute(name, JsonArrayAttribute.Serialize(m.ReturnType, methodResult)));
+					result._members.Add(name, new JsonProperty(name, JsonArray.Serialize(m.ReturnType, methodResult)));
 					
 					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({elementType.Name}, JArray.Serialize(...)) results to result._members[]");
 				}
 				else
 				{
-					Debug.WriteLine($"JObject.Serialize() - methods loop - calling JObject.Serialize({m.ReturnType.Name}, {methodResult.ToString()}) ");
+					Debug.WriteLine($"JObject.Serialize() - methods loop - calling JObject.Serialize({m.ReturnType.Name}, {methodResult}) ");
 					
-					result._members.Add(name, new JsonPropertyAttribute(name, JsonObjectAttribute.Serialize(m.ReturnType, methodResult)));
+					result._members.Add(name, new JsonProperty(name, Serialize(m.ReturnType, methodResult)));
 					
 					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JObject.Serialize(...)) results to result._members[]");
 				}
@@ -165,47 +163,51 @@ namespace nanoFramework.Json
 				{
 					continue;
 				}
+
 				switch (f.MemberType)
 				{
 					case MemberTypes.Field:
 					case MemberTypes.Property:
 						var value = f.GetValue(oSource);
+
 						if (value == null)
 						{
-							result._members.Add(f.Name, new JsonPropertyAttribute(f.Name, JsonValue.Serialize(f.FieldType, null)));
+							result._members.Add(f.Name, new JsonProperty(f.Name, JsonValue.Serialize(f.FieldType, null)));
 						}
 						else if (f.FieldType.IsValueType || f.FieldType == typeof(string))
 						{
-							result._members.Add(f.Name.ToLower(), new JsonPropertyAttribute(f.Name, JsonValue.Serialize(f.FieldType, value)));
+							result._members.Add(f.Name.ToLower(), new JsonProperty(f.Name, JsonValue.Serialize(f.FieldType, value)));
 						}
 						else
 						{
 							if (f.FieldType.IsArray)
 							{
-								result._members.Add(f.Name.ToLower(), new JsonPropertyAttribute(f.Name, JsonArrayAttribute.Serialize(f.FieldType, value)));
+								result._members.Add(f.Name.ToLower(), new JsonProperty(f.Name, JsonArray.Serialize(f.FieldType, value)));
 							}
 							else
 							{
-								result._members.Add(f.Name.ToLower(), new JsonPropertyAttribute(f.Name, JsonObjectAttribute.Serialize(f.FieldType, value)));
+								result._members.Add(f.Name.ToLower(), new JsonProperty(f.Name, Serialize(f.FieldType, value)));
 							}
 						}
 						break;
+
 					default:
 						break;
 				}
 			}
 			Debug.WriteLine($"JObject.Serialize() - fields loop finished");
 			Debug.WriteLine($"JObject.Serialize() - Finished - type: {type.Name}");
+
 			indent = indent.Substring(6);     // 'Outdent' before returning
+
 			return result;
 		}
 
-
-        private static JsonObjectAttribute Serialize(Hashtable source)
+        private static JsonObject Serialize(Hashtable source)
         {
             Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - Start - length: {source.Keys.Count}");
 
-			var result = new JsonObjectAttribute();
+            JsonObject result = new();
 
 			// index for items
 			int index = 0;
@@ -220,7 +222,7 @@ namespace nanoFramework.Json
                 {
                     Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - value is null");
 
-					result._members.Add(key.ToString(), new JsonPropertyAttribute(key.ToString(), new JsonValue(null)));
+					result._members.Add(key.ToString(), new JsonProperty(key.ToString(), new JsonValue(null)));
                 }
                 else
                 {
@@ -238,25 +240,25 @@ namespace nanoFramework.Json
                     {
                         Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
 
-						result._members.Add(key.ToString(), new JsonPropertyAttribute(key.ToString(), JsonValue.Serialize(valueType, value)));
+						result._members.Add(key.ToString(), new JsonProperty(key.ToString(), JsonValue.Serialize(valueType, value)));
                     }
                     else if (valueType.IsArray)
                     {
                         Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is Array - calling JsonObjectAttribute.Serialize(valueType, value)");
 
-						result._members.Add(key.ToString(), JsonArrayAttribute.Serialize(valueType, value));
+						result._members.Add(key.ToString(), JsonArray.Serialize(valueType, value));
                     }
                     else if (valueType.FullName == "System.Collections.ArrayList")
                     {
                         Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is ArrayList - calling JsonArrayAttribute.Serialize(valueType, value)");
 
-                        result._members.Add(key.ToString(), new JsonPropertyAttribute(key.ToString(), JsonArrayAttribute.Serialize(valueType, (ArrayList)value)));
+                        result._members.Add(key.ToString(), new JsonProperty(key.ToString(), JsonArray.Serialize(valueType, (ArrayList)value)));
                     }
                     else
                     {
                         Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
 
-						result._members.Add(key.ToString(), JsonObjectAttribute.Serialize(valueType, value));
+						result._members.Add(key.ToString(), Serialize(valueType, value));
                     }
                 }
 				
@@ -268,11 +270,11 @@ namespace nanoFramework.Json
 			return result;
         }
 
-		public static JsonArrayAttribute Serialize(ArrayList source)
+		public static JsonArray Serialize(ArrayList source)
 		{
 			Debug.WriteLine($"JArray(ArrayList source) - Start - source type: {source.GetType().Name}  length: {source.Count}");
 
-			JsonToken[] result = new JsonToken[source.Count];
+            JsonToken[] result = new JsonToken[source.Count];
 
 			// index for items
 			int index = 0;
@@ -299,7 +301,7 @@ namespace nanoFramework.Json
 
 					Debug.WriteLine($"JArray(ArrayList source) - valueType: {valueType.Name} ");
 
-					if ((valueType.IsValueType) || (valueType == typeof(string)))
+					if (valueType.IsValueType || (valueType == typeof(string)))
 					{
 						Debug.WriteLine($"JArray(ArrayList source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
 
@@ -309,13 +311,13 @@ namespace nanoFramework.Json
 					{
 						Debug.WriteLine($"JArray(ArrayList source) - valueType is Array - calling JArray.Serialize(valueType, value)");
 
-						result[index] = JsonArrayAttribute.Serialize(valueType, item);
+						result[index] = JsonArray.Serialize(valueType, item);
 					}
 					else if (valueType.FullName == "System.Collections.ArrayList")
 					{
 						Debug.WriteLine($"JArray(ArrayList source) - valueType is ArrayList - calling JsonArrayListAttribute.Serialize(valueType, value)");
 
-						result[index] = JsonArrayAttribute.Serialize(valueType, (ArrayList)item);
+						result[index] = JsonArray.Serialize(valueType, (ArrayList)item);
 					}
 					else
 					{
@@ -330,7 +332,7 @@ namespace nanoFramework.Json
 
 			Debug.WriteLine($"JArray(ArrayList source) - Finished");
 
-			return new JsonArrayAttribute(result);
+			return new JsonArray(result);
 		}
 
 
@@ -342,7 +344,7 @@ namespace nanoFramework.Json
 
 			try
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				sb.Append("{"); 
 
@@ -357,7 +359,7 @@ namespace nanoFramework.Json
 
 					first = false;
 
-					sb.Append(((JsonPropertyAttribute)member).ToString());
+					sb.Append(((JsonProperty)member).ToString());
 				}
 
 				sb.Append("}");
@@ -369,6 +371,5 @@ namespace nanoFramework.Json
 				ExitSerialization();    // Unlocks the SerializationContext object
 			}
 		}
-
 	}
 }

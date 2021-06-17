@@ -6,7 +6,7 @@
 
 namespace nanoFramework.Json
 {
-	internal static class StringExtensions
+    internal static class StringExtensions
 	{
 		internal static bool Contains(this string source, string search)
 		{
@@ -17,6 +17,5 @@ namespace nanoFramework.Json
 		{
 			return source.IndexOf(search) == source.Length - search.Length;
 		}
-
 	}
 }
