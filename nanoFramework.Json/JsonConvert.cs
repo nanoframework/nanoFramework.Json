@@ -1371,52 +1371,71 @@ namespace nanoFramework.Json
                                     //Debug.Assert(ch == openQuote);
 
                                     var stringValue = sb.ToString();
-                                    DateTime dtValue = DateTime.MaxValue;
 
                                     // check if this could be a DateTime value
-                                    // min lenght is 18 for Java format: "Date(628318530718)": 18
-
+                                    // min lenght is 18 for an AJAX .NET encoded Java format: "Date(628318530718)": 18
+                                    // everything else 
                                     if (stringValue.Length >= 18)
                                     {
+                                        DateTime dtValue = DateTime.MaxValue;
+
                                         // check for special case of "null" date
-                                        if(stringValue == "0001-01-01T00:00:00Z")
+                                        if (stringValue == "0001-01-01T00:00:00Z")
                                         {
                                             dtValue = DateTime.MinValue;
                                         }
 
                                         if (dtValue == DateTime.MaxValue)
                                         {
-                                            try
+                                            // try to do some guessing here
+                                            if (stringValue[4] == '-' &&
+                                               stringValue[7] == '-' &&
+                                               stringValue[10] == 'T' &&
+                                               stringValue[13] == ':' &&
+                                               stringValue[16] == ':')
                                             {
-                                                dtValue = DateTimeExtensions.FromIso8601(stringValue);
-                                            }
-                                            catch
-                                            {
-                                                // intended, to catch failed conversion attempt
-                                            }
-                                        }
-
-                                        if (dtValue == DateTime.MaxValue)
-                                        {
-                                            try
-                                            {
-                                                dtValue = DateTimeExtensions.FromASPNetAjax(stringValue);
-                                            }
-                                            catch
-                                            {
-                                                // intended, to catch failed conversion attempt
+                                                // highly likelyhood of the string being an ISO 8601 date time string
+                                                try
+                                                {
+                                                    dtValue = DateTimeExtensions.FromIso8601(stringValue);
+                                                }
+                                                catch
+                                                {
+                                                    // intended, to catch failed conversion attempt
+                                                }
                                             }
                                         }
 
                                         if (dtValue == DateTime.MaxValue)
                                         {
-                                            try
+                                            if (stringValue.Substring(0, 5) == "Date(")
                                             {
-                                                dtValue = DateTimeExtensions.FromiCalendar(stringValue);
+                                                // highly likelyhood of the string being an AJAX encoded date time string
+                                                try
+                                                {
+                                                    dtValue = DateTimeExtensions.FromASPNetAjax(stringValue);
+                                                }
+                                                catch
+                                                {
+                                                    // intended, to catch failed conversion attempt
+                                                }
                                             }
-                                            catch
+                                        }
+
+                                        if (dtValue == DateTime.MaxValue)
+                                        {
+                                            if (stringValue.Substring(0, 7) == "DTSTART" ||
+                                                stringValue.Substring(0, 15) == "BEGIN:VCALENDAR")
                                             {
-                                                // intended, to catch failed conversion attempt
+                                                // highly likelyhood of the string being an iCal or vCal encoded date time string
+                                                try
+                                                {
+                                                    dtValue = DateTimeExtensions.FromiCalendar(stringValue);
+                                                }
+                                                catch
+                                                {
+                                                    // intended, to catch failed conversion attempt
+                                                }
                                             }
                                         }
 
