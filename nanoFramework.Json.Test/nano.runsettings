@@ -9,6 +9,7 @@
    </RunConfiguration>
    <nanoFrameworkAdapter>
        <Logging>None</Logging>
-       <IsRealHardware>False</IsRealHardware>
+       <IsRealHardware>True</IsRealHardware>
+       <RealHardwarePort>COM7</RealHardwarePort>
    </nanoFrameworkAdapter>
 </RunSettings>

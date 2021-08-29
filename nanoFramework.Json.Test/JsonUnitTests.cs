@@ -63,6 +63,29 @@ namespace nanoFramework.Json.Test
         private string dontSerialize { get; set; } = "dontPublish";
     }
 
+    // Classes to more thoroughly test array serialization/deserialization - added 2021-08-28
+    public class JsonTestCompany
+    {
+        public int                    CompanyID            { get; set; }
+        public string                 CompanyName          { get; set; }
+    }
+    public class JsonTestEmployee
+    {
+        public int                     EmployeeID          { get; set; }
+        public string                  EmployeeName        { get; set; }
+        public JsonTestCompany         CurrentEmployer     { get; set; }
+        public JsonTestCompany[]       FormerEmployers     { get; set; }
+    }
+    public class JsonTestTown
+    {
+        public int                     TownID              { get; set; }
+        public string                  TownName            { get; set; }
+        public JsonTestCompany[]       CompaniesInThisTown { get; set; }
+        public JsonTestEmployee[]      EmployeesInThisTown { get; set; }
+    }
+
+
+
     [TestClass]
     public class JsonUnitTests
     {
@@ -76,6 +99,81 @@ namespace nanoFramework.Json.Test
         public void CleanUp()
         {
             Debug.WriteLine("Cleaning up after Json Library tests.");
+        }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_arrays_of_class_objects()
+        {
+            Debug.WriteLine("Can_serialize_and_deserialize_arrays_of_class_objects() - Starting test...");
+            JsonTestTown myTown = new JsonTestTown
+            {
+                TownID = 1,
+                TownName = "myTown",
+                CompaniesInThisTown = new JsonTestCompany[]
+                {
+                    new JsonTestCompany { CompanyID = 1, CompanyName = "AAA Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 2, CompanyName = "BBB Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 3, CompanyName = "CCC Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 4, CompanyName = "DDD Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 5, CompanyName = "EEE Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 6, CompanyName = "FFF Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 7, CompanyName = "GGG Amalgamated Industries" },
+                    new JsonTestCompany { CompanyID = 8, CompanyName = "HHH Amalgamated Industries" }
+                },
+                EmployeesInThisTown = new JsonTestEmployee[]
+                {
+                    new JsonTestEmployee
+                    { 
+                        EmployeeID = 1,
+                        EmployeeName = "John Smith",
+                        CurrentEmployer = new JsonTestCompany { CompanyID = 3, CompanyName = "CCC Amalgamated Industries" },
+                        FormerEmployers = new JsonTestCompany[]
+                        {
+                            new JsonTestCompany { CompanyID = 2, CompanyName = "BBB Amalgamated Industries" },
+                            new JsonTestCompany { CompanyID = 5, CompanyName = "EEE Amalgamated Industries" },
+                        }
+                    },
+                    new JsonTestEmployee
+                    { 
+                        EmployeeID = 1,
+                        EmployeeName = "Jim Smith",
+                        CurrentEmployer = new JsonTestCompany { CompanyID = 7, CompanyName = "GGG Amalgamated Industries" },
+                        FormerEmployers = new JsonTestCompany[]
+                        {
+                            new JsonTestCompany { CompanyID = 4, CompanyName = "DDD Amalgamated Industries" },
+                            new JsonTestCompany { CompanyID = 1, CompanyName = "AAA Amalgamated Industries" },
+                            new JsonTestCompany { CompanyID = 6, CompanyName = "FFF Amalgamated Industries" },
+                        }
+                    }
+                }
+            };
+
+            var result = JsonConvert.SerializeObject(myTown);
+            Debug.WriteLine($"Serialized Array: {result}");
+
+            JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
+            Debug.WriteLine($"After deserialization - type: JsonTestTown");
+
+            Assert.Equal(myTown.TownID, dserResult.TownID, $"Validation: myTown.TownID: {myTown.TownID}");
+            Assert.Equal(myTown.TownName, dserResult.TownName, $"Validation: myTown.TownName: {myTown.TownName}");
+            for (int i = 0; i < myTown.CompaniesInThisTown.Length; i++)
+            {
+                Assert.Equal(myTown.CompaniesInThisTown[i].CompanyID, dserResult.CompaniesInThisTown[i].CompanyID, $"Validation: myTown.CompaniesInThisTown[{i}].CompanyID: {myTown.CompaniesInThisTown[i].CompanyID}");
+                Assert.Equal(myTown.CompaniesInThisTown[i].CompanyName, dserResult.CompaniesInThisTown[i].CompanyName, $"Validation: myTown.CompaniesInThisTown[{i}].CompanyName: {myTown.CompaniesInThisTown[i].CompanyName}");
+            }
+            for (int i = 0; i < myTown.EmployeesInThisTown.Length; i++)
+            {
+                Assert.Equal(myTown.EmployeesInThisTown[i].EmployeeID, dserResult.EmployeesInThisTown[i].EmployeeID, $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeID: {myTown.EmployeesInThisTown[i].EmployeeID} ");
+                Assert.Equal(myTown.EmployeesInThisTown[i].EmployeeName, dserResult.EmployeesInThisTown[i].EmployeeName, $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeName: {myTown.EmployeesInThisTown[i].EmployeeName} ");
+                Assert.Equal(myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID, dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyID, $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyID: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID} ");
+                Assert.Equal(myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName, dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyName, $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyName: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName} ");
+                for (int j = 0; j < myTown.EmployeesInThisTown[i].FormerEmployers.Length; j++) {
+                    Assert.Equal(myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID, dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyID, $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyID: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID} ");
+                    Assert.Equal(myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName, dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyName, $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyName: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName} ");
+                }
+            }
+            Debug.WriteLine("Can_serialize_and_deserialize_arrays_of_class_objects() - Finished - test succeeded.");
+            Debug.WriteLine("");
         }
 
         [TestMethod]
@@ -821,6 +919,5 @@ namespace nanoFramework.Json.Test
         }
 
         #endregion
-
     }
 }

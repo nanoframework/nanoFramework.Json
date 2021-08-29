@@ -1092,7 +1092,7 @@ namespace nanoFramework.Json
                         token = GetNextToken();
                     }
                     else if (token.TType != TokenType.End && token.TType != TokenType.Error)
-                    {        // MORT clean this up
+                    {
                         throw new Exception("unexpected content after end of array");
                     }
 

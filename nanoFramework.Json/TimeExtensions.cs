@@ -5,6 +5,7 @@
 //
 
 using System;
+using System.Text.RegularExpressions;
 
 namespace nanoFramework.Json
 {
@@ -63,7 +64,18 @@ namespace nanoFramework.Json
 			string minute = time.Substring(11, 2);
 			string second = time.Substring(13, 2);
 
-			DateTime dt = new(
+			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
+			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
+			// Bail out if the input string is non-numeric
+			Match match1 = Regex.Match(year, @"^[0-9]*$");
+            Match match2 = Regex.Match(month, @"^[0-9]*$");
+            Match match3 = Regex.Match(day, @"^[0-9]*$");
+            Match match4 = Regex.Match(hour, @"^[0-9]*$");
+            Match match5 = Regex.Match(minute, @"^[0-9]*$");
+            Match match6 = Regex.Match(second, @"^[0-9]*$");
+			if (!match1.Success || !match2.Success || !match3.Success || !match4.Success || !match5.Success || !match6.Success) return DateTime.MaxValue;
+
+            DateTime dt = new(
                 Convert.ToInt32(year),
                 Convert.ToInt32(month),
                 Convert.ToInt32(day),
@@ -71,7 +83,7 @@ namespace nanoFramework.Json
                 Convert.ToInt32(minute),
                 Convert.ToInt32(second));
 
-			if (utc)
+            if (utc)
 			{
 				// Convert the Kind to DateTimeKind.Utc
 				dt = new DateTime(0, DateTimeKind.Utc).AddTicks(dt.Ticks);
@@ -109,15 +121,27 @@ namespace nanoFramework.Json
 			string second = (parts.Length > 5) ? parts[5] : "0";
 			string ms = (parts.Length > 6) ? parts[6] : "0";
 
+			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
+			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
+			// Bail out if the input string is non-numeric
+			Match match1 = Regex.Match(year, @"^[0-9]*$");
+			Match match2 = Regex.Match(month, @"^[0-9]*$");
+			Match match3 = Regex.Match(day, @"^[0-9]*$");
+			Match match4 = Regex.Match(hour, @"^[0-9]*$");
+			Match match5 = Regex.Match(minute, @"^[0-9]*$");
+			Match match6 = Regex.Match(second, @"^[0-9]*$");
+			Match match7 = Regex.Match(ms, @"^[0-9]*$");
+			if (!match1.Success || !match2.Success || !match3.Success || !match4.Success || !match5.Success || !match6.Success || !match7.Success) return DateTime.MaxValue;
+
 			// sanity check for bad milliseconds format
 			int milliseconds = Convert.ToInt32(ms);
 
-			if(milliseconds > 999)
+            if (milliseconds > 999)
             {
 				milliseconds = 999;
 			}
 
-			DateTime dt = new(
+            DateTime dt = new(
                 Convert.ToInt32(year),
                 Convert.ToInt32(month),
                 Convert.ToInt32(day),
@@ -126,7 +150,7 @@ namespace nanoFramework.Json
                 Convert.ToInt32(second),
                 milliseconds);
 
-			if (utc)
+            if (utc)
 			{
 				// Convert the Kind to DateTimeKind.Utc if string Z present
 				dt = new DateTime(dt.Ticks, DateTimeKind.Utc); //TODO!!!
@@ -236,6 +260,13 @@ namespace nanoFramework.Json
 		public static DateTime FromASPNetAjax(string ajax)
 		{
 			string[] parts = ajax.Split(new char[] { '(', ')' });
+
+			// If the input string is non-numeric, Convert.ToInt64() below will throw an exception from the Native code
+			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
+			// Bail out if the input string is non-numeric
+			if (parts.Length < 2) return DateTime.MaxValue;
+			Match match1 = Regex.Match(parts[1], @"^[0-9]*$");
+			if (!match1.Success) return DateTime.MaxValue;
 
 			long ticks = Convert.ToInt64(parts[1]);
 
