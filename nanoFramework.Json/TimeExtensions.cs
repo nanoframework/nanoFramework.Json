@@ -5,7 +5,6 @@
 //
 
 using System;
-using System.Text.RegularExpressions;
 
 namespace nanoFramework.Json
 {
@@ -57,25 +56,24 @@ namespace nanoFramework.Json
 
 			// We now have the time string to parse, and we'll adjust
 			// to UTC or timezone after parsing
-			string year = time.Substring(0, 4);
-			string month = time.Substring(4, 2);
-			string day = time.Substring(6, 2);
-			string hour = time.Substring(9, 2);
+			string year   = time.Substring(0, 4);
+			string month  = time.Substring(4, 2);
+			string day    = time.Substring(6, 2);
+			string hour   = time.Substring(9, 2);
 			string minute = time.Substring(11, 2);
 			string second = time.Substring(13, 2);
 
 			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
-			Match match1 = Regex.Match(year, @"^[0-9]*$");
-            Match match2 = Regex.Match(month, @"^[0-9]*$");
-            Match match3 = Regex.Match(day, @"^[0-9]*$");
-            Match match4 = Regex.Match(hour, @"^[0-9]*$");
-            Match match5 = Regex.Match(minute, @"^[0-9]*$");
-            Match match6 = Regex.Match(second, @"^[0-9]*$");
-			if (!match1.Success || !match2.Success || !match3.Success || !match4.Success || !match5.Success || !match6.Success) return DateTime.MaxValue;
+			if (!IsNumeric(year))   return DateTime.MaxValue;
+			if (!IsNumeric(month))  return DateTime.MaxValue;
+			if (!IsNumeric(day))    return DateTime.MaxValue;
+			if (!IsNumeric(hour))   return DateTime.MaxValue;
+			if (!IsNumeric(minute)) return DateTime.MaxValue;
+			if (!IsNumeric(second)) return DateTime.MaxValue;
 
-            DateTime dt = new(
+			DateTime dt = new(
                 Convert.ToInt32(year),
                 Convert.ToInt32(month),
                 Convert.ToInt32(day),
@@ -113,25 +111,24 @@ namespace nanoFramework.Json
 
 			// We now have the time string to parse, and we'll adjust
 			// to UTC or timezone after parsing
-			string year = parts[0];
-			string month = (parts.Length > 1) ? parts[1] : "1";
-			string day = (parts.Length > 2) ? parts[2] : "1";
-			string hour = (parts.Length > 3) ? parts[3] : "0";
+			string year   = parts[0];
+			string month  = (parts.Length > 1) ? parts[1] : "1";
+			string day    = (parts.Length > 2) ? parts[2] : "1";
+			string hour   = (parts.Length > 3) ? parts[3] : "0";
 			string minute = (parts.Length > 4) ? parts[4] : "0";
 			string second = (parts.Length > 5) ? parts[5] : "0";
-			string ms = (parts.Length > 6) ? parts[6] : "0";
+			string ms     = (parts.Length > 6) ? parts[6] : "0";
 
 			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
-			Match match1 = Regex.Match(year, @"^[0-9]*$");
-			Match match2 = Regex.Match(month, @"^[0-9]*$");
-			Match match3 = Regex.Match(day, @"^[0-9]*$");
-			Match match4 = Regex.Match(hour, @"^[0-9]*$");
-			Match match5 = Regex.Match(minute, @"^[0-9]*$");
-			Match match6 = Regex.Match(second, @"^[0-9]*$");
-			Match match7 = Regex.Match(ms, @"^[0-9]*$");
-			if (!match1.Success || !match2.Success || !match3.Success || !match4.Success || !match5.Success || !match6.Success || !match7.Success) return DateTime.MaxValue;
+			if (!IsNumeric(year))   return DateTime.MaxValue;
+			if (!IsNumeric(month))  return DateTime.MaxValue;
+			if (!IsNumeric(day))    return DateTime.MaxValue;
+			if (!IsNumeric(hour))   return DateTime.MaxValue;
+			if (!IsNumeric(minute)) return DateTime.MaxValue;
+			if (!IsNumeric(second)) return DateTime.MaxValue;
+			if (!IsNumeric(ms))     return DateTime.MaxValue;
 
 			// sanity check for bad milliseconds format
 			int milliseconds = Convert.ToInt32(ms);
@@ -204,6 +201,20 @@ namespace nanoFramework.Json
 		}
 
 		/// <summary>
+		/// Returns true if the given string contains only numeric characters.
+		/// </summary>
+		/// <param name="str"></param>
+		/// <returns></returns>
+		private static bool IsNumeric(string str)
+		{
+			foreach (char c in str)
+			{
+				if (!((c >= '0') && (c <= '9'))) return false;
+            }
+			return true;
+		}
+
+		/// <summary>
 		/// Ensures a two-digit number with leading zero if necessary.
 		/// </summary>
 		/// <param name="value"></param>
@@ -265,8 +276,7 @@ namespace nanoFramework.Json
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
 			if (parts.Length < 2) return DateTime.MaxValue;
-			Match match1 = Regex.Match(parts[1], @"^[0-9]*$");
-			if (!match1.Success) return DateTime.MaxValue;
+			if (!IsNumeric(parts[1])) return DateTime.MaxValue;
 
 			long ticks = Convert.ToInt64(parts[1]);
 
