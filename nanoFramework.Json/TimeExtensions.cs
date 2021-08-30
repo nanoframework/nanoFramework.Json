@@ -56,22 +56,40 @@ namespace nanoFramework.Json
 
 			// We now have the time string to parse, and we'll adjust
 			// to UTC or timezone after parsing
-			string year   = time.Substring(0, 4);
-			string month  = time.Substring(4, 2);
-			string day    = time.Substring(6, 2);
-			string hour   = time.Substring(9, 2);
+			string year = time.Substring(0, 4);
+			string month = time.Substring(4, 2);
+			string day = time.Substring(6, 2);
+			string hour = time.Substring(9, 2);
 			string minute = time.Substring(11, 2);
 			string second = time.Substring(13, 2);
 
 			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
-			if (!IsNumeric(year))   return DateTime.MaxValue;
-			if (!IsNumeric(month))  return DateTime.MaxValue;
-			if (!IsNumeric(day))    return DateTime.MaxValue;
-			if (!IsNumeric(hour))   return DateTime.MaxValue;
-			if (!IsNumeric(minute)) return DateTime.MaxValue;
-			if (!IsNumeric(second)) return DateTime.MaxValue;
+			if (!IsNumeric(year)) 
+			{
+				return DateTime.MaxValue;
+			}
+			else if (!IsNumeric(month))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(day))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(hour))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(minute))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(second))
+			{
+				return DateTime.MaxValue;
+			}
 
 			DateTime dt = new(
                 Convert.ToInt32(year),
@@ -111,24 +129,45 @@ namespace nanoFramework.Json
 
 			// We now have the time string to parse, and we'll adjust
 			// to UTC or timezone after parsing
-			string year   = parts[0];
-			string month  = (parts.Length > 1) ? parts[1] : "1";
-			string day    = (parts.Length > 2) ? parts[2] : "1";
-			string hour   = (parts.Length > 3) ? parts[3] : "0";
+			string year = parts[0];
+			string month = (parts.Length > 1) ? parts[1] : "1";
+			string day = (parts.Length > 2) ? parts[2] : "1";
+			string hour = (parts.Length > 3) ? parts[3] : "0";
 			string minute = (parts.Length > 4) ? parts[4] : "0";
 			string second = (parts.Length > 5) ? parts[5] : "0";
-			string ms     = (parts.Length > 6) ? parts[6] : "0";
+			string ms = (parts.Length > 6) ? parts[6] : "0";
 
 			// If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
-			if (!IsNumeric(year))   return DateTime.MaxValue;
-			if (!IsNumeric(month))  return DateTime.MaxValue;
-			if (!IsNumeric(day))    return DateTime.MaxValue;
-			if (!IsNumeric(hour))   return DateTime.MaxValue;
-			if (!IsNumeric(minute)) return DateTime.MaxValue;
-			if (!IsNumeric(second)) return DateTime.MaxValue;
-			if (!IsNumeric(ms))     return DateTime.MaxValue;
+			if (!IsNumeric(year))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(month))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(day))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(hour))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(minute))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(second))
+			{
+				return DateTime.MaxValue;
+			} 
+			else if (!IsNumeric(ms))
+			{
+				return DateTime.MaxValue;
+			}
 
 			// sanity check for bad milliseconds format
 			int milliseconds = Convert.ToInt32(ms);
@@ -275,8 +314,14 @@ namespace nanoFramework.Json
 			// If the input string is non-numeric, Convert.ToInt64() below will throw an exception from the Native code
 			// These exceptions cause annoying delays & output when running in the nanoFramework debugger
 			// Bail out if the input string is non-numeric
-			if (parts.Length < 2) return DateTime.MaxValue;
-			if (!IsNumeric(parts[1])) return DateTime.MaxValue;
+			if (parts.Length < 2)
+			{
+				return DateTime.MaxValue;
+			}
+			if (!IsNumeric(parts[1]))
+			{
+				return DateTime.MaxValue;
+			}
 
 			long ticks = Convert.ToInt64(parts[1]);
 
