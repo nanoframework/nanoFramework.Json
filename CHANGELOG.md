@@ -2,7 +2,20 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.21...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.23...HEAD)
+
+**Implemented enhancements:**
+
+- Clean-up code and minor improvements [\#135](https://github.com/nanoframework/nanoFramework.Json/pull/135)
+- Improve DateTime parsing [\#134](https://github.com/nanoframework/nanoFramework.Json/pull/134)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#133](https://github.com/nanoframework/nanoFramework.Json/pull/133)
+
+## [v2.1.0-preview.23](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.0-preview.23) (2021-07-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.21...v2.1.0-preview.23)
 
 **Documentation and other chores:**
 
