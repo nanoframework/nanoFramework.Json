@@ -63,9 +63,7 @@ namespace nanoFramework.Json
             string minute = time.Substring(11, 2);
             string second = time.Substring(13, 2);
 
-            // If the input string is non-numeric, Convert.ToInt32() below will throw an exception from the Native code
-            // These exceptions cause annoying delays & output when running in the nanoFramework debugger
-            // Bail out if the input string is non-numeric
+            // Check if any of the date time parts is non-numeric
             if (!IsNumeric(year))
             {
                 return DateTime.MaxValue;
