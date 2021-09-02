@@ -1,8 +1,8 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
+## [v2.1.0-preview.28](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.0-preview.28) (2021-09-02)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.23...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.23...v2.1.0-preview.28)
 
 **Implemented enhancements:**
 
