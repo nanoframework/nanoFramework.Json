@@ -63,7 +63,7 @@ namespace nanoFramework.Json.Test
         private string dontSerialize { get; set; } = "dontPublish";
     }
 
-    // Classes to more thoroughly test array serialization/deserialization - added 2021-08-28
+    // Classes to more thoroughly test array serialization/deserialization
     public class JsonTestCompany
     {
         public int                    CompanyID            { get; set; }
