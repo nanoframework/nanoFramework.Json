@@ -154,24 +154,65 @@ namespace nanoFramework.Json.Test
             JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
             Debug.WriteLine($"After deserialization - type: JsonTestTown");
 
-            Assert.Equal(myTown.TownID, dserResult.TownID, $"Validation: myTown.TownID: {myTown.TownID}");
-            Assert.Equal(myTown.TownName, dserResult.TownName, $"Validation: myTown.TownName: {myTown.TownName}");
+            Assert.Equal(
+                myTown.TownID,
+                dserResult.TownID,
+                $"Validation: myTown.TownID: {myTown.TownID}");
+            
+            Assert.Equal(
+                myTown.TownName,
+                dserResult.TownName,
+                $"Validation: myTown.TownName: {myTown.TownName}");
+
             for (int i = 0; i < myTown.CompaniesInThisTown.Length; i++)
             {
-                Assert.Equal(myTown.CompaniesInThisTown[i].CompanyID, dserResult.CompaniesInThisTown[i].CompanyID, $"Validation: myTown.CompaniesInThisTown[{i}].CompanyID: {myTown.CompaniesInThisTown[i].CompanyID}");
-                Assert.Equal(myTown.CompaniesInThisTown[i].CompanyName, dserResult.CompaniesInThisTown[i].CompanyName, $"Validation: myTown.CompaniesInThisTown[{i}].CompanyName: {myTown.CompaniesInThisTown[i].CompanyName}");
+                Assert.Equal(
+                    myTown.CompaniesInThisTown[i].CompanyID,
+                    dserResult.CompaniesInThisTown[i].CompanyID,
+                    $"Validation: myTown.CompaniesInThisTown[{i}].CompanyID: {myTown.CompaniesInThisTown[i].CompanyID}");
+                
+                Assert.Equal(
+                    myTown.CompaniesInThisTown[i].CompanyName,
+                    dserResult.CompaniesInThisTown[i].CompanyName,
+                    $"Validation: myTown.CompaniesInThisTown[{i}].CompanyName: {myTown.CompaniesInThisTown[i].CompanyName}");
             }
+
             for (int i = 0; i < myTown.EmployeesInThisTown.Length; i++)
             {
-                Assert.Equal(myTown.EmployeesInThisTown[i].EmployeeID, dserResult.EmployeesInThisTown[i].EmployeeID, $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeID: {myTown.EmployeesInThisTown[i].EmployeeID} ");
-                Assert.Equal(myTown.EmployeesInThisTown[i].EmployeeName, dserResult.EmployeesInThisTown[i].EmployeeName, $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeName: {myTown.EmployeesInThisTown[i].EmployeeName} ");
-                Assert.Equal(myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID, dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyID, $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyID: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID} ");
-                Assert.Equal(myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName, dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyName, $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyName: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName} ");
-                for (int j = 0; j < myTown.EmployeesInThisTown[i].FormerEmployers.Length; j++) {
-                    Assert.Equal(myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID, dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyID, $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyID: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID} ");
-                    Assert.Equal(myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName, dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyName, $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyName: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName} ");
+                Assert.Equal(
+                    myTown.EmployeesInThisTown[i].EmployeeID,
+                    dserResult.EmployeesInThisTown[i].EmployeeID,
+                    $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeID: {myTown.EmployeesInThisTown[i].EmployeeID} ");
+                
+                Assert.Equal(
+                    myTown.EmployeesInThisTown[i].EmployeeName,
+                    dserResult.EmployeesInThisTown[i].EmployeeName,
+                    $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeName: {myTown.EmployeesInThisTown[i].EmployeeName} ");
+                
+                Assert.Equal(
+                    myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
+                    dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
+                    $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyID: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID} ");
+                
+                Assert.Equal(
+                    myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
+                    dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
+                    $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyName: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName} ");
+                
+                for (int j = 0; j < myTown.EmployeesInThisTown[i].FormerEmployers.Length; j++)
+                {
+                    Assert.Equal(
+                        myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
+                        dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
+                        $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyID: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID} ");
+                
+                    Assert.Equal(
+                        myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
+                        dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
+                        $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyName: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName} ");
                 }
             }
+
             Debug.WriteLine("Can_serialize_and_deserialize_arrays_of_class_objects() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
