@@ -103,7 +103,8 @@ namespace nanoFramework.Json
 			}
 			else
 			{
-				throw new Exception("unsupported type for Marshall");
+				// unsupported type for Marshall
+				throw new SerializationException();
 			}
 		}
 
@@ -187,7 +188,8 @@ namespace nanoFramework.Json
 
 					if (idxNul == -1)
 					{
-						throw new Exception("Missing ename terminator");
+						// Missing ename terminator
+						throw new SerializationException();
 					}
 
 					result = JsonToken.ConvertToString(buffer, offset, idxNul - offset);
@@ -211,7 +213,8 @@ namespace nanoFramework.Json
 					break;
 
                 default:
-					throw new Exception("Unsupported type");
+					// Unsupported type
+					throw new SerializationException();
 			}
 
 			return result;

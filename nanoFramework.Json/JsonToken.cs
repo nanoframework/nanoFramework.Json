@@ -20,9 +20,11 @@ namespace nanoFramework.Json
             {
                 if (JsonConvert.SerializationContext == null)
                 {
-                    JsonConvert.SerializationContext = new JsonConvert.SerializationCtx();
-                    JsonConvert.SerializationContext.Indent = 0;
-                    
+                    JsonConvert.SerializationContext = new JsonConvert.SerializationCtx
+                    {
+                        Indent = 0
+                    };
+
                     Monitor.Enter(JsonConvert.SerializationContext);
 
                     _fOwnsContext = true;

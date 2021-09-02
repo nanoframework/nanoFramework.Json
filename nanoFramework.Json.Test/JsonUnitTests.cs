@@ -11,7 +11,9 @@ namespace nanoFramework.Json.Test
         public int one { get; set; }
         public int two { get; set; }
         public int three { get; set; }
+#pragma warning disable S1104 // Fields should not have public accessibility
         public int four; //not a property on purpose!
+#pragma warning restore S1104 // Fields should not have public accessibility
 
         public override string ToString()
         {
@@ -771,7 +773,7 @@ namespace nanoFramework.Json.Test
         42,
         ""Test Message"",
     ]
-    }"; ;
+    }";
 
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
 
