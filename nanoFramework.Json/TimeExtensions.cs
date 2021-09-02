@@ -350,7 +350,7 @@ namespace nanoFramework.Json
                 {
                     try
                     {
-                        dtValue = DateTimeExtensions.FromIso8601(value);
+                        dtValue = FromIso8601(value);
                     }
                     catch
                     {
@@ -362,7 +362,7 @@ namespace nanoFramework.Json
                 {
                     try
                     {
-                        dtValue = DateTimeExtensions.FromASPNetAjax(value);
+                        dtValue = FromASPNetAjax(value);
                     }
                     catch
                     {
@@ -374,7 +374,7 @@ namespace nanoFramework.Json
                 {
                     try
                     {
-                        dtValue = DateTimeExtensions.FromiCalendar(value);
+                        dtValue = FromiCalendar(value);
                     }
                     catch
                     {
