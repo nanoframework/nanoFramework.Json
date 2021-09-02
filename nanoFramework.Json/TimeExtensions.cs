@@ -29,7 +29,7 @@ namespace nanoFramework.Json
             }
 
             // Check to see if format contains the timezone ID, or contains UTC reference
-            // Neither means it's localtime
+            // Neither means it's local time
             bool tzid = iCalendar.Contains("TZID");
             bool utc = iCalendar.EndsWith("Z");
             string time;
@@ -120,7 +120,7 @@ namespace nanoFramework.Json
         {
 
             // Check to see if format contains the timezone ID, or contains UTC reference
-            // Neither means it's localtime
+            // Neither means it's local time
             bool utc = date.EndsWith("Z");
 
             string[] parts = date.Split(new char[] { 'T', 'Z', ':', '-', '.', '+', });
@@ -190,27 +190,7 @@ namespace nanoFramework.Json
             else
             {
                 //nF does not support non UTC dates, so should we throw an exception instead.
-                throw new NotSupportedException("DateTime is not UTC");
-
-                //TODO: remove old handling of non UTC datetime code.
-                //// If a time offset was specified instead of the UTC marker,
-                //// add/subtract in the hours/minutes
-                //if ((utc == false) && (parts.Length >= 9))
-                //{
-                //	// There better be a timezone offset
-                //	string hourOffset = (parts.Length > 7) ? parts[7] : "";
-                //	string minuteOffset = (parts.Length > 8) ? parts[8] : "";
-                //	if (date.Contains("+"))
-                //	{
-                //		dt = dt.AddHours(Convert.ToDouble(hourOffset));
-                //		dt = dt.AddMinutes(Convert.ToDouble(minuteOffset));
-                //	}
-                //	else
-                //	{
-                //		dt = dt.AddHours(-(Convert.ToDouble(hourOffset)));
-                //		dt = dt.AddMinutes(-(Convert.ToDouble(minuteOffset)));
-                //	}
-                //}
+                throw new NotSupportedException();
             }
 
             return dt;

@@ -25,20 +25,16 @@ namespace nanoFramework.Json
 		// Made a lot of changes here to get Array serialization working
 		private JsonArray(Array source)
 		{
-			Debug.WriteLine($"JArray(Array source) - Start - source type: {source.GetType().Name}  length: {source.Length}  value: {source.GetValue(0)}");
-			
 			Items = new JsonToken[source.Length];
 			
 			for (int i = 0; i < source.Length; ++i)
 			{
-				Debug.WriteLine($"JArray(Array source) - _contents loop - i: {i}");
-				
 				var value = source.GetValue(i);
 				
 				if (value == null)
 				{
 					// TODO: handle nulls
-					throw new Exception($"JArray(Array source) - source.GetValue() returned null");
+					throw new DeserializationException();
 				}
 
 				var valueType = value.GetType();
@@ -46,38 +42,26 @@ namespace nanoFramework.Json
 				if (valueType == null)
 				{
 					//TODO: handle nulls
-					throw new Exception($"JArray(Array source) - value.GetType() returned null");
+					throw new DeserializationException();
 				}
-
-				Debug.WriteLine($"JArray(Array source) - valueType: {valueType.Name} ");
-				
+			
 				if ((valueType.IsValueType) || (valueType == typeof(string)))
 				{
-					Debug.WriteLine($"JArray(Array source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
-					
 					Items[i] = JsonValue.Serialize(valueType, value);
 				}
 				else if (valueType.IsArray)
 				{
-					Debug.WriteLine($"JArray(Array source) - valueType is Array - calling JArray.Serialize(valueType, value)");
-					
 					Items[i] = Serialize(valueType, value);
 				}
                 else if (valueType.FullName == "System.Collections.Hashtable")
                 {
-                    Debug.WriteLine($"JArray(Array source) - valueType is Hashtable - calling JArray.Serialize(valueType, value)");
-
                     Items[i] = JsonObject.Serialize(valueType, (Hashtable)value);
                 }
                 else
 				{
-					Debug.WriteLine($"JArray(Array source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
-					
-					Items[i] = JsonObject.Serialize(valueType, value); ;
+					Items[i] = JsonObject.Serialize(valueType, value);
 				}
 			}
-
-			Debug.WriteLine($"JArray(Array source) - Finished");
 		}
 
 		private JsonArray(ArrayList source)
@@ -91,8 +75,6 @@ namespace nanoFramework.Json
 			{
 				if (item == null)
 				{
-					Debug.WriteLine($"JArray(ArrayList source) - value is null");
-
 					Items[index++] = new JsonValue(null);
 
 					continue;
@@ -103,38 +85,26 @@ namespace nanoFramework.Json
                 if (valueType == null)
                 {
                     //TODO: handle nulls
-                    throw new Exception($"JArray(ArrayList source) - value.GetType() returned null");
+                    throw new DeserializationException();
                 }
-
-                Debug.WriteLine($"JArray(ArrayList source) - valueType: {valueType.Name} ");
 
                 if ((valueType.IsValueType) || (valueType == typeof(string)))
                 {
-                    Debug.WriteLine($"JArray(ArrayList source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
-
                     Items[index++] = JsonValue.Serialize(valueType, item);
                 }
                 else if (valueType.IsArray)
                 {
-                    Debug.WriteLine($"JArray(ArrayList source) - valueType is Array - calling JArray.Serialize(valueType, value)");
-
                     Items[index++] = Serialize(valueType, item);
                 }
 				else if (valueType.FullName == "System.Collections.ArrayList")
 				{
-					Debug.WriteLine($"JArray(ArrayList source) - valueType is ArrayList - calling JsonArrayListAttribute.Serialize(valueType, value)");
-
 					Items[index++] = Serialize(valueType, (ArrayList)item);
 				}
 				else
                 {
-                    Debug.WriteLine($"JArray(ArrayList source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
-
-                    Items[index++] = JsonObject.Serialize(valueType, item); ;
+                    Items[index++] = JsonObject.Serialize(valueType, item);
                 }
             }
-
-			Debug.WriteLine($"JArray(ArrayList source) - Finished");
 		}
 
         public int Length => Items.Length;

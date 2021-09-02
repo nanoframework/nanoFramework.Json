@@ -9,7 +9,6 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using System.Diagnostics;
 #if NANOFRAMEWORK_1_0
 using Windows.Storage.Streams;
 #endif
@@ -41,7 +40,6 @@ namespace nanoFramework.Json
         internal static SerializationCtx SerializationContext = null;
         internal static object SyncObj = new();
 
-
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
@@ -50,16 +48,12 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
-            Debug.WriteLine($"Serialize(object oSource) - oSource.GetType(): {oSource.GetType().Name}  oSource.ToString(): {oSource}");
-            
             var type = oSource.GetType();
             
             if (type.IsArray)
             {
                 JsonToken retToken = JsonArray.Serialize(type, oSource);
-                
-                Debug.WriteLine($"Serialize(object oSource) - finished after calling JArray.Serialize() ");
-                
+               
                 return retToken.ToString();
             }
             else
@@ -74,8 +68,6 @@ namespace nanoFramework.Json
                 {
                     retToken = JsonObject.Serialize(type, oSource);
                 }
-
-                Debug.WriteLine($"Serialize(object oSource) - finished after calling JObject.Serialize() ");
 
                 return retToken.ToString();
             }
@@ -138,50 +130,31 @@ namespace nanoFramework.Json
 
 #endif
 
-        private static string debugIndent = $"PopulateObject() - ";      // PopulateObject() goes recursive - this cleans up the debug output
-        private static readonly int debugOutdent = 10;
-
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
         {
-            debugIndent = "          " + debugIndent;
-
-            // Simple message to make sure we get to this point - be careful with this - displaying null values causes the device to hang & makes debugging problematic
-            Debug.WriteLine($"{debugIndent} Start - ");        
-
             if (
                 (rootToken == null) 
                 || (rootType == null) 
                 || (rootPath == null))
             {
-                throw new Exception($"PopulateObject() - All parameters must be non-null.  rootToken: {(rootToken != null ? rootToken.GetType().Name : "null")}   rootType: {(rootType != null ? rootType.Name : "null")}   rootPath: {(rootPath ?? "null")}");
+                // All parameters must be non-null
+                throw new DeserializationException();
             }
 
             try
             {
-                // Leave the debug here in case future testing reveals trouble - maybe get rid of it at some point
-                Debug.WriteLine($"{debugIndent} rootToken is a {rootToken.GetType().Name}  rootType: {rootType.Name}   rootPath: {rootPath}");
-               
                 Type rootElementType = rootType.GetElementType();
 
                 if (rootToken is JsonObject rootObject)
                 {
                     bool isHashtable = false;
 
-                    if (rootElementType == null)
+                    if (rootElementType == null
+                        && rootType.FullName == "System.Collections.Hashtable")
                     {
-                        // check if this is an Hashtable
-                        if (rootType.FullName == "System.Collections.Hashtable")
-                        {
-                            isHashtable = true;
+                        isHashtable = true;
 
-                            rootElementType = rootType;
-
-                            Debug.WriteLine($"{debugIndent} rootType: {rootType.Name}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"{debugIndent} rootType: {rootType.Name}  rootType.GetElementType(): {rootType.GetElementType().Name}");
+                        rootElementType = rootType;
                     }
 
                     if (isHashtable)
@@ -210,11 +183,6 @@ namespace nanoFramework.Json
                             }
                         }
 
-                        Debug.WriteLine($"{debugIndent} created Hashtable by calling CreateInstance() with rootType.GetElementType()");
-
-                        // 'Outdent' before returning
-                        debugIndent = debugIndent.Substring(debugOutdent);
-
                         return rootInstance;
                     }
                     else
@@ -223,8 +191,6 @@ namespace nanoFramework.Json
                         // Create rootInstance from the rootType's constructor
                         object rootInstance = null;
 
-                        Debug.WriteLine($"{debugIndent} create rootInstance from rootType: {rootType.Name} using GetConstructor() & Invoke()");
-
                         // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
                         Type[] types = { };
 
@@ -232,34 +198,29 @@ namespace nanoFramework.Json
 
                         if (ci == null)
                         {
-                            throw new Exception($"PopulateObject() - failed to create target instance.   rootType: {rootType.Name} ");
+                            // failed to create target instance
+                            throw new DeserializationException();
                         }
 
                         rootInstance = ci.Invoke(null);
 
-                        Debug.WriteLine($"{debugIndent} rootInstance created.  rootInstance.GetType(): {(rootInstance?.GetType()?.Name != null ? rootInstance.GetType().Name : "null")}");
-
                         // If we haven't successfully created rootInstance, bail out
                         if (rootInstance == null)
                         {
-                            throw new Exception($"PopulateObject() - failed to create target instance from rootType: {rootType.Name} ");
+                            // failed to create target instance from rootType
+                            throw new DeserializationException();
                         }
 
                         if ((rootObject == null) || (rootObject.Members == null))
                         {
-                            throw new Exception($"PopulateObject() - failed to create target instance from rootType: {rootType.Name} ");
+                            // failed to create target instance from rootType
+                            throw new DeserializationException();
                         }
 
                         // Process all members for this rootObject
-                        Debug.WriteLine($"{debugIndent} Entering rootObject.Members loop ");
-
                         foreach (var m in rootObject.Members)
                         {
-                            Debug.WriteLine($"{debugIndent} Process rootObject.Member");
-
                             var memberProperty = (JsonProperty)m;
-
-                            Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty.Name ?? "null"} ");
 
                             string memberPropertyName = memberProperty.Name;
 
@@ -289,8 +250,6 @@ namespace nanoFramework.Json
 
                                 if (memberPropGetMethod == null)
                                 {
-                                    Debug.WriteLine($"PopulateObject() - failed to create memberType.  {rootType.Name}.GetMethod() is null. Possibly this property doesn't exist.");
-
                                     continue;
                                 }
                                 else
@@ -300,21 +259,17 @@ namespace nanoFramework.Json
 
                                     if (memberType == null)
                                     {
-                                        throw new Exception($"PopulateObject() - failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.");
+                                        // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
+                                        throw new DeserializationException();
                                     }
 
                                     memberIsProperty = true;
-
-                                    Debug.WriteLine($"{debugIndent}     memberType:  {memberType.Name} ");
-                                    Debug.WriteLine($"{debugIndent}     memberPropGetMethod.Name:  {memberPropertyName}  memberPropGetMethod.ReturnType:  {memberPropGetMethod.ReturnType.Name}");
                                 }
                             }
                             // Process the member based on JObject, JValue, or JArray
                             if (memberProperty.Value is JsonObject @object)
                             {
                                 // Call PopulateObject() for this member - i.e. recursion
-                                Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
-
                                 var memberPath = rootPath;
 
                                 if (memberPath[memberPath.Length - 1] == '/')
@@ -352,8 +307,6 @@ namespace nanoFramework.Json
                                     }
 
                                     memberObject = table;
-
-                                    Debug.WriteLine($"{debugIndent}     populated the {memberPropertyName} Hashtable");
                                 }
                                 else
                                 {
@@ -368,22 +321,13 @@ namespace nanoFramework.Json
                                 {
                                     memberFieldInfo.SetValue(rootInstance, memberObject);
                                 }
-
-                                Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName} to memberObject");
                             }
                             else if (memberProperty.Value is JsonValue memberPropertyValue)
                             {
-                                // Don't need any more info - populate the member using memberSetMethod.Invoke()
-                                Debug.WriteLine($"{debugIndent}     memberProperty.Value is JValue");
-
                                 if (memberType != typeof(DateTime))
                                 {
-                                    Debug.WriteLine($"{debugIndent}     attempting to set rootInstance by invoking this member's set method for properties  or  SetValue() for fields");
-
                                     if (memberPropertyValue.Value == null)
                                     {
-                                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is null");
-
                                         if (memberIsProperty)
                                         {
                                             if (!memberPropGetMethod.ReturnType.IsValueType)
@@ -394,7 +338,6 @@ namespace nanoFramework.Json
                                             {
                                                 switch (memberPropGetMethod.ReturnType.Name)
                                                 {
-
                                                     case "Single":
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { float.NaN });
                                                         break;
@@ -414,7 +357,6 @@ namespace nanoFramework.Json
                                             object obj = null;
                                             memberFieldInfo.SetValue(rootInstance, obj);
                                         }
-                                        Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  null");
                                     }
                                     else
                                     {
@@ -422,14 +364,8 @@ namespace nanoFramework.Json
                                         {
                                             JsonValue val = memberPropertyValue;
 
-                                            Debug.WriteLine($"{debugIndent}     setting value with memberPropSetMethod: {memberPropSetMethod.Name}   Declaring Type: {memberPropSetMethod.DeclaringType}  Value: {memberPropertyValue.Value}");
-
-                                            Debug.WriteLine($"{debugIndent}     memberProperty.Value.Value.Type: {val.Value.GetType().Name}  memberProperty.Value.Value: {val.Value}");
-
                                             if (val.Value.GetType() != memberType)
                                             {
-                                                Debug.WriteLine($"{debugIndent}     need to change memberProperty.Value.Value.Type to {memberType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
-
                                                 switch (memberType.Name)
                                                 {
                                                     case nameof(Int16):
@@ -458,8 +394,6 @@ namespace nanoFramework.Json
                                         {
                                             memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
                                         }
-
-                                        Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  {memberPropertyValue.Value} ");
                                     }
                                 }
                                 else
@@ -472,14 +406,10 @@ namespace nanoFramework.Json
                                     {
                                         memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
                                     }
-
-                                    Debug.WriteLine($"{debugIndent}     successfully initialized member {memberPropertyName}  to  {memberPropertyValue} ");
                                 }
                             }
                             else if (memberProperty.Value is JsonArray array)
                             {
-                                Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
-
                                 // Need this type when we try to populate the array elements
                                 Type memberElementType = memberType.GetElementType();
                                 bool isArrayList = false;
@@ -500,81 +430,60 @@ namespace nanoFramework.Json
                                 // Create a JToken[] array for Items associated for this memberProperty.Value
                                 JsonToken[] memberItems = memberValueArray.Items;
 
-                                Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
-
                                 foreach (JsonToken item in memberItems)
                                 {
                                     if (item is JsonValue value)
                                     {
                                         if (memberPropGetMethod == null)
                                         {
-                                            Debug.WriteLine($"{debugIndent}         memberPropGetMethod is null - item is a JsonValue: {value.Value}  type: {value.Value.GetType().Name} - THIS SHOULD NEVER HAPPEN ********************");
-                                            throw new NotSupportedException($"PopulateObject() - {rootType.Name} must have a valid Property Get Method");
+                                            // {rootType.Name} must have a valid Property Get Method
+                                            throw new DeserializationException();
                                         }
-                                        Debug.WriteLine($"{debugIndent}         item is a JsonValue: {value.Value}  type: {value.Value.GetType().Name}- add it to memberValueArrayList");
+                                        
                                         if (value.Value.GetType() != memberPropGetMethod.ReturnType)
                                         {
-                                            Debug.WriteLine($"{debugIndent}         need to change item.Value.Type to {memberPropGetMethod.ReturnType} to match memberPropGetMethod.ReturnType - why are these are different?!?");
                                             if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
-                                                Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to Int16 & added to memberValueArrayList");
                                             }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
-                                                Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
                                             }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
-                                                Debug.WriteLine($"{debugIndent}         item is a JsonValue - converted to byte & added to memberValueArrayList");
                                             }
                                             else
                                             {
                                                 memberValueArrayList.Add(value.Value);
-                                                Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
                                             }
                                         }
                                         else
                                         {
                                             memberValueArrayList.Add(value.Value);
-                                            Debug.WriteLine($"{debugIndent}         item is a JsonValue - added to memberValueArrayList");
                                         }
                                     }
-                                    else if (item is JsonToken)
+                                    else if (item != null)
                                     {
                                         // sanity check for null memberElementType
                                         if (memberElementType == null)
                                         {
-                                            Debug.WriteLine($"{debugIndent}         memberElementType is null - THIS SHOULD NEVER HAPPEN ********************");
-                                            throw new NotSupportedException($"PopulateObject() - memberElementType for memberType: {memberType.Name} is null and this can't happen.");
+                                            // {memberType.Name} is null and this can't happen.
+                                            throw new DeserializationException();
                                         }
 
-                                        // Since memberProperty.Value is a JsonnArray:
-                                        // 		memberType        is the array   type (i.e. foobar[])
-                                        // 		memberElementType is the element type (i.e. foobar)		- use this to call PopulateObject()
-
-                                        string memberElementPath = rootPath + "/" + memberProperty.Name + "/" + memberElementType.Name;
-
-                                        Debug.WriteLine($"{debugIndent}         memberType: {memberType.Name}   memberElementType: {memberElementType.Name} ");
-                                        Debug.WriteLine($"{debugIndent}         calling PopulateObject(JsonToken item, {memberElementType.Name}, {memberElementPath}) ");
+                                        string memberElementPath = $"{rootPath}/{memberProperty.Name}/{memberElementType.Name}";
 
                                         var itemObj = PopulateObject(item, memberElementType, memberElementPath);
 
-                                        Debug.WriteLine($"{debugIndent}         item is a JsonToken - add it to memberValueArrayList");
-
                                         memberValueArrayList.Add(itemObj);
-
-                                        Debug.WriteLine($"{debugIndent}         item is a JsonToken - added to memberValueArrayList");
                                     }
                                     else
                                     {
-                                        Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                                        // item is not a JToken or a JValue - this case is not handled
                                     }
                                 }
-
-                                Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
 
                                 // Fill targetArray with the memberValueArrayList
                                 if (isArrayList)
@@ -585,8 +494,6 @@ namespace nanoFramework.Json
                                     {
                                         targetArray.Add(memberValueArrayList[i]);
                                     }
-
-                                    Debug.WriteLine($"{debugIndent}       copied memberValueArrayList into the targetArray");
 
                                     // Populate rootInstance
                                     if (memberIsProperty)
@@ -601,20 +508,16 @@ namespace nanoFramework.Json
                                 else
                                 {
                                     // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
-                                    Debug.WriteLine($"{debugIndent}       create targetArray - an Array of memberElementType: {memberElementType} objects - use Array.CreateInstance({memberElementType}, {memberValueArray.Length}");
 
                                     Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
 
                                     if (targetArray == null)
                                     {
-                                        throw new Exception("PopulateObject() - failed to create Array of type: {memberElementType}[]");
+                                        // failed to create Array of type: {memberElementType}[]
+                                        throw new DeserializationException();
                                     }
 
-                                    Debug.WriteLine($"{debugIndent}       targetArray created using CreateInstance().  targetArray.GetType().Name: {(targetArray?.GetType()?.Name != null ? targetArray.GetType().Name : "null")}");
-
                                     memberValueArrayList.CopyTo(targetArray);
-
-                                    Debug.WriteLine($"{debugIndent}       copied memberValueArrayList into the targetArray");
 
                                     // Populate rootInstance
                                     if (memberIsProperty)
@@ -626,14 +529,8 @@ namespace nanoFramework.Json
                                         memberFieldInfo.SetValue(rootInstance, targetArray);
                                     }
                                 }
-
-                                Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
                             }
                         }
-
-                        debugIndent = debugIndent.Substring(debugOutdent);     // 'Outdent' before returning
-
-                        Debug.WriteLine($"{debugIndent} Returning rootInstance");
 
                         return rootInstance;
                     }
@@ -650,21 +547,15 @@ namespace nanoFramework.Json
                             isArrayList = true;
 
                             rootElementType = rootType;
-
-                            Debug.WriteLine($"{debugIndent} rootType: {rootType.Name}");
                         }
                         else
                         {
-                            throw new NotSupportedException($"PopulateObject() - For arrays, type: {rootType.Name} must have a valid element type");
+                            // For arrays, type: {rootType.Name} must have a valid element type
+                            throw new DeserializationException();
                         }
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"{debugIndent} rootType: {rootType.Name}  rootType.GetElementType(): {rootType.GetElementType().Name}");
                     }
                    
                     // Create & populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue 
-                    Debug.WriteLine($"{debugIndent} Create and populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue");
                     
                     ArrayList rootArrayList = new();
                     
@@ -676,20 +567,15 @@ namespace nanoFramework.Json
                             {
                                 rootArrayList.Add(value.Value);
                             }
-                            else if (item is JsonToken)
+                            else if (item != null)
                             {
                                 rootArrayList = PopulateArrayList(item);
                             }
                             else
                             {
-                                throw new NotImplementedException();
+                                throw new DeserializationException();
                             }
                         }
-                           
-                        Debug.WriteLine($"{debugIndent} created Array targetArray by calling CreateInstance() with rootType.GetElementType()");
-
-                        // 'Outdent' before returning
-                        debugIndent = debugIndent.Substring(debugOutdent);
 
                         return rootArrayList;
                     }
@@ -699,115 +585,76 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                Debug.WriteLine($"{debugIndent} item.Type is JsonValue  -  item.Value type: {value.Value.GetType().Name}.   Adding it to rootArrayList");
-
                                 if (value.Value.GetType() != rootType.GetElementType())
                                 {
-                                    Debug.WriteLine($"{debugIndent}     need to change item.Value.Type to {rootType.GetElementType()} to match rootType.GetElementType() - why are these are different?!?");
-
                                     switch (rootType.GetElementType().Name)
                                     {
                                         case nameof(Int16):
                                             rootArrayList.Add(Convert.ToInt16(value.Value.ToString()));
-
-                                            Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - Converted to Int16 & added to rootArrayList");
-
                                             break;
 
                                         case nameof(Byte):
                                             rootArrayList.Add(Convert.ToByte(value.Value.ToString()));
-
-                                            Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - Converted to Byte & added to rootArrayList");
-
                                             break;
 
                                         default:
                                             rootArrayList.Add(value.Value);
-
-                                            Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");
-
                                             break;
                                     }
                                 }
                                 else
                                 {
                                     rootArrayList.Add(value.Value);
-
-                                    Debug.WriteLine($"{debugIndent}         item.Type is a JsonValue - added to rootArrayList");
                                 }
                             }
                             else
                             {
                                 if (isArrayList)
                                 {
-                                    Debug.WriteLine($"{debugIndent} Call PopulateObject() for ArrayList");
-
                                     rootArrayList = PopulateArrayList(item);
-
-                                    Debug.WriteLine($"{debugIndent} added object returned from PopulateArrayList() to rootArrayList");
                                 }
                                 else
                                 {
-                                    Debug.WriteLine($"{debugIndent} item.Type is {item.GetType().Name} - use rootElementType to call PopulateObject()");
-
                                     // Pass rootElementType and rootPath with rootElementType appended to PopulateObject for this item 
                                     string itemPath = rootPath;
 
                                     if (itemPath[itemPath.Length - 1] == '/')
                                     {
-                                        itemPath += rootElementType.Name;                   // Don't need to add a slash before appending rootElementType
+                                        // Don't need to add a slash before appending rootElementType
+                                        itemPath += rootElementType.Name;
                                     }
                                     else
                                     {
-                                        itemPath = itemPath + '/' + rootElementType.Name;   // Need to add a slash before appending rootElementType
+                                        // Need to add a slash before appending rootElementType
+                                        itemPath = itemPath + '/' + rootElementType.Name;
                                     }
 
                                     var itemObj = PopulateObject(item, rootElementType, itemPath);
 
                                     rootArrayList.Add(itemObj);
-
-                                    Debug.WriteLine($"{debugIndent} added object of type: {itemObj.GetType().Name} (returned from PopulateObject()) to rootArrayList");
                                 }
                             }
                         }
-
-                        Debug.WriteLine($"{debugIndent} finished creating rootArrayList - copy rootArrayList to targetArray");
 
                         Array targetArray = Array.CreateInstance(rootType.GetElementType(), rootArray.Length);
 
                         if (targetArray == null)
                         {
-                            throw new Exception($"PopulateObject() - CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}");
+                            //  CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}
+                            throw new DeserializationException();
                         }
 
-                        Debug.WriteLine($"{debugIndent} created Array targetArray by calling CreateInstance() with rootType.GetElementType()");
-                        Debug.WriteLine($"{debugIndent} copying rootArrayList to targetArray.   rootArrayList.Type: {rootArrayList.GetType().Name}  targetArray.Type {targetArray.GetType().Name}");
-
                         rootArrayList.CopyTo(targetArray);
-
-                        Debug.WriteLine($"{debugIndent} populated targetArray with the contents of rootArrayList");
-
-                        // 'Outdent' before returning
-                        debugIndent = debugIndent.Substring(debugOutdent);
 
                         return targetArray;
                     }
 
-                }   // end of  (if rootToken is JArray)
-
-                // 'Outdent' before returning
-                debugIndent = debugIndent.Substring(debugOutdent);
+                }
 
                 return null;
             }
-            catch (Exception ex)
+            catch
             {
-                
-                Debug.WriteLine($"{debugIndent} Exception: {ex.Message}");
-
-                // 'Outdent' before returning
-                debugIndent = debugIndent.Substring(debugOutdent);
-                
                 return null;
             }
         }
@@ -817,46 +664,30 @@ namespace nanoFramework.Json
             var result = new ArrayList();
 
             // Process all members for this rootObject
-            Debug.WriteLine($"{debugIndent} Entering rootObject.Members loop ");
-
             if (rootToken is JsonObject rootObject)
             {
                 Hashtable mainTable = new();
 
                 foreach (var m in rootObject.Members)
                 {
-                    Debug.WriteLine($"{debugIndent} Process rootObject.Member");
-
                     var memberProperty = (JsonProperty)m;
 
                     if (memberProperty == null)
                     {
-                        Debug.WriteLine($"memberProperty is null and can't be");
-
                         throw new NotSupportedException();
                     }
-
-                    Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
                     // Process the member based on JObject, JValue, or JArray
                     if (memberProperty.Value is JsonObject)
                     {
-                        // Call PopulateObject() for this member - i.e. recursion
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
-
-                        throw new NotImplementedException();
+                        throw new DeserializationException();
                     }
                     else if (memberProperty.Value is JsonValue value)
                     {
-                        // Don't need any more info 
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is JValue");
-
                         mainTable.Add(memberProperty.Name, value.Value);
                     }
                     else if (memberProperty.Value is JsonArray jsonArrayAttribute)
                     {
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
-
                         // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
                         var memberValueArray = jsonArrayAttribute;
 
@@ -865,8 +696,6 @@ namespace nanoFramework.Json
 
                         // Create a JToken[] array for Items associated for this memberProperty.Value
                         JsonToken[] memberItems = memberValueArray.Items;
-
-                        //Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
 
                         foreach (JsonToken item in memberItems)
                         {
@@ -880,16 +709,12 @@ namespace nanoFramework.Json
                             }
                             else
                             {
-                                Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                                // item is not a JToken or a JValue - this case is not handled
                             }
                         }
 
-                        Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
-
                         // add to main table
                         mainTable.Add(memberProperty.Name, memberValueArrayList);
-
-                        Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
                     }
                 }
 
@@ -898,15 +723,11 @@ namespace nanoFramework.Json
             }
             else if (rootToken is JsonArray array)
             {
-                Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
-
                 // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
                 var memberValueArrayList = new ArrayList();
 
                 // Create a JToken[] array for Items associated for this memberProperty.Value
                 JsonToken[] memberItems = array.Items;
-
-                //Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
 
                 foreach (JsonToken item in memberItems)
                 {
@@ -920,15 +741,11 @@ namespace nanoFramework.Json
                     }
                     else
                     {
-                        Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                        // item is not a JToken or a JValue - this case is not handled
                     }
                 }
 
-                Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
-
                 result = memberValueArrayList;
-
-                Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
             }
             else
             {
@@ -943,31 +760,22 @@ namespace nanoFramework.Json
             var result = new Hashtable();
 
             // Process all members for this rootObject
-            Debug.WriteLine($"{debugIndent} Entering rootObject.Members loop ");
 
             if (rootToken is JsonObject rootTokenObjectAttribute)
             {
                 foreach (var m in rootTokenObjectAttribute.Members)
                 {
-                    Debug.WriteLine($"{debugIndent} Process rootObject.Member");
-
                     var memberProperty = (JsonProperty)m;
 
                     if (memberProperty == null)
                     {
-                        Debug.WriteLine($"memberProperty is null and can't be");
-
                         throw new NotSupportedException();
                     }
-
-                    Debug.WriteLine($"{debugIndent}     memberProperty.Name:  {memberProperty?.Name ?? "null"} ");
 
                     // Process the member based on JObject, JValue, or JArray
                     if (memberProperty.Value is JsonObject memberPropertyValue)
                     {
                         // Call PopulateObject() for this member - i.e. recursion
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is JObject");
-
                         result.Add(memberProperty.Name, PopulateHashtable(memberPropertyValue));
                     }
                     else if (memberProperty.Value is JsonValue memberPropertyJsonValue)
@@ -983,8 +791,6 @@ namespace nanoFramework.Json
                     }
                     else if (memberProperty.Value is JsonArray jsonArrayAttribute)
                     {
-                        Debug.WriteLine($"{debugIndent}     memberProperty.Value is a JArray");
-
                         // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
                         var memberValueArray = jsonArrayAttribute;
 
@@ -993,8 +799,6 @@ namespace nanoFramework.Json
 
                         // Create a JToken[] array for Items associated for this memberProperty.Value
                         JsonToken[] memberItems = memberValueArray.Items;
-
-                        //Debug.WriteLine($"{debugIndent}       copy {memberItems.Length} memberItems from memberValueArray into memberValueArrayList - call PopulateObject() for items that aren't JValue");
 
                         foreach (JsonToken item in memberItems)
                         {
@@ -1008,16 +812,12 @@ namespace nanoFramework.Json
                             }
                             else
                             {
-                                Debug.WriteLine($"{debugIndent}         item is not a JToken or a JValue - this case is not handled");
+                                // item is not a JToken or a JValue - this case is not handled
                             }
                         }
 
-                        Debug.WriteLine($"{debugIndent}       {memberItems.Length} memberValueArray.Items copied into memberValueArrayList - i.e. contents of memberProperty.Value");
-
                         // add to main table
                         result.Add(memberProperty.Name, memberValueArrayList);
-
-                        Debug.WriteLine($"{debugIndent}       populated the rootInstance object with the contents of targetArray");
                     }
                 }
             }
@@ -1065,9 +865,7 @@ namespace nanoFramework.Json
             token = GetNextToken();
 
             // Deserialize the json input data in jsonBytes[]
-            //DisplayDebug($"Deserialize() - jsonPos: {jsonPos}   jsonBytes.Length: {jsonBytes.Length}");
             JsonToken result;
-            //DisplayDebug($"Deserialize() - JsonConverter - Deserialize() - GetNextToken() returned:  token.TType: {token.TType.TokenTypeToString()}  token.TValue: {token.TValue}");
 
             switch (token.TType)
             {
@@ -1080,7 +878,8 @@ namespace nanoFramework.Json
                     }
                     else if (token.TType != TokenType.End && token.TType != TokenType.Error)
                     {
-                        throw new Exception("unexpected content after end of object");
+                        // unexpected content after end of object
+                        throw new DeserializationException();
                     }
                     break;
 
@@ -1093,22 +892,26 @@ namespace nanoFramework.Json
                     }
                     else if (token.TType != TokenType.End && token.TType != TokenType.Error)
                     {
-                        throw new Exception("unexpected content after end of array");
+                        // unexpected content after end of array
+                        throw new DeserializationException();
                     }
 
                     break;
 
                 default:
-                    throw new Exception("unexpected initial token in json parse");
+                    // unexpected initial token in json parse
+                    throw new DeserializationException();
             }
 
             if (token.TType != TokenType.End)
             {
-                throw new Exception("unexpected end token in json parse");
+                // unexpected end token in json parse
+                throw new DeserializationException();
             }
             else if (token.TType == TokenType.Error)
             {
-                throw new Exception("unexpected lexical token during json parse");
+                // unexpected lexical token during json parse
+                throw new DeserializationException();
             }
 
             return result;
@@ -1125,7 +928,8 @@ namespace nanoFramework.Json
                 // Get the name from the name:value pair
                 if (token.TType != TokenType.String)
                 {
-                    throw new Exception("expected label");
+                    // expected label
+                    throw new DeserializationException();
                 }
 
                 var propName = token.TValue;
@@ -1134,7 +938,8 @@ namespace nanoFramework.Json
 
                 if (token.TType != TokenType.Colon)
                 {
-                    throw new Exception("expected colon");
+                    // expected colon
+                    throw new DeserializationException();
                 }
 
                 // Get the value from the name:value pair
@@ -1149,15 +954,17 @@ namespace nanoFramework.Json
                     token = GetNextToken();
                 }
 
-            } //TODO!!! Comma removed?
+            }
 
             if (token.TType == TokenType.Error)
             {
-                throw new Exception("unexpected token in json object");
+                // unexpected token in json object
+                throw new DeserializationException();
             }
             else if (token.TType != TokenType.RBrace)
             {
-                throw new Exception("unterminated json object");
+                // unterminated json object
+                throw new DeserializationException();
             }
 
             return result;
@@ -1179,18 +986,21 @@ namespace nanoFramework.Json
 
                     if (token.TType != TokenType.Comma && token.TType != TokenType.RArray)
                     {
-                        throw new Exception("badly formed array");
+                        // badly formed array
+                        throw new DeserializationException();
                     }
                 }
-            } //TODO!!! comma removed?
+            }
 
             if (token.TType == TokenType.Error)
             {
-                throw new Exception("unexpected token in array");
+                // unexpected token in array
+                throw new DeserializationException();
             }
             else if (token.TType != TokenType.RArray)
             {
-                throw new Exception("unterminated json array");
+                // unterminated json array
+                throw new DeserializationException();
             }
 
             var result = new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
@@ -1248,7 +1058,8 @@ namespace nanoFramework.Json
                 return ParseArray(ref token);
             }
 
-            throw new Exception("invalid value found during json parse");
+            // invalid value found during json parse
+            throw new DeserializationException();
         }
 
         private static LexToken GetNextToken()
@@ -1260,172 +1071,159 @@ namespace nanoFramework.Json
 
         private static LexToken GetNextTokenInternal()
         {
-            try
+            StringBuilder sb = null;
+
+            char openQuote = '\0';
+            char ch;
+
+            while (true)
             {
-                StringBuilder sb = null;
-
-                char openQuote = '\0';
-                char ch = ' ';
-
-                while (true)
+                if (jsonPos >= jsonBytes.Length)
                 {
-                    if (jsonPos >= jsonBytes.Length)
+                    return EndToken(sb);
+                }
+
+                ch = (char)jsonBytes[jsonPos++];
+
+                // Handle json escapes
+                bool escaped = false;
+
+                if (ch == '\\')
+                {
+                    escaped = true;
+                    ch = (char)jsonBytes[jsonPos++];
+
+                    if (ch == (char)0xffff)
                     {
-                        Debug.WriteLine($"GetNextTokenInternal() - no more data - call EndToken()");
                         return EndToken(sb);
                     }
 
-                    ch = (char)jsonBytes[jsonPos++];
-
-                    // Handle json escapes
-                    bool escaped = false;
-
-                    if (ch == '\\')
+                    //TODO: replace with a mapping array? This switch is really incomplete.
+                    ch = ch switch
                     {
-                        escaped = true;
-                        ch = (char)jsonBytes[jsonPos++];
+                        't' => '\t',
+                        'r' => '\r',
+                        'n' => '\n',
+                        // unsupported escape
+                        _ => throw new DeserializationException(),
+                    };
+                }
+
+                if ((sb != null) && ((ch != openQuote) || (escaped)))
+                {
+                    sb.Append(ch);
+                }
+                else if (IsNumberIntroChar(ch))
+                {
+                    sb = new StringBuilder();
+
+                    while (IsNumberChar(ch))
+                    {
+                        sb.Append(ch);
+
+                        // nanoFramework doesn't support Peek() for Streams or DataReaders
+                        // This is why we converted everything to a byte[] instead of trying to work directly from a Stream or a DataReader
+                        // Look at the next byte but don't advance jsonPos unless we're still working on the number
+                        // i.e. 'peek' to see if we're at the end of the number
+                        ch = (char)jsonBytes[jsonPos];
+
+                        if (IsNumberChar(ch))
+                        {
+                            jsonPos++;                      // We're still working on the number - advance jsonPos
+                        }
 
                         if (ch == (char)0xffff)
                         {
                             return EndToken(sb);
                         }
-
-                        //TODO: replace with a mapping array? This switch is really incomplete.
-                        ch = ch switch
-                        {
-                            '\'' => '\'',
-                            '"' => '"',
-                            't' => '\t',
-                            'r' => '\r',
-                            'n' => '\n',
-                            _ => throw new Exception("unsupported escape"),
-                        };
                     }
 
-                    if ((sb != null) && ((ch != openQuote) || (escaped)))
+                    // Note that we don't claim that this is a well-formed number
+                    return new LexToken() { TType = TokenType.Number, TValue = sb.ToString() };
+                }
+                else
+                {
+                    switch (ch)
                     {
-                        sb.Append(ch);
-                    }
-                    else if (IsNumberIntroChar(ch))
-                    {
-                        sb = new StringBuilder();
+                        case '{':
+                            return new LexToken() { TType = TokenType.LBrace, TValue = null };
 
-                        while (IsNumberChar(ch))
-                        {
-                            sb.Append(ch);
+                        case '}':
+                            return new LexToken() { TType = TokenType.RBrace, TValue = null };
 
-                            // nanoFramework doesn't support Peek() for Streams or DataReaders
-                            // This is why we converted everything to a byte[] instead of trying to work directly from a Stream or a DataReader
-                            // Look at the next byte but don't advance jsonPos unless we're still working on the number
-                            // i.e. 'peek' to see if we're at the end of the number
-                            ch = (char)jsonBytes[jsonPos];
+                        case '[':
+                            return new LexToken() { TType = TokenType.LArray, TValue = null };
 
-                            if (IsNumberChar(ch))
+                        case ']':
+                            return new LexToken() { TType = TokenType.RArray, TValue = null };
+
+                        case ':':
+                            return new LexToken() { TType = TokenType.Colon, TValue = null };
+
+                        case ',':
+                            return new LexToken() { TType = TokenType.Comma, TValue = null };
+
+                        case '"':
+                        case '\'':
+                            if (sb == null)
                             {
-                                jsonPos++;                      // We're still working on the number - advance jsonPos
+                                openQuote = ch;
+                                sb = new StringBuilder();
                             }
-
-                            if (ch == (char)0xffff)
+                            else
                             {
-                                return EndToken(sb);
-                            }
-                        }
+                                // We're building a string and we hit a quote character.
+                                // The ch must match openQuote, or otherwise we should have eaten it above as string content
 
-                        // Note that we don't claim that this is a well-formed number
-                        return new LexToken() { TType = TokenType.Number, TValue = sb.ToString() };
-                    }
-                    else
-                    {
-                        switch (ch)
-                        {
-                            case '{':
-                                return new LexToken() { TType = TokenType.LBrace, TValue = null };
+                                var stringValue = sb.ToString();
 
-                            case '}':
-                                return new LexToken() { TType = TokenType.RBrace, TValue = null };
-
-                            case '[':
-                                return new LexToken() { TType = TokenType.LArray, TValue = null };
-
-                            case ']':
-                                return new LexToken() { TType = TokenType.RArray, TValue = null };
-
-                            case ':':
-                                return new LexToken() { TType = TokenType.Colon, TValue = null };
-
-                            case ',':
-                                return new LexToken() { TType = TokenType.Comma, TValue = null };
-
-                            case '"':
-                            case '\'':
-                                if (sb == null)
+                                if (DateTimeExtensions.ConvertFromString(stringValue) != DateTime.MaxValue)
                                 {
-                                    openQuote = ch;
-                                    sb = new StringBuilder();
+                                    return new LexToken() { TType = TokenType.Date, TValue = stringValue };
                                 }
-                                else
-                                {
-                                    // We're building a string and we hit a quote character.
-                                    // The ch must match openQuote, or otherwise we should have eaten it above as string content
-                                    //Debug.Assert(ch == openQuote);
-
-                                    var stringValue = sb.ToString();
-
-                                    if (DateTimeExtensions.ConvertFromString(stringValue) != DateTime.MaxValue)
-                                    {
-                                        return new LexToken() { TType = TokenType.Date, TValue = stringValue };
-                                    }
 
                                 return new LexToken() { TType = TokenType.String, TValue = stringValue };
-                                }
-                                break;
+                            }
+                            break;
 
-                            case ' ':
-                            case '\t':
-                            case '\r':
-                            case '\n':
-                                break; // whitespace - go around again
+                        case ' ':
+                        case '\t':
+                        case '\r':
+                        case '\n':
+                            break; // whitespace - go around again
 
-                            case (char)0xffff:
-                                return EndToken(sb);
+                        case (char)0xffff:
+                            return EndToken(sb);
 
-                            default:
-                                // try to collect a token
-                                switch (ch.ToLower())
-                                {
-                                    case 't':
-                                        Expect('r');
-                                        Expect('u');
-                                        Expect('e');
-                                        return new LexToken() { TType = TokenType.True, TValue = null };
+                        default:
+                            // try to collect a token
+                            switch (ch.ToLower())
+                            {
+                                case 't':
+                                    Expect('r');
+                                    Expect('u');
+                                    Expect('e');
+                                    return new LexToken() { TType = TokenType.True, TValue = null };
 
-                                    case 'f':
-                                        Expect('a');
-                                        Expect('l');
-                                        Expect('s');
-                                        Expect('e');
-                                        return new LexToken() { TType = TokenType.False, TValue = null };
+                                case 'f':
+                                    Expect('a');
+                                    Expect('l');
+                                    Expect('s');
+                                    Expect('e');
+                                    return new LexToken() { TType = TokenType.False, TValue = null };
 
-                                    case 'n':
-                                        Expect('u');
-                                        Expect('l');
-                                        Expect('l');
-                                        return new LexToken() { TType = TokenType.Null, TValue = null };
+                                case 'n':
+                                    Expect('u');
+                                    Expect('l');
+                                    Expect('l');
+                                    return new LexToken() { TType = TokenType.Null, TValue = null };
 
-                                    default:
-                                        throw new Exception("unexpected character during json lexical parse");
-                                }
-                        }
+                                default:
+                                    // unexpected character during json lexical parse
+                                    throw new DeserializationException();
+                            }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"GetNextTokenInternal() - Exception caught");
-                Debug.WriteLine($"GetNextTokenInternal() - Exception: {e.Message}");
-                Debug.WriteLine($"GetNextTokenInternal() - StackTrace: {e.StackTrace}");
-
-                throw new Exception("something bad happened");
             }
         }
 
@@ -1435,7 +1233,8 @@ namespace nanoFramework.Json
 
             if (ch.ToLower() != expected)
             {
-                throw new Exception("unexpected character during json lexical parse");
+                // unexpected character during json lexical parse
+                throw new DeserializationException();
             }
         }
 
@@ -1452,9 +1251,9 @@ namespace nanoFramework.Json
         }
 
         // Legal first characters for numbers
-        private static bool IsNumberIntroChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' & ch <= '9');
+        private static bool IsNumberIntroChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' && ch <= '9');
 
         // Legal chars for 2..n'th position of a number
-        private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' & ch <= '9');
+        private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
     }
 }

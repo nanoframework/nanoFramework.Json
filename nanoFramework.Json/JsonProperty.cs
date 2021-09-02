@@ -38,22 +38,17 @@ namespace nanoFramework.Json
 
 				JsonToken token = Value;
 
-				if (token is JsonValue j)
-				{	
-					// Not all tokens are JValue - some are JObject or JArray
-					if (j.Value != null)
-					{
-						if (j.Value.GetType().Name == "Boolean") 
-						{
-							// need to convert Boolean values to lower case 
-							sb.Append(Value.ToString().ToLower());
+                if (token is JsonValue j
+                    && j.Value != null
+                    && j.Value.GetType().Name == "Boolean")
+                {
+                    // need to convert Boolean values to lower case 
+                    sb.Append(Value.ToString().ToLower());
 
-							return sb.ToString();
-						}
-					}
-				}
-				
-				sb.Append(Value.ToString());
+                    return sb.ToString();
+                }
+
+                sb.Append(Value.ToString());
 				
 				return sb.ToString();
 			}

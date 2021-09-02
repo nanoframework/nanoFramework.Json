@@ -40,33 +40,16 @@ namespace nanoFramework.Json
 			_members.Add(name.ToLower(), new JsonProperty(name, value));
 		}
 
-
-		private static string indent = "";
-
 		public static JsonObject Serialize(Type type, object oSource)
 		{
-			indent += "      ";         // Indent the debug output - this helps to show recursion
-		
-			Debug.WriteLine($"JObject.Serialize() - Start - type: {type.Name}    oSource.GetType(): {oSource.GetType().Name}");
-			
 			var result = new JsonObject();
 			MethodInfo[] methods;
-			Type elementType;
 
 			if (type.FullName == "System.Collections.Hashtable")
 			{
-				Debug.WriteLine($"JObject.Serialize() - type is Hashtable");
-
 				return Serialize((Hashtable)oSource);
 			}
 
-            if (type.IsArray)
-			{
-				elementType = type.GetElementType();
-			
-				Debug.WriteLine($"JObject.Serialize() - type is Array - elementType: {elementType?.Name ?? "null"} ");
-			}
-			
 			// Loop through all of this type's methods - find a get_ method that can be used to serialize oSource
 			methods = type.GetMethods();
 			
@@ -111,50 +94,25 @@ namespace nanoFramework.Json
 
 				var methodResult = m.Invoke(oSource, null);
 
-				// It was pretty tricky getting things to work - tried lots of different combinations - needed lots of debug - keep it in case future testing reveals trouble
-				// Code would be pretty simple without all this debug - maybe get rid of it at some point after things have been well proven
-
-				//TODO: debug helper does not handle null objects. Commented out for the time being!
-				//Debug.WriteLine($"JObject.Serialize() - methods loop - method: {m.Name}   methodResult.GetType(): {methodResult.GetType().Name}  methodResult: {methodResult.ToString()}  m.DeclaringType: {m.DeclaringType.Name}");
 				if (methodResult == null)
 				{
-					Debug.WriteLine($"JObject.Serialize() - methods loop - methodResult is null.  Calling JValue.Serialize({m.ReturnType.Name}, null) ");
 					result._members.Add(name, new JsonProperty(name, JsonValue.Serialize(m.ReturnType, null)));
-					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (
 					m.ReturnType.IsValueType 
 					|| m.ReturnType == typeof(string))
 				{
-					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType or string. Calling JValue.Serialize({m.ReturnType.Name}, {methodResult}) ");
-					
 					result._members.Add(name, new JsonProperty(name, JsonValue.Serialize(m.ReturnType, methodResult)));
-					
-					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JValue.Serialize(...)) results to result._members[]");
 				}
 				else if (m.ReturnType.IsArray)
 				{	
-					// Original code checked m.DeclaringType - this didn't work very well - checking m.ReturnType made all the difference
-					elementType = methodResult.GetType().GetElementType();
-					
-					// Tried lots of combinations to get this to work - used 'json2csharp.com' to verify the serialized result string - leave this debug here in case future testing reveals trouble  
-					Debug.WriteLine($"JObject.Serialize() - methods loop - m.ReturnType is ValueType.  Calling JArray.Serialize({m.ReturnType.Name}, {methodResult}) ");
-					
 					result._members.Add(name, new JsonProperty(name, JsonArray.Serialize(m.ReturnType, methodResult)));
-					
-					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({elementType.Name}, JArray.Serialize(...)) results to result._members[]");
 				}
 				else
 				{
-					Debug.WriteLine($"JObject.Serialize() - methods loop - calling JObject.Serialize({m.ReturnType.Name}, {methodResult}) ");
-					
 					result._members.Add(name, new JsonProperty(name, Serialize(m.ReturnType, methodResult)));
-					
-					Debug.WriteLine($"JObject.Serialize() - methods loop - added JProperty({name}, JObject.Serialize(...)) results to result._members[]");
 				}
 			}
-
-			Debug.WriteLine($"JObject.Serialize() - methods loop finished - start fields loop");
 
 			var fields = type.GetFields();
 			foreach (var f in fields)
@@ -195,18 +153,12 @@ namespace nanoFramework.Json
 						break;
 				}
 			}
-			Debug.WriteLine($"JObject.Serialize() - fields loop finished");
-			Debug.WriteLine($"JObject.Serialize() - Finished - type: {type.Name}");
-
-			indent = indent.Substring(6);     // 'Outdent' before returning
 
 			return result;
 		}
 
         private static JsonObject Serialize(Hashtable source)
         {
-            Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - Start - length: {source.Keys.Count}");
-
             JsonObject result = new();
 
 			// index for items
@@ -214,14 +166,10 @@ namespace nanoFramework.Json
 
             foreach (var key in source.Keys)
             {
-                Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - keys loop - processing key: {key}");
-
                 var value = source[key];
 
                 if (value == null)
                 {
-                    Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - value is null");
-
 					result._members.Add(key.ToString(), new JsonProperty(key.ToString(), new JsonValue(null)));
                 }
                 else
@@ -231,33 +179,23 @@ namespace nanoFramework.Json
                     if (valueType == null)
                     {
                         //TODO: handle nulls
-                        throw new Exception($"JsonObjectAttribute(Hashtable source) - value.GetType() returned null");
+                        throw new DeserializationException();
                     }
-
-                    Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType: {valueType.Name} ");
 
                     if ((valueType.IsValueType) || (valueType == typeof(string)))
                     {
-                        Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
-
 						result._members.Add(key.ToString(), new JsonProperty(key.ToString(), JsonValue.Serialize(valueType, value)));
                     }
                     else if (valueType.IsArray)
                     {
-                        Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is Array - calling JsonObjectAttribute.Serialize(valueType, value)");
-
 						result._members.Add(key.ToString(), JsonArray.Serialize(valueType, value));
                     }
                     else if (valueType.FullName == "System.Collections.ArrayList")
                     {
-                        Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is ArrayList - calling JsonArrayAttribute.Serialize(valueType, value)");
-
                         result._members.Add(key.ToString(), new JsonProperty(key.ToString(), JsonArray.Serialize(valueType, (ArrayList)value)));
                     }
                     else
                     {
-                        Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
-
 						result._members.Add(key.ToString(), Serialize(valueType, value));
                     }
                 }
@@ -265,15 +203,11 @@ namespace nanoFramework.Json
 				index++;
             }
 
-            Debug.WriteLine($"JsonObjectAttribute(Hashtable source) - Finished");
-
 			return result;
         }
 
 		public static JsonArray Serialize(ArrayList source)
 		{
-			Debug.WriteLine($"JArray(ArrayList source) - Start - source type: {source.GetType().Name}  length: {source.Count}");
-
             JsonToken[] result = new JsonToken[source.Count];
 
 			// index for items
@@ -281,12 +215,8 @@ namespace nanoFramework.Json
 
 			foreach (var item in source)
 			{
-				Debug.WriteLine($"JArray(ArrayList source) - loop - processing item: {item}");
-
 				if (item == null)
 				{
-					Debug.WriteLine($"JArray(ArrayList source) - value is null");
-
 					result[index] = new JsonValue(null);
 				}
 				else
@@ -296,41 +226,29 @@ namespace nanoFramework.Json
 					if (valueType == null)
 					{
 						//TODO: handle nulls
-						throw new Exception($"JArray(ArrayList source) - value.GetType() returned null");
+						throw new DeserializationException();
 					}
-
-					Debug.WriteLine($"JArray(ArrayList source) - valueType: {valueType.Name} ");
 
 					if (valueType.IsValueType || (valueType == typeof(string)))
 					{
-						Debug.WriteLine($"JArray(ArrayList source) - valueType is ValueType or string - calling JValue.Serialize(valueType, value)");
-
 						result[index] = JsonValue.Serialize(valueType, item);
 					}
 					else if (valueType.IsArray)
 					{
-						Debug.WriteLine($"JArray(ArrayList source) - valueType is Array - calling JArray.Serialize(valueType, value)");
-
 						result[index] = JsonArray.Serialize(valueType, item);
 					}
 					else if (valueType.FullName == "System.Collections.ArrayList")
 					{
-						Debug.WriteLine($"JArray(ArrayList source) - valueType is ArrayList - calling JsonArrayListAttribute.Serialize(valueType, value)");
-
 						result[index] = JsonArray.Serialize(valueType, (ArrayList)item);
 					}
 					else
 					{
-						Debug.WriteLine($"JArray(ArrayList source) - valueType is not Array and not ValueType or string - calling JObject.Serialize(valueType, value)");
-
 						result[index] = Serialize(valueType, item);
 					}
 				}
 
 				index++;
 			}
-
-			Debug.WriteLine($"JArray(ArrayList source) - Finished");
 
 			return new JsonArray(result);
 		}
