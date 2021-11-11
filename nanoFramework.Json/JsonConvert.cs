@@ -49,11 +49,11 @@ namespace nanoFramework.Json
         public static string SerializeObject(object oSource)
         {
             var type = oSource.GetType();
-            
+
             if (type.IsArray)
             {
                 JsonToken retToken = JsonArray.Serialize(type, oSource);
-               
+
                 return retToken.ToString();
             }
             else
@@ -133,8 +133,8 @@ namespace nanoFramework.Json
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
         {
             if (
-                (rootToken == null) 
-                || (rootType == null) 
+                (rootToken == null)
+                || (rootType == null)
                 || (rootPath == null))
             {
                 // All parameters must be non-null
@@ -439,7 +439,7 @@ namespace nanoFramework.Json
                                             // {rootType.Name} must have a valid Property Get Method
                                             throw new DeserializationException();
                                         }
-                                        
+
                                         if (value.Value.GetType() != memberPropGetMethod.ReturnType)
                                         {
                                             if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
@@ -554,11 +554,11 @@ namespace nanoFramework.Json
                             throw new DeserializationException();
                         }
                     }
-                   
+
                     // Create & populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue 
-                    
+
                     ArrayList rootArrayList = new();
-                    
+
                     if (isArrayList)
                     {
                         foreach (var item in rootArray.Items)
@@ -973,7 +973,7 @@ namespace nanoFramework.Json
         private static JsonArray ParseArray(ref LexToken token)
         {
             ArrayList list = new();
-            
+
             while (token.TType is not TokenType.End and not TokenType.Error and not TokenType.RArray)
             {
                 var value = ParseValue(ref token);
