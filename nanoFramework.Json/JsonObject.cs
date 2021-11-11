@@ -246,7 +246,7 @@ namespace nanoFramework.Json
 						result[index] = Serialize(valueType, item);
 					}
 				}
-
+				
 				index++;
 			}
 
@@ -267,9 +267,11 @@ namespace nanoFramework.Json
 				sb.Append("{"); 
 
 				bool first = true;
+				Type type;
 				
-				foreach (var member in _members.Values)
+				foreach (var key in _members.Keys)
 				{
+					var member = _members[key];
 					if (!first)
 					{
 						sb.Append(",");
@@ -277,7 +279,15 @@ namespace nanoFramework.Json
 
 					first = false;
 
-					sb.Append(((JsonProperty)member).ToString());
+					type = member.GetType();
+					if (type == typeof(JsonProperty))
+					{
+						sb.Append(((JsonProperty)member).ToString());
+					}
+					else if(type == typeof(JsonObject))
+                    {
+						sb.Append($"\"{key}\":{(JsonObject)member}");
+					}
 				}
 
 				sb.Append("}");
