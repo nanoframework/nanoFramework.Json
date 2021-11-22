@@ -659,8 +659,44 @@ namespace nanoFramework.Json
                                             rootArrayList.Add(Convert.ToInt16(value.Value.ToString()));
                                             break;
 
+                                        case nameof(UInt16):
+                                            rootArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Int32):
+                                            rootArrayList.Add(Convert.ToInt32(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(UInt32):
+                                            rootArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Int64):
+                                            rootArrayList.Add(Convert.ToInt64(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(UInt64):
+                                            rootArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
+                                            break;
+
                                         case nameof(Byte):
                                             rootArrayList.Add(Convert.ToByte(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(SByte):
+                                            rootArrayList.Add(Convert.ToSByte(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Single):
+                                            rootArrayList.Add(Convert.ToSingle(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Double):
+                                            rootArrayList.Add(Convert.ToDouble(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Boolean):
+                                            rootArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
                                             break;
 
                                         default:
