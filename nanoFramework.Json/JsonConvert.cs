@@ -495,7 +495,7 @@ namespace nanoFramework.Json
                                             {
                                                 memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
                                             }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UIn64"))
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt64"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
                                             }
