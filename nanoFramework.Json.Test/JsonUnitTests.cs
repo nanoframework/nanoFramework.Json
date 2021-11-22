@@ -865,6 +865,27 @@ namespace nanoFramework.Json.Test
             Assert.False(deser.TwoBoolean,"Boolean false");
         }
 
+        [TestMethod]
+        public void DeserializeArrayToDeserialize()
+        {
+            ArrayToDeserialize obj0 = new() { Prop1 = 1, Prop2 = "prop2", Prop3 = true, Prop4 = 67890123 };
+            ArrayToDeserialize obj1 = new() { Prop1 = -42, Prop2 = "second2", Prop3 = false, Prop4 = 123456 };
+            ArrayToDeserialize[] array = new[] { obj0, obj1 };
+            var json = JsonConvert.SerializeObject(array);
+
+            var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
+
+            Assert.Equal(deser.Length ,array.Length, "Aray length");
+            Assert.Equal(deser[0].Prop1, obj0.Prop1);
+            Assert.Equal(deser[0].Prop2, obj0.Prop2);
+            Assert.Equal(deser[0].Prop3, obj0.Prop3);
+            Assert.Equal(deser[0].Prop4, obj0.Prop4);
+            Assert.Equal(deser[1].Prop1, obj1.Prop1);
+            Assert.Equal(deser[1].Prop2, obj1.Prop2);
+            Assert.Equal(deser[1].Prop3, obj1.Prop3);
+            Assert.Equal(deser[1].Prop4, obj1.Prop4);
+        }
+
         #region Test classes
 
         private static string s_AzureTwinsJsonTestPayload = @"{
@@ -1009,6 +1030,14 @@ namespace nanoFramework.Json.Test
             public float OneSingle{ get; set; }
             public double OneDouble { get; set; }
             public bool TwoBoolean { get; set; }
+        }
+
+        public class ArrayToDeserialize
+        {
+            public int Prop1 { get; set; }
+            public string Prop2 { get; set; }
+            public bool Prop3 { get; set; }
+            public long Prop4 { get; set; }
         }
 
         #endregion
