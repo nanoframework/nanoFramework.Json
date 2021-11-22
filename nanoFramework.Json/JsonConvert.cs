@@ -366,18 +366,51 @@ namespace nanoFramework.Json
 
                                             if (val.Value.GetType() != memberType)
                                             {
+                                                // Note: keeping the full names Int16, UInt16 for readability
                                                 switch (memberType.Name)
                                                 {
                                                     case nameof(Int16):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
                                                         break;
 
+                                                    case nameof(UInt16):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt16(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Int32):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt32(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(UInt32):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt32(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Int64):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt64(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(UInt64):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt64(val.Value.ToString()) });
+                                                        break;
+
                                                     case nameof(Byte):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
                                                         break;
 
+                                                    case nameof(SByte):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSByte(val.Value.ToString()) });
+                                                        break;
+
                                                     case nameof(Single):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Double):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToDouble(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Boolean):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
                                                         break;
 
                                                     default:

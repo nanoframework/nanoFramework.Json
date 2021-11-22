@@ -846,6 +846,25 @@ namespace nanoFramework.Json.Test
             Assert.Equal(correctValue, json, "Serialize object as property fails");
         }
 
+        [TestMethod]
+        public void DeserializeSingleTypesClassDeserialization()
+        {
+            var json = "{\"OneByte\":42,\"OneSByte\":-42,\"OneInt16\":1234,\"OneUInt16\":5678,\"OneInt32\":-789012,\"OneUInt32\":78912,\"OneInt64\":-1234567,\"OneUInt64\":1234567,\"OneSingle\":34.45,\"OneDouble\":45678.23,\"OneBoolean\":true,\"TwoBoolean\":false}";
+            var deser = JsonConvert.DeserializeObject(json, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            Assert.Equal((byte)42, deser.OneByte, "Byte");
+            Assert.Equal((sbyte)-42, deser.OneSByte, "SByte");
+            Assert.Equal((short)1234, deser.OneInt16, "Int16");
+            Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
+            Assert.Equal(-789012, deser.OneInt32, "Int32");
+            Assert.Equal((uint)78912, deser.OneUInt32, "UInt32");
+            Assert.Equal((long)-1234567, deser.OneInt64, "Int64");
+            Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
+            Assert.Equal((float)34.45, deser.OneSingle, "Single");
+            Assert.Equal((double)45678.23, deser.OneDouble, "Double");
+            Assert.True(deser.OneBoolean,"Boolean true");
+            Assert.False(deser.TwoBoolean,"Boolean false");
+        }
+
         #region Test classes
 
         private static string s_AzureTwinsJsonTestPayload = @"{
@@ -913,7 +932,6 @@ namespace nanoFramework.Json.Test
             public TwinProperties properties { get; set; }
         }
 
-
         public class TwinPayloadProperties
         {
             public TwinProperties properties { get; set; }
@@ -940,7 +958,6 @@ namespace nanoFramework.Json.Test
 
             public int _version { get; set; }
         }
-
 
         public class InvocationReceiveMessage
         {
@@ -976,6 +993,22 @@ namespace nanoFramework.Json.Test
         public class RealClass : AbstractClass
         {
             public override string Test => "test";
+        }
+
+        public class SingleTypesClassDeserialization
+        {
+            public byte OneByte { get; set; }
+            public sbyte OneSByte { get; set; }
+            public short OneInt16 { get; set; }
+            public ushort OneUInt16 { get; set; }
+            public int OneInt32 { get; set; }
+            public uint OneUInt32 { get; set; }
+            public long OneInt64 { get; set; }
+            public ulong OneUInt64 { get; set; }
+            public bool OneBoolean { get; set; }
+            public float OneSingle{ get; set; }
+            public double OneDouble { get; set; }
+            public bool TwoBoolean { get; set; }
         }
 
         #endregion
