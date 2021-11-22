@@ -479,19 +479,52 @@ namespace nanoFramework.Json
                                             {
                                                 memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
                                             }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt16"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int32"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToInt32(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt32"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int64"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UIn64"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
+                                            }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
                                             }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("SByte"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
+                                            }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Double"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToDouble(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Boolean"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
                                             }
                                             else
                                             {
                                                 memberValueArrayList.Add(value.Value);
                                             }
                                         }
+
                                         else
                                         {
                                             memberValueArrayList.Add(value.Value);
