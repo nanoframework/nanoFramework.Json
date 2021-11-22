@@ -505,7 +505,7 @@ namespace nanoFramework.Json
                                             }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                             {
-                                                memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
+                                                memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
                                             }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
                                             {
@@ -1132,6 +1132,21 @@ namespace nanoFramework.Json
                 }
                 else
                 {
+                    // int.MaxValue:    2,147,483,647
+                    // int.MinValue:   -2,147,483,648
+                    // uint.MaxValue:   4,294,967,295
+                    // long.MaxValue:   9,223,372,036,854,775,807
+                    // long.MinValue:  -9,223,372,036,854,775,808
+                    // If we are sure, don't go to the try catch
+                    if (token.TValue.Length < 9)
+                    {
+                        return new JsonValue(int.Parse(token.TValue));
+                    }
+                    else if ((token.TValue.Length >= 12) && (token.TValue.Length < 20))
+                    {
+                        return new JsonValue(long.Parse(token.TValue));
+                    }
+
                     try
                     {
                         return new JsonValue(int.Parse(token.TValue));
@@ -1144,10 +1159,7 @@ namespace nanoFramework.Json
                         }
                         catch
                         {
-                            {
-                                return new JsonValue(ulong.Parse(token.TValue));
-                            }
-
+                            return new JsonValue(ulong.Parse(token.TValue));
                         }
                     }
                 }

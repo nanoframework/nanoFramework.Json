@@ -861,8 +861,8 @@ namespace nanoFramework.Json.Test
             Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
             Assert.Equal((float)34.45, deser.OneSingle, "Single");
             Assert.Equal((double)45678.23, deser.OneDouble, "Double");
-            Assert.True(deser.OneBoolean,"Boolean true");
-            Assert.False(deser.TwoBoolean,"Boolean false");
+            Assert.True(deser.OneBoolean, "Boolean true");
+            Assert.False(deser.TwoBoolean, "Boolean false");
         }
 
         [TestMethod]
@@ -875,7 +875,7 @@ namespace nanoFramework.Json.Test
 
             var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
 
-            Assert.Equal(deser.Length ,array.Length, "Aray length");
+            Assert.Equal(deser.Length, array.Length, "Array length");
             Assert.Equal(deser[0].Prop1, obj0.Prop1);
             Assert.Equal(deser[0].Prop2, obj0.Prop2);
             Assert.Equal(deser[0].Prop3, obj0.Prop3);
@@ -890,7 +890,7 @@ namespace nanoFramework.Json.Test
         public void LongMaxValue()
         {
             SingleTypesClassDeserialization singleUInt64 = new() { OneUInt64 = ulong.MaxValue };
-            SingleTypesClassDeserialization singleInt64 = new() { OneUInt64 = ulong.MaxValue };
+            SingleTypesClassDeserialization singleInt64 = new() { OneInt64 = long.MaxValue };
             SingleTypesClassDeserialization singleUInt32 = new() { OneUInt32 = uint.MaxValue };
             SingleTypesClassDeserialization singleInt32 = new() { OneInt32 = int.MaxValue };
             var serUInt64 = JsonConvert.SerializeObject(singleUInt64);
@@ -1050,7 +1050,7 @@ namespace nanoFramework.Json.Test
             public long OneInt64 { get; set; }
             public ulong OneUInt64 { get; set; }
             public bool OneBoolean { get; set; }
-            public float OneSingle{ get; set; }
+            public float OneSingle { get; set; }
             public double OneDouble { get; set; }
             public bool TwoBoolean { get; set; }
         }
