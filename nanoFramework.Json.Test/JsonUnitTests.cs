@@ -846,6 +846,69 @@ namespace nanoFramework.Json.Test
             Assert.Equal(correctValue, json, "Serialize object as property fails");
         }
 
+        [TestMethod]
+        public void DeserializeSingleTypesClassDeserialization()
+        {
+            var json = "{\"OneByte\":42,\"OneSByte\":-42,\"OneInt16\":1234,\"OneUInt16\":5678,\"OneInt32\":-789012,\"OneUInt32\":78912,\"OneInt64\":-1234567,\"OneUInt64\":1234567,\"OneSingle\":34.45,\"OneDouble\":45678.23,\"OneBoolean\":true,\"TwoBoolean\":false}";
+            var deser = JsonConvert.DeserializeObject(json, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            Assert.Equal((byte)42, deser.OneByte, "Byte");
+            Assert.Equal((sbyte)-42, deser.OneSByte, "SByte");
+            Assert.Equal((short)1234, deser.OneInt16, "Int16");
+            Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
+            Assert.Equal(-789012, deser.OneInt32, "Int32");
+            Assert.Equal((uint)78912, deser.OneUInt32, "UInt32");
+            Assert.Equal((long)-1234567, deser.OneInt64, "Int64");
+            Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
+            Assert.Equal((float)34.45, deser.OneSingle, "Single");
+            Assert.Equal((double)45678.23, deser.OneDouble, "Double");
+            Assert.True(deser.OneBoolean, "Boolean true");
+            Assert.False(deser.TwoBoolean, "Boolean false");
+        }
+
+        [TestMethod]
+        public void DeserializeArrayToDeserialize()
+        {
+            ArrayToDeserialize obj0 = new() { Prop1 = 1, Prop2 = "prop2", Prop3 = true, Prop4 = 67890123 };
+            ArrayToDeserialize obj1 = new() { Prop1 = -42, Prop2 = "second2", Prop3 = false, Prop4 = 123456 };
+            ArrayToDeserialize[] array = new[] { obj0, obj1 };
+            var json = JsonConvert.SerializeObject(array);
+
+            var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
+
+            Assert.Equal(deser.Length, array.Length, "Array length");
+            Assert.Equal(deser[0].Prop1, obj0.Prop1);
+            Assert.Equal(deser[0].Prop2, obj0.Prop2);
+            Assert.Equal(deser[0].Prop3, obj0.Prop3);
+            Assert.Equal(deser[0].Prop4, obj0.Prop4);
+            Assert.Equal(deser[1].Prop1, obj1.Prop1);
+            Assert.Equal(deser[1].Prop2, obj1.Prop2);
+            Assert.Equal(deser[1].Prop3, obj1.Prop3);
+            Assert.Equal(deser[1].Prop4, obj1.Prop4);
+        }
+
+        [TestMethod]
+        public void LongMaxValue()
+        {
+            SingleTypesClassDeserialization singleUInt64 = new() { OneUInt64 = ulong.MaxValue };
+            SingleTypesClassDeserialization singleInt64 = new() { OneInt64 = long.MaxValue };
+            SingleTypesClassDeserialization singleUInt32 = new() { OneUInt32 = uint.MaxValue };
+            SingleTypesClassDeserialization singleInt32 = new() { OneInt32 = int.MaxValue };
+            var serUInt64 = JsonConvert.SerializeObject(singleUInt64);
+            var serInt64 = JsonConvert.SerializeObject(singleInt64);
+            var serUInt32 = JsonConvert.SerializeObject(singleUInt32);
+            var serInt32 = JsonConvert.SerializeObject(singleInt32);
+
+            var deserUInt64 = JsonConvert.DeserializeObject(serUInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt64 = JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserUInt32 = JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt32 = JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+
+            Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
+            Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
+            Assert.Equal(deserUInt64.OneUInt32, singleUInt64.OneUInt32);
+            Assert.Equal(deserUInt64.OneInt32, singleUInt64.OneInt32);
+        }
+
         #region Test classes
 
         private static string s_AzureTwinsJsonTestPayload = @"{
@@ -913,7 +976,6 @@ namespace nanoFramework.Json.Test
             public TwinProperties properties { get; set; }
         }
 
-
         public class TwinPayloadProperties
         {
             public TwinProperties properties { get; set; }
@@ -940,7 +1002,6 @@ namespace nanoFramework.Json.Test
 
             public int _version { get; set; }
         }
-
 
         public class InvocationReceiveMessage
         {
@@ -976,6 +1037,30 @@ namespace nanoFramework.Json.Test
         public class RealClass : AbstractClass
         {
             public override string Test => "test";
+        }
+
+        public class SingleTypesClassDeserialization
+        {
+            public byte OneByte { get; set; }
+            public sbyte OneSByte { get; set; }
+            public short OneInt16 { get; set; }
+            public ushort OneUInt16 { get; set; }
+            public int OneInt32 { get; set; }
+            public uint OneUInt32 { get; set; }
+            public long OneInt64 { get; set; }
+            public ulong OneUInt64 { get; set; }
+            public bool OneBoolean { get; set; }
+            public float OneSingle { get; set; }
+            public double OneDouble { get; set; }
+            public bool TwoBoolean { get; set; }
+        }
+
+        public class ArrayToDeserialize
+        {
+            public int Prop1 { get; set; }
+            public string Prop2 { get; set; }
+            public bool Prop3 { get; set; }
+            public long Prop4 { get; set; }
         }
 
         #endregion

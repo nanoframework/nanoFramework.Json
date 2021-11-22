@@ -366,18 +366,51 @@ namespace nanoFramework.Json
 
                                             if (val.Value.GetType() != memberType)
                                             {
+                                                // Note: keeping the full names Int16, UInt16 for readability
                                                 switch (memberType.Name)
                                                 {
                                                     case nameof(Int16):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
                                                         break;
 
+                                                    case nameof(UInt16):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt16(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Int32):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt32(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(UInt32):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt32(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Int64):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt64(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(UInt64):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt64(val.Value.ToString()) });
+                                                        break;
+
                                                     case nameof(Byte):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
                                                         break;
 
+                                                    case nameof(SByte):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSByte(val.Value.ToString()) });
+                                                        break;
+
                                                     case nameof(Single):
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Double):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToDouble(val.Value.ToString()) });
+                                                        break;
+
+                                                    case nameof(Boolean):
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
                                                         break;
 
                                                     default:
@@ -442,9 +475,33 @@ namespace nanoFramework.Json
 
                                         if (value.Value.GetType() != memberPropGetMethod.ReturnType)
                                         {
-                                            if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
+                                            if (memberPropGetMethod.ReturnType.Name.Contains("UInt16"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
                                             {
                                                 memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt32"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int32"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToInt32(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt64"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int64"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("SByte"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
                                             }
                                             else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
                                             {
@@ -454,11 +511,20 @@ namespace nanoFramework.Json
                                             {
                                                 memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
                                             }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Double"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToDouble(value.Value.ToString()));
+                                            }
+                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Boolean"))
+                                            {
+                                                memberValueArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
+                                            }
                                             else
                                             {
                                                 memberValueArrayList.Add(value.Value);
                                             }
                                         }
+
                                         else
                                         {
                                             memberValueArrayList.Add(value.Value);
@@ -593,8 +659,44 @@ namespace nanoFramework.Json
                                             rootArrayList.Add(Convert.ToInt16(value.Value.ToString()));
                                             break;
 
+                                        case nameof(UInt16):
+                                            rootArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Int32):
+                                            rootArrayList.Add(Convert.ToInt32(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(UInt32):
+                                            rootArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Int64):
+                                            rootArrayList.Add(Convert.ToInt64(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(UInt64):
+                                            rootArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
+                                            break;
+
                                         case nameof(Byte):
                                             rootArrayList.Add(Convert.ToByte(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(SByte):
+                                            rootArrayList.Add(Convert.ToSByte(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Single):
+                                            rootArrayList.Add(Convert.ToSingle(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Double):
+                                            rootArrayList.Add(Convert.ToDouble(value.Value.ToString()));
+                                            break;
+
+                                        case nameof(Boolean):
+                                            rootArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
                                             break;
 
                                         default:
@@ -1030,7 +1132,36 @@ namespace nanoFramework.Json
                 }
                 else
                 {
-                    return new JsonValue(int.Parse(token.TValue));
+                    // int.MaxValue:    2,147,483,647
+                    // int.MinValue:   -2,147,483,648
+                    // uint.MaxValue:   4,294,967,295
+                    // long.MaxValue:   9,223,372,036,854,775,807
+                    // long.MinValue:  -9,223,372,036,854,775,808
+                    // If we are sure, don't go to the try catch
+                    if (token.TValue.Length < 9)
+                    {
+                        return new JsonValue(int.Parse(token.TValue));
+                    }
+                    else if ((token.TValue.Length >= 12) && (token.TValue.Length < 20))
+                    {
+                        return new JsonValue(long.Parse(token.TValue));
+                    }
+
+                    try
+                    {
+                        return new JsonValue(int.Parse(token.TValue));
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            return new JsonValue(long.Parse(token.TValue));
+                        }
+                        catch
+                        {
+                            return new JsonValue(ulong.Parse(token.TValue));
+                        }
+                    }
                 }
             }
             else if (token.TType == TokenType.True)
