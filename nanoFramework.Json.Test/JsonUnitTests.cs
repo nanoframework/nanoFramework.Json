@@ -886,6 +886,29 @@ namespace nanoFramework.Json.Test
             Assert.Equal(deser[1].Prop4, obj1.Prop4);
         }
 
+        [TestMethod]
+        public void LongMaxValue()
+        {
+            SingleTypesClassDeserialization singleUInt64 = new() { OneUInt64 = ulong.MaxValue };
+            SingleTypesClassDeserialization singleInt64 = new() { OneUInt64 = ulong.MaxValue };
+            SingleTypesClassDeserialization singleUInt32 = new() { OneUInt32 = uint.MaxValue };
+            SingleTypesClassDeserialization singleInt32 = new() { OneInt32 = int.MaxValue };
+            var serUInt64 = JsonConvert.SerializeObject(singleUInt64);
+            var serInt64 = JsonConvert.SerializeObject(singleInt64);
+            var serUInt32 = JsonConvert.SerializeObject(singleUInt32);
+            var serInt32 = JsonConvert.SerializeObject(singleInt32);
+
+            var deserUInt64 = JsonConvert.DeserializeObject(serUInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt64 = JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserUInt32 = JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt32 = JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+
+            Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
+            Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
+            Assert.Equal(deserUInt64.OneUInt32, singleUInt64.OneUInt32);
+            Assert.Equal(deserUInt64.OneInt32, singleUInt64.OneInt32);
+        }
+
         #region Test classes
 
         private static string s_AzureTwinsJsonTestPayload = @"{

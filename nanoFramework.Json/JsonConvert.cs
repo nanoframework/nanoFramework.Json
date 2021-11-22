@@ -1132,7 +1132,24 @@ namespace nanoFramework.Json
                 }
                 else
                 {
-                    return new JsonValue(int.Parse(token.TValue));
+                    try
+                    {
+                        return new JsonValue(int.Parse(token.TValue));
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            return new JsonValue(long.Parse(token.TValue));
+                        }
+                        catch
+                        {
+                            {
+                                return new JsonValue(ulong.Parse(token.TValue));
+                            }
+
+                        }
+                    }
                 }
             }
             else if (token.TType == TokenType.True)
