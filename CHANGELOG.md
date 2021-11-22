@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.6...HEAD)
+
+**Documentation and other chores:**
+
+- Fixing system type deserialization in classes [\#140](https://github.com/nanoframework/nanoFramework.Json/pull/140)
+
+## [v2.1.1-preview.6](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.6) (2021-11-11)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0...v2.1.1-preview.6)
 
 **Documentation and other chores:**
 
