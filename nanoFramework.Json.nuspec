@@ -5,19 +5,18 @@
     <version>$version$</version>
     <title>nanoFramework.Json</title>
     <authors>nanoFramework project contributors</authors>
-    <owners>nanoFramework project contributors,dotnetfoundation</owners>
+    <owners>nanoFramework,dotnetfoundation</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE.md</license>
     <releaseNotes>
     </releaseNotes>
+    <readme>docs\README.md</readme>
     <developmentDependency>false</developmentDependency>
     <projectUrl>https://github.com/nanoframework/nanoFramework.Json</projectUrl>
-    <iconUrl>https://secure.gravatar.com/avatar/97d0e092247f0716db6d4b47b7d1d1ad</iconUrl>
     <icon>images\nf-logo.png</icon>
     <repository type="git" url="https://github.com/nanoframework/nanoFramework.Json" commit="$commit$" />
     <copyright>Copyright (c) .NET Foundation and Contributors</copyright>
-    <description>This package includes nanoFramework.Json, a helper class library to deal with json format in nanoFramework C# projects.</description>
-    <summary>nanoFramework.Json it's a helper class library for nanoFramework C# projects</summary>
+    <description>This package includes nanoFramework.Json, a helper class library to deal with json format in .NET nanoFramework C# projects.</description>
     <tags>nanoFramework C# csharp netmf netnf nanoframework json</tags>
     <dependencies>
       <dependency id="nanoFramework.CoreLibrary" version="1.10.5" />
@@ -33,7 +32,8 @@
     <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.pe" target="lib\nanoFramework.Json.pe" />
     <file src="nanoFramework.Json\bin\Release\nanoFramework.Json.xml" target="lib\nanoFramework.Json.xml" />
     <file src="assets\readme.txt" target="" />
-    <file src="assets\nf-logo.png" target="images\" />
+    <file src="README.md" target="docs\" />
+    <file src="assets\nf-logo.png" target="images" />
     <file src="LICENSE.md" target="" />
   </files>
 </package>
