@@ -2,12 +2,27 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.11...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.14...HEAD)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#145](https://github.com/nanoframework/nanoFramework.Json/pull/145)
+
+## [v2.1.1-preview.14](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.14) (2021-12-01)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.13...v2.1.1-preview.14)
+
+**Documentation and other chores:**
+
+- Update 2 nuget dependencies [\#142](https://github.com/nanoframework/nanoFramework.Json/pull/142)
+
+## [v2.1.1-preview.13](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.13) (2021-12-01)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.11...v2.1.1-preview.13)
 
 **Documentation and other chores:**
 
 - Update 5 NuGet dependencies [\#144](https://github.com/nanoframework/nanoFramework.Json/pull/144)
-- Update 2 nuget dependencies [\#142](https://github.com/nanoframework/nanoFramework.Json/pull/142)
 - Bumps nanoFramework.CoreLibrary from 1.10.5 to 1.11.6-preview.2 [\#141](https://github.com/nanoframework/nanoFramework.Json/pull/141)
 
 ## [v2.1.1-preview.11](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.11) (2021-12-01)
