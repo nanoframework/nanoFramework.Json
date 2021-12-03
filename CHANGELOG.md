@@ -1,7 +1,5 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
-
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...HEAD)
 
 **Documentation and other chores:**
