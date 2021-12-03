@@ -1,6 +1,8 @@
 # Changelog
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...HEAD)
+## [v2.1.1-preview.30](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.30) (2021-12-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...v2.1.1-preview.30)
 
 **Documentation and other chores:**
 
