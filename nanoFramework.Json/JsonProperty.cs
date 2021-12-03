@@ -8,35 +8,35 @@ using System.Text;
 
 namespace nanoFramework.Json
 {
-	internal class JsonProperty : JsonToken
-	{
-		public JsonProperty()
-		{
-		}
+    internal class JsonProperty : JsonToken
+    {
+        public JsonProperty()
+        {
+        }
 
-		public JsonProperty(string name, JsonToken value)
-		{
-			Name = name;
-			Value = value;
-		}
+        public JsonProperty(string name, JsonToken value)
+        {
+            Name = name;
+            Value = value;
+        }
 
-		public string Name { get; set; }
-		public JsonToken Value { get; set; }
+        public string Name { get; set; }
+        public JsonToken Value { get; set; }
 
-		public override string ToString()
-		{
-			EnterSerialization();
+        public override string ToString()
+        {
+            EnterSerialization();
 
-			StringBuilder sb = new(); //TODO: why move out of the try?
-			
-			try
-			{
-				//Use minimalist JSON, pretty can be handled on the client!
-				sb.Append('"');
-				sb.Append(Name);
-				sb.Append("\":"); 
+            StringBuilder sb = new(); //TODO: why move out of the try?
 
-				JsonToken token = Value;
+            try
+            {
+                //Use minimalist JSON, pretty can be handled on the client!
+                sb.Append('"');
+                sb.Append(Name);
+                sb.Append("\":");
+
+                JsonToken token = Value;
 
                 if (token is JsonValue j
                     && j.Value != null
@@ -49,13 +49,13 @@ namespace nanoFramework.Json
                 }
 
                 sb.Append(Value.ToString());
-				
-				return sb.ToString();
-			}
-			finally
-			{
-				ExitSerialization();
-			}
-		}
-	}
+
+                return sb.ToString();
+            }
+            finally
+            {
+                ExitSerialization();
+            }
+        }
+    }
 }

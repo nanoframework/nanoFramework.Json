@@ -68,25 +68,29 @@ namespace nanoFramework.Json.Test
     // Classes to more thoroughly test array serialization/deserialization
     public class JsonTestCompany
     {
-        public int                    CompanyID            { get; set; }
-        public string                 CompanyName          { get; set; }
+        public int CompanyID { get; set; }
+        public string CompanyName { get; set; }
     }
     public class JsonTestEmployee
     {
-        public int                     EmployeeID          { get; set; }
-        public string                  EmployeeName        { get; set; }
-        public JsonTestCompany         CurrentEmployer     { get; set; }
-        public JsonTestCompany[]       FormerEmployers     { get; set; }
+        public int EmployeeID { get; set; }
+        public string EmployeeName { get; set; }
+        public JsonTestCompany CurrentEmployer { get; set; }
+        public JsonTestCompany[] FormerEmployers { get; set; }
     }
     public class JsonTestTown
     {
-        public int                     TownID              { get; set; }
-        public string                  TownName            { get; set; }
-        public JsonTestCompany[]       CompaniesInThisTown { get; set; }
-        public JsonTestEmployee[]      EmployeesInThisTown { get; set; }
+        public int TownID { get; set; }
+        public string TownName { get; set; }
+        public JsonTestCompany[] CompaniesInThisTown { get; set; }
+        public JsonTestEmployee[] EmployeesInThisTown { get; set; }
     }
 
-
+    public class JsonSerializeObjectAsProperty
+    {
+        public string value { get; set; }
+        public string nodeID { get; set; }
+    }
 
     [TestClass]
     public class JsonUnitTests
@@ -125,7 +129,7 @@ namespace nanoFramework.Json.Test
                 EmployeesInThisTown = new JsonTestEmployee[]
                 {
                     new JsonTestEmployee
-                    { 
+                    {
                         EmployeeID = 1,
                         EmployeeName = "John Smith",
                         CurrentEmployer = new JsonTestCompany { CompanyID = 3, CompanyName = "CCC Amalgamated Industries" },
@@ -136,7 +140,7 @@ namespace nanoFramework.Json.Test
                         }
                     },
                     new JsonTestEmployee
-                    { 
+                    {
                         EmployeeID = 1,
                         EmployeeName = "Jim Smith",
                         CurrentEmployer = new JsonTestCompany { CompanyID = 7, CompanyName = "GGG Amalgamated Industries" },
@@ -160,7 +164,7 @@ namespace nanoFramework.Json.Test
                 myTown.TownID,
                 dserResult.TownID,
                 $"Validation: myTown.TownID: {myTown.TownID}");
-            
+
             Assert.Equal(
                 myTown.TownName,
                 dserResult.TownName,
@@ -172,7 +176,7 @@ namespace nanoFramework.Json.Test
                     myTown.CompaniesInThisTown[i].CompanyID,
                     dserResult.CompaniesInThisTown[i].CompanyID,
                     $"Validation: myTown.CompaniesInThisTown[{i}].CompanyID: {myTown.CompaniesInThisTown[i].CompanyID}");
-                
+
                 Assert.Equal(
                     myTown.CompaniesInThisTown[i].CompanyName,
                     dserResult.CompaniesInThisTown[i].CompanyName,
@@ -185,29 +189,29 @@ namespace nanoFramework.Json.Test
                     myTown.EmployeesInThisTown[i].EmployeeID,
                     dserResult.EmployeesInThisTown[i].EmployeeID,
                     $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeID: {myTown.EmployeesInThisTown[i].EmployeeID} ");
-                
+
                 Assert.Equal(
                     myTown.EmployeesInThisTown[i].EmployeeName,
                     dserResult.EmployeesInThisTown[i].EmployeeName,
                     $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeName: {myTown.EmployeesInThisTown[i].EmployeeName} ");
-                
+
                 Assert.Equal(
                     myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
                     dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
                     $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyID: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID} ");
-                
+
                 Assert.Equal(
                     myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
                     dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
                     $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyName: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName} ");
-                
+
                 for (int j = 0; j < myTown.EmployeesInThisTown[i].FormerEmployers.Length; j++)
                 {
                     Assert.Equal(
                         myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
                         dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
                         $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyID: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID} ");
-                
+
                     Assert.Equal(
                         myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
                         dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
@@ -241,7 +245,7 @@ namespace nanoFramework.Json.Test
         public void Can_serialize_deserialize_timestamp()
         {
             Debug.WriteLine("Can_serialize_deserialize_timestamp() - Starting test...");
-            
+
             var timestampTests = new JsonTestClassTimestamp()
             {
                 Timestamp = DateTime.UtcNow,
@@ -510,16 +514,16 @@ namespace nanoFramework.Json.Test
         public void BasicSerializationTest()
         {
             ICollection collection = new ArrayList() { 1, null, 2, "blah", false };
-           
+
             Hashtable hashtable = new();
             hashtable.Add("collection", collection);
             hashtable.Add("nulltest", null);
             hashtable.Add("stringtest", "hello world");
-           
+
             object[] array = new object[] { hashtable };
 
             string json = JsonConvert.SerializeObject(array);
-            
+
             string correctValue = "[{\"collection\":[1,null,2,\"blah\",false],\"nulltest\":null,\"stringtest\":\"hello world\"}]";
 
             Assert.Equal(json, correctValue, "Values did not match");
@@ -531,13 +535,13 @@ namespace nanoFramework.Json.Test
         public void BasicDeserializationTest()
         {
             string json = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[-1,null,24.565657576,\"blah\",false]}]";
-            
+
             ArrayList arrayList = (ArrayList)JsonConvert.DeserializeObject(json, typeof(ArrayList));
-            
+
             Hashtable hashtable = arrayList[0] as Hashtable;
             string stringtest = hashtable["stringtest"].ToString();
             object nulltest = hashtable["nulltest"];
-            
+
             ArrayList collection = hashtable["collection"] as ArrayList;
             int a = (int)collection[0];
             object b = collection[1];
@@ -546,7 +550,7 @@ namespace nanoFramework.Json.Test
             bool e = (bool)collection[4];
 
             Assert.Equal(arrayList.Count, 1, "arrayList count did not match");
-  
+
             Assert.Equal(hashtable.Count, 3, "hashtable count did not match");
 
             Assert.Equal(stringtest, "hello world", "stringtest did not match");
@@ -610,7 +614,7 @@ namespace nanoFramework.Json.Test
             };
 
             string json = JsonConvert.SerializeObject(person);
-            
+
             string correctValue = "{\"Address\":null,\"ArrayProperty\":[\"hello\",\"world\"],\"ID\":27,\"Birthday\":\"1988-04-23T00:00:00.000Z\",\"LastName\":\"Doe\",\"Friend\""
                 + ":{\"Address\":\"123 Some St\",\"ArrayProperty\":[\"hi\",\"planet\"],\"ID\":2,\"Birthday\":\"1983-07-03T00:00:00.000Z\",\"LastName\":\"Smith\",\"Friend\":null,\"FirstName\":\"Bob\"}"
                 + ",\"FirstName\":\"John\"}";
@@ -625,15 +629,15 @@ namespace nanoFramework.Json.Test
         {
             AbstractClass a = new RealClass() { ID = 12 };
             string json = JsonConvert.SerializeObject(a);
-            
+
             string correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
-            
+
             Assert.Equal(json, correctValue, "Value for AbstractClass did not match");
 
             RealClass b = new() { ID = 12 };
-            
+
             json = JsonConvert.SerializeObject(b);
-            
+
             correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
 
             Assert.Equal(json, correctValue, "Values for RealClass did not match");
@@ -659,7 +663,7 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine("");
         }
-        
+
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_02()
         {
@@ -797,16 +801,16 @@ namespace nanoFramework.Json.Test
             string correctValue = "{\"desired\":{\"Url\":\"https://ellerbachiotstorage.blob.core.windows.net/nano-containers\"," +
                 "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
                 "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}}";
-            
+
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
             Hashtable desired = (Hashtable)hash["desired"];
-            
+
             Assert.IsType(typeof(string), desired["Authorization"], "Authorization is not a string and it should be.");
 
             Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)desired["Authorization"], "Authorization string doesn't match original value.");
-            
+
             ArrayList files = (ArrayList)desired["Files"];
-            
+
             Assert.IsType(typeof(string), files[0]);
             Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
@@ -817,16 +821,92 @@ namespace nanoFramework.Json.Test
             string correctValue = "{\"Url\":\"https://ellerbachiotstorage.blob.core.windows.net/nano-containers\"," +
                 "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
                 "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}";
-           
+
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
-            
+
             Assert.IsType(typeof(string), hash["Authorization"], "Authorization is not a string and it should be.");
             Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
-            
+
             ArrayList files = (ArrayList)hash["Files"];
-            
+
             Assert.IsType(typeof(string), files[0]);
             Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
+        }
+
+        [TestMethod]
+        public void SerializeObjectAsAProperty()
+        {
+            var correctValue = "{\"Led\":{\"nodeID\":\"14\",\"value\":\"On\"}}";
+            JsonSerializeObjectAsProperty ledProp = new() { value = "On", nodeID = "14" };
+
+            Hashtable twin = new();
+            twin.Add("Led", ledProp);
+            string json = JsonConvert.SerializeObject(twin);
+
+            Assert.Equal(correctValue, json, "Serialize object as property fails");
+        }
+
+        [TestMethod]
+        public void DeserializeSingleTypesClassDeserialization()
+        {
+            var json = "{\"OneByte\":42,\"OneSByte\":-42,\"OneInt16\":1234,\"OneUInt16\":5678,\"OneInt32\":-789012,\"OneUInt32\":78912,\"OneInt64\":-1234567,\"OneUInt64\":1234567,\"OneSingle\":34.45,\"OneDouble\":45678.23,\"OneBoolean\":true,\"TwoBoolean\":false}";
+            var deser = JsonConvert.DeserializeObject(json, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            Assert.Equal((byte)42, deser.OneByte, "Byte");
+            Assert.Equal((sbyte)-42, deser.OneSByte, "SByte");
+            Assert.Equal((short)1234, deser.OneInt16, "Int16");
+            Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
+            Assert.Equal(-789012, deser.OneInt32, "Int32");
+            Assert.Equal((uint)78912, deser.OneUInt32, "UInt32");
+            Assert.Equal((long)-1234567, deser.OneInt64, "Int64");
+            Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
+            Assert.Equal((float)34.45, deser.OneSingle, "Single");
+            Assert.Equal((double)45678.23, deser.OneDouble, "Double");
+            Assert.True(deser.OneBoolean, "Boolean true");
+            Assert.False(deser.TwoBoolean, "Boolean false");
+        }
+
+        [TestMethod]
+        public void DeserializeArrayToDeserialize()
+        {
+            ArrayToDeserialize obj0 = new() { Prop1 = 1, Prop2 = "prop2", Prop3 = true, Prop4 = 67890123 };
+            ArrayToDeserialize obj1 = new() { Prop1 = -42, Prop2 = "second2", Prop3 = false, Prop4 = 123456 };
+            ArrayToDeserialize[] array = new[] { obj0, obj1 };
+            var json = JsonConvert.SerializeObject(array);
+
+            var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
+
+            Assert.Equal(deser.Length, array.Length, "Array length");
+            Assert.Equal(deser[0].Prop1, obj0.Prop1);
+            Assert.Equal(deser[0].Prop2, obj0.Prop2);
+            Assert.Equal(deser[0].Prop3, obj0.Prop3);
+            Assert.Equal(deser[0].Prop4, obj0.Prop4);
+            Assert.Equal(deser[1].Prop1, obj1.Prop1);
+            Assert.Equal(deser[1].Prop2, obj1.Prop2);
+            Assert.Equal(deser[1].Prop3, obj1.Prop3);
+            Assert.Equal(deser[1].Prop4, obj1.Prop4);
+        }
+
+        [TestMethod]
+        public void LongMaxValue()
+        {
+            SingleTypesClassDeserialization singleUInt64 = new() { OneUInt64 = ulong.MaxValue };
+            SingleTypesClassDeserialization singleInt64 = new() { OneInt64 = long.MaxValue };
+            SingleTypesClassDeserialization singleUInt32 = new() { OneUInt32 = uint.MaxValue };
+            SingleTypesClassDeserialization singleInt32 = new() { OneInt32 = int.MaxValue };
+            var serUInt64 = JsonConvert.SerializeObject(singleUInt64);
+            var serInt64 = JsonConvert.SerializeObject(singleInt64);
+            var serUInt32 = JsonConvert.SerializeObject(singleUInt32);
+            var serInt32 = JsonConvert.SerializeObject(singleInt32);
+
+            var deserUInt64 = JsonConvert.DeserializeObject(serUInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt64 = JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserUInt32 = JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            var deserInt32 = JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+
+            Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
+            Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
+            Assert.Equal(deserUInt64.OneUInt32, singleUInt64.OneUInt32);
+            Assert.Equal(deserUInt64.OneInt32, singleUInt64.OneInt32);
         }
 
         #region Test classes
@@ -896,7 +976,6 @@ namespace nanoFramework.Json.Test
             public TwinProperties properties { get; set; }
         }
 
-
         public class TwinPayloadProperties
         {
             public TwinProperties properties { get; set; }
@@ -923,7 +1002,6 @@ namespace nanoFramework.Json.Test
 
             public int _version { get; set; }
         }
-
 
         public class InvocationReceiveMessage
         {
@@ -959,6 +1037,30 @@ namespace nanoFramework.Json.Test
         public class RealClass : AbstractClass
         {
             public override string Test => "test";
+        }
+
+        public class SingleTypesClassDeserialization
+        {
+            public byte OneByte { get; set; }
+            public sbyte OneSByte { get; set; }
+            public short OneInt16 { get; set; }
+            public ushort OneUInt16 { get; set; }
+            public int OneInt32 { get; set; }
+            public uint OneUInt32 { get; set; }
+            public long OneInt64 { get; set; }
+            public ulong OneUInt64 { get; set; }
+            public bool OneBoolean { get; set; }
+            public float OneSingle { get; set; }
+            public double OneDouble { get; set; }
+            public bool TwoBoolean { get; set; }
+        }
+
+        public class ArrayToDeserialize
+        {
+            public int Prop1 { get; set; }
+            public string Prop2 { get; set; }
+            public bool Prop3 { get; set; }
+            public long Prop4 { get; set; }
         }
 
         #endregion
