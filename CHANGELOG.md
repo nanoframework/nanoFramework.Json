@@ -2,7 +2,35 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.4...HEAD)
+
+**Documentation and other chores:**
+
+- Update 5 NuGet dependencies [\#163](https://github.com/nanoframework/nanoFramework.Json/pull/163)
+
+## [v2.1.2-preview.4](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.4) (2022-01-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.3...v2.1.2-preview.4)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#156](https://github.com/nanoframework/nanoFramework.Json/pull/156)
+
+## [v2.1.2-preview.3](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.3) (2022-01-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1...v2.1.2-preview.3)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.System.Text from 1.1.2 to 1.1.3-preview.4 [\#155](https://github.com/nanoframework/nanoFramework.Json/pull/155)
+
+## [v2.1.1](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1) (2021-12-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.30...v2.1.1)
+
+## [v2.1.1-preview.30](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.30) (2021-12-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...v2.1.1-preview.30)
 
 **Documentation and other chores:**
 
