@@ -795,6 +795,126 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
+
+        [TestMethod]
+        public void CanDeserializeInvocationReceiveMessage_03()
+        {
+            var testString = @"{
+""type"":1,
+""target"":""ReceiveAdvancedMessage"",
+""arguments"": [
+    {
+        ""age"":22,
+        ""name"":""Monica"",
+        ""gender"":1,
+        ""car"":{
+            ""age"":5,
+            ""model"":""Tesla""
+        }
+    },
+    {
+        ""age"":88,
+        ""name"":""Grandpa"",
+        ""gender"":0,
+        ""car"":{
+            ""age"":35,
+            ""model"":""Buick""
+        }
+    },
+    3
+]}";
+
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 1, "type value is not correct");
+            Assert.Equal(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
+
+            Assert.Equal((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
+            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+
+            // loop through all arguments, except last one (already checked and it's not an hastable)
+            for (int argIndex = 0; argIndex < dserResult.arguments.Count - 1; argIndex++)
+            {
+                ArrayList currentArg = (ArrayList)dserResult.arguments[argIndex];
+
+                int lastPersonAge = 0;
+                string lastPersonName = "";
+                int lastPersonGender = 0;
+
+                if (currentArg != null)
+                {
+                    foreach (var ht in currentArg)
+                    {
+                        if (ht is Hashtable argumentItem)
+                        {
+                            if (argumentItem["car"] is not null)
+                            {
+                                Hashtable car = (Hashtable)argumentItem["car"];
+
+                                int age = (int)car["age"];
+                                string model = (string)car["model"];
+
+                                if(age == 5)
+                                {
+                                    Assert.Equal(model, "Tesla", "arg_0_car.model value is not correct");
+                                }
+                                else if (age == 35)
+                                {
+                                    Assert.Equal(model, "Buick", "arg_1_car.model value is not correct");
+                                }
+                                else
+                                {
+                                    Assert.True(false, $"unexpected car age after deserialization: car age from arg {argIndex} is {age}.");
+                                }
+                            }
+                            else if (argumentItem["age"] is not null)
+                            {
+                                lastPersonAge = (int)argumentItem["age"]; ;
+                            }
+                            else if (argumentItem["name"] is not null)
+                            {
+                                lastPersonName = (string)argumentItem["name"]; ;
+                            }
+                            else if (argumentItem["gender"] is not null)
+                            {
+                                lastPersonGender = (int)argumentItem["gender"];
+                            }
+                        }
+                    }
+
+                    if (lastPersonAge != 22 && lastPersonAge != 88)
+                    {
+                        Assert.True(false, $"unexpected age after deserialization: age from arg {argIndex} is {lastPersonAge}.");
+                    }
+
+                    if (lastPersonGender != 0 && lastPersonGender != 1)
+                    {
+                        Assert.True(false, $"unexpected gender after deserialization: gender from arg {argIndex} is {lastPersonGender}.");
+                    }
+
+                    if (lastPersonName == "Monica")
+                    {
+                        Assert.Equal(lastPersonAge, 22, $"Expected Monica age to be 22 and it was {lastPersonAge}");
+                        Assert.Equal(lastPersonGender, 1, $"Expected Monica gender to be 1 and it was {lastPersonGender}");
+                    }
+                    else if (lastPersonName == "Grandpa")
+                    {
+                        Assert.Equal(lastPersonAge, 88, $"Expected Grandpa age to be 88 and it was {lastPersonAge}");
+                        Assert.Equal(lastPersonGender, 0, $"Expected Grandpa gender to be 0 and it was {lastPersonGender}");
+                    }
+                    else
+                    {
+                        Assert.True(false, $"unexpected name after deserialization: name from arg {argIndex} is {lastPersonName}.");
+                    }
+                }
+
+            }
+
+            Debug.WriteLine("");
+        }
+
         [TestMethod]
         public void DeserializeArrayList()
         {
