@@ -148,11 +148,20 @@ namespace nanoFramework.Json
                 if (rootToken is JsonObject rootObject)
                 {
                     bool isHashtable = false;
+                    bool isArrayList = false;
 
                     if (rootElementType == null
                         && rootType.FullName == "System.Collections.Hashtable")
                     {
                         isHashtable = true;
+
+                        rootElementType = rootType;
+                    }
+
+                    if (rootElementType == null
+                       && rootType.FullName == "System.Collections.ArrayList")
+                    {
+                        isArrayList = true;
 
                         rootElementType = rootType;
                     }
@@ -184,6 +193,38 @@ namespace nanoFramework.Json
                         }
 
                         return rootInstance;
+                    }
+                    else if (isArrayList)
+                    {
+                        ArrayList rootArrayList = new();
+
+                        foreach (var m in rootObject.Members)
+                        {
+                            var memberProperty = (JsonProperty)m;
+
+                            if (m is JsonValue value)
+                            {
+                                rootArrayList.Add(value.Value);
+                            }
+                            else if (m is JsonArray jsonArray)
+                            {
+                                rootArrayList.Add(PopulateArrayList(jsonArray));
+                            }
+                            else if (m is JsonToken jsonToken)
+                            {
+                                var result = new Hashtable();
+
+                                result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
+
+                                rootArrayList.Add(result);
+                            }
+                            else
+                            {
+                                throw new DeserializationException();
+                            }
+                        }
+
+                        return rootArrayList;
                     }
                     else
                     {
@@ -445,7 +486,7 @@ namespace nanoFramework.Json
                             {
                                 // Need this type when we try to populate the array elements
                                 Type memberElementType = memberType.GetElementType();
-                                bool isArrayList = false;
+                                isArrayList = false;
 
                                 if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
                                 {
@@ -761,6 +802,60 @@ namespace nanoFramework.Json
             }
         }
 
+        private static object PopulateObject(JsonToken rootToken)
+        {
+            if (rootToken == null)
+            {
+                // can't be null
+                throw new DeserializationException();
+            }
+
+            try
+            {
+                if (rootToken is JsonObject rootObject)
+                {
+                    Hashtable rootInstance = new();
+
+                    foreach (var m in rootObject.Members)
+                    {
+                        var memberProperty = (JsonProperty)m;
+
+                        if (memberProperty.Value is JsonValue jsonValue)
+                        {
+                            rootInstance.Add(memberProperty.Name, jsonValue.Value);
+                        }
+                        else if (memberProperty.Value is JsonArray jsonArray)
+                        {
+                            rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
+                        }
+                        else if (memberProperty.Value is JsonToken jsonToken)
+                        {
+                            rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+
+                    return rootInstance;
+                }
+                else if (rootToken is JsonValue rootValue)
+                {
+                    return rootValue.Value;
+                }
+                else
+                {
+                    // not implemented
+                    throw new DeserializationException();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static ArrayList PopulateArrayList(JsonToken rootToken)
         {
             var result = new ArrayList();
@@ -839,7 +934,7 @@ namespace nanoFramework.Json
                     }
                     else if (item is JsonToken jsonToken)
                     {
-                        throw new NotImplementedException();
+                        memberValueArrayList.Add(PopulateObject(jsonToken));
                     }
                     else
                     {
