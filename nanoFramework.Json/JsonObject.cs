@@ -115,6 +115,10 @@ namespace nanoFramework.Json
                 {
                     result._members.Add(name, new JsonProperty(name, JsonArray.Serialize(m.ReturnType, methodResult)));
                 }
+                else if (m.ReturnType.FullName == "System.Collections.ArrayList")
+                {
+                    result._members.Add(name, new JsonProperty(name, Serialize((ArrayList)methodResult)));
+                }
                 else
                 {
                     result._members.Add(name, new JsonProperty(name, Serialize(m.ReturnType, methodResult)));
