@@ -92,6 +92,14 @@ namespace nanoFramework.Json.Test
         public string nodeID { get; set; }
     }
 
+    public class InvocationSendMessage
+    {
+        public int type { get; set; }
+        public string invocationId { get; set; }
+        public string target { get; set; }
+        public ArrayList arguments { get; set; }
+    }
+
     [TestClass]
     public class JsonUnitTests
     {
@@ -860,6 +868,21 @@ namespace nanoFramework.Json.Test
 
             Assert.Equal((int)car1["age"], 35, $"car1.age has unexpected value: {(int)car1["age"]}");
             Assert.Equal(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
+        }
+
+        [TestMethod]
+        public void SerializeArrayListInAnObject()
+        {
+            var invocMessage = new InvocationSendMessage
+            {
+                type = 1,
+                invocationId = "0",
+                arguments = new ArrayList() { 1, 2 },
+                target = "Add"
+            };
+
+            var sentMessage = JsonConvert.SerializeObject(invocMessage);
+            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""arguments"":{[1,2]},""target"":""Add""}", sentMessage);
         }
 
         [TestMethod]

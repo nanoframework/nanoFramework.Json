@@ -50,6 +50,13 @@ namespace nanoFramework.Json
                 return Serialize((Hashtable)oSource);
             }
 
+            if (type.FullName == "System.Collections.ArrayList")
+            {
+                var arraySer = Serialize((ArrayList)oSource);
+                result._members.Add(string.Empty, arraySer);
+                return result;
+            }
+
             // Loop through all of this type's methods - find a get_ method that can be used to serialize oSource
             methods = type.GetMethods();
 
@@ -287,6 +294,10 @@ namespace nanoFramework.Json
                     else if (type == typeof(JsonObject))
                     {
                         sb.Append($"\"{key}\":{(JsonObject)member}");
+                    }
+                    else if (type == typeof(JsonArray))
+                    {
+                        sb.Append(((JsonArray)member).ToString());
                     }
                 }
 
