@@ -833,86 +833,33 @@ namespace nanoFramework.Json.Test
 
             Assert.Equal((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.Equal(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
-            // loop through all arguments, except last one (already checked and it's not an hastable)
-            for (int argIndex = 0; argIndex < dserResult.arguments.Count - 1; argIndex++)
-            {
-                ArrayList currentArg = (ArrayList)dserResult.arguments[argIndex];
+            Hashtable arg0 = (Hashtable)dserResult.arguments[0];
+            Assert.NotNull(arg0, "Deserializing arg 0 returned a null object");
 
-                int lastPersonAge = 0;
-                string lastPersonName = "";
-                int lastPersonGender = 0;
+            Hashtable car0 = (Hashtable)arg0["car"];
+            Assert.NotNull(car0, "Deserializing car from arg 0 returned a null object");
 
-                if (currentArg != null)
-                {
-                    foreach (var ht in currentArg)
-                    {
-                        if (ht is Hashtable argumentItem)
-                        {
-                            if (argumentItem["car"] is not null)
-                            {
-                                Hashtable car = (Hashtable)argumentItem["car"];
+            Assert.Equal(arg0["name"] as string, "Monica", $"arg0.name has unexpected value: {arg0["name"] as string}");
+            Assert.Equal((int)arg0["age"], 22, $"arg0.age has unexpected value: {(int)arg0["age"]}");
+            Assert.Equal((int)arg0["gender"], 1, $"arg0.gender has unexpected value: {(int)arg0["gender"]}");
 
-                                int age = (int)car["age"];
-                                string model = (string)car["model"];
+            Assert.Equal((int)car0["age"], 5, $"car0.age has unexpected value: {(int)car0["age"]}");
+            Assert.Equal(car0["model"] as string, "Tesla", $"car0.model has unexpected value: {car0["model"] as string}");
 
-                                if(age == 5)
-                                {
-                                    Assert.Equal(model, "Tesla", "arg_0_car.model value is not correct");
-                                }
-                                else if (age == 35)
-                                {
-                                    Assert.Equal(model, "Buick", "arg_1_car.model value is not correct");
-                                }
-                                else
-                                {
-                                    Assert.True(false, $"unexpected car age after deserialization: car age from arg {argIndex} is {age}.");
-                                }
-                            }
-                            else if (argumentItem["age"] is not null)
-                            {
-                                lastPersonAge = (int)argumentItem["age"]; ;
-                            }
-                            else if (argumentItem["name"] is not null)
-                            {
-                                lastPersonName = (string)argumentItem["name"]; ;
-                            }
-                            else if (argumentItem["gender"] is not null)
-                            {
-                                lastPersonGender = (int)argumentItem["gender"];
-                            }
-                        }
-                    }
+            Hashtable arg1 = (Hashtable)dserResult.arguments[1];
+            Assert.NotNull(arg1, "Deserializing arg 1 returned a null object");
 
-                    if (lastPersonAge != 22 && lastPersonAge != 88)
-                    {
-                        Assert.True(false, $"unexpected age after deserialization: age from arg {argIndex} is {lastPersonAge}.");
-                    }
+            Hashtable car1 = (Hashtable)arg1["car"];
+            Assert.NotNull(car1, "Deserializing car from arg 1 returned a null object");
 
-                    if (lastPersonGender != 0 && lastPersonGender != 1)
-                    {
-                        Assert.True(false, $"unexpected gender after deserialization: gender from arg {argIndex} is {lastPersonGender}.");
-                    }
+            Assert.Equal(arg1["name"] as string, "Grandpa", $"arg1.name has unexpected value: {arg1["name"] as string}");
+            Assert.Equal((int)arg1["age"], 88, $"arg1.age has unexpected value: {(int)arg1["age"]}");
+            Assert.Equal((int)arg1["gender"], 0, $"arg1.gender has unexpected value: {(int)arg1["gender"]}");
 
-                    if (lastPersonName == "Monica")
-                    {
-                        Assert.Equal(lastPersonAge, 22, $"Expected Monica age to be 22 and it was {lastPersonAge}");
-                        Assert.Equal(lastPersonGender, 1, $"Expected Monica gender to be 1 and it was {lastPersonGender}");
-                    }
-                    else if (lastPersonName == "Grandpa")
-                    {
-                        Assert.Equal(lastPersonAge, 88, $"Expected Grandpa age to be 88 and it was {lastPersonAge}");
-                        Assert.Equal(lastPersonGender, 0, $"Expected Grandpa gender to be 0 and it was {lastPersonGender}");
-                    }
-                    else
-                    {
-                        Assert.True(false, $"unexpected name after deserialization: name from arg {argIndex} is {lastPersonName}.");
-                    }
-                }
-
-            }
-
-            Debug.WriteLine("");
+            Assert.Equal((int)car1["age"], 35, $"car1.age has unexpected value: {(int)car1["age"]}");
+            Assert.Equal(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
         }
 
         [TestMethod]
