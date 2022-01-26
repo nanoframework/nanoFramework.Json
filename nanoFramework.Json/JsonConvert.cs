@@ -601,8 +601,8 @@ namespace nanoFramework.Json
 
                                     for (int i = 0; i < memberValueArrayList.Count; i++)
                                     {
-                                        // Teswt if we have only 1 element and then the element is a Hashtable. In this case,
-                                        // We will just add the Hashtable.
+                                        // Test if we have only 1 element and that the element is a Hashtable.
+                                        // In this case, we'll make it more efficient and add it as an Hashtable.
                                         if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
                                             (((ArrayList)memberValueArrayList[i]).Count == 1) &&
                                             ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
