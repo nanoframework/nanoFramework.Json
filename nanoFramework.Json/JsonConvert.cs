@@ -64,6 +64,14 @@ namespace nanoFramework.Json
                 {
                     retToken = JsonObject.Serialize((ArrayList)oSource);
                 }
+                else if (type.BaseType.FullName == "System.ValueType")
+                {
+                    JsonToken[] jsonValue = new JsonToken[1];
+                    jsonValue[0] = JsonValue.Serialize(type, oSource);
+                    JsonArray jsonArray = new JsonArray(jsonValue);
+           
+                    return jsonArray.ToString();
+                }
                 else
                 {
                     retToken = JsonObject.Serialize(type, oSource);
@@ -662,7 +670,8 @@ namespace nanoFramework.Json
                     if (rootElementType == null)
                     {
                         // check if this is an ArrayList
-                        if (rootType.FullName == "System.Collections.ArrayList")
+                        if (rootType.FullName == "System.Collections.ArrayList"
+                            || rootType.BaseType.FullName == "System.ValueType")
                         {
                             isArrayList = true;
 
@@ -695,6 +704,14 @@ namespace nanoFramework.Json
                             {
                                 throw new DeserializationException();
                             }
+                        }
+
+                        if (rootType.BaseType.FullName == "System.ValueType"
+                            && rootArrayList.Count == 1)
+                        {
+                            // this is a case of deserialing a array with a single element,
+                            // so just return the element
+                            return rootArrayList[0];
                         }
 
                         return rootArrayList;

@@ -803,36 +803,10 @@ namespace nanoFramework.Json.Test
             Debug.WriteLine("");
         }
 
-
         [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_03()
         {
-            var testString = @"{
-""type"":1,
-""target"":""ReceiveAdvancedMessage"",
-""arguments"": [
-    {
-        ""age"":22,
-        ""name"":""Monica"",
-        ""gender"":1,
-        ""car"":{
-            ""age"":5,
-            ""model"":""Tesla""
-        }
-    },
-    {
-        ""age"":88,
-        ""name"":""Grandpa"",
-        ""gender"":0,
-        ""car"":{
-            ""age"":35,
-            ""model"":""Buick""
-        }
-    },
-    3
-]}";
-
-            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -870,6 +844,47 @@ namespace nanoFramework.Json.Test
             Assert.Equal(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
         }
 
+
+        [TestMethod]
+        public void CanDeserializeInvocationReceiveMessage_04()
+        {
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 1, "type value is not correct");
+            Assert.Equal(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
+
+            Assert.Equal((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
+            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.Equal(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
+
+            Person2 person1 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[0]), typeof(Person2));
+            Assert.NotNull(person1, "Deserializing person1 returned a null object");
+
+            Person2 person2 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(Person2));
+            Assert.NotNull(person2, "Deserializing person2 returned a null object");
+
+            Assert.Equal(person1.name, "Monica", $"person1.name has unexpected value: {person1.name}");
+            Assert.Equal(person1.age, 22, $"person1.age has unexpected value: {person1.age}");
+            Assert.Equal((int)person1.gender, (int)Gender.Female, $"person1.gender has unexpected value: {person1.gender}");
+
+            Assert.Equal(person1.car.age, 5, $"person1.car.age has unexpected value: {person1.car.age}");
+            Assert.Equal(person1.car.model, "Tesla", $"person1.car.model has unexpected value: {person1.car.model}");
+
+
+            Assert.Equal(person2.name, "Grandpa", $"person2.name has unexpected value: {person2.name}");
+            Assert.Equal(person2.age, 88, $"person2.age has unexpected value: {person2.age}");
+            Assert.Equal((int)person2.gender, (int)Gender.Male, $"person2.gender has unexpected value: {person2.gender}");
+
+            Assert.Equal(person2.car.age, 35, $"person2.car.age has unexpected value: {person2.car.age}");
+            Assert.Equal(person2.car.model, "Buick", $"person2.car.model has unexpected value: {person2.car.model}");
+
+            int argsCount = (int)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[2]), typeof(int));
+
+            Assert.Equal(argsCount, 3, $"argsCount has unexpected value: {argsCount}");
+        }
+
         [TestMethod]
         public void SerializeArrayListInAnObject()
         {
@@ -882,7 +897,8 @@ namespace nanoFramework.Json.Test
             };
 
             var sentMessage = JsonConvert.SerializeObject(invocMessage);
-            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""arguments"":{[1,2]},""target"":""Add""}", sentMessage);
+
+            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""arguments"":[1,2],""target"":""Add""}", sentMessage);
         }
 
         [TestMethod]
@@ -1000,6 +1016,31 @@ namespace nanoFramework.Json.Test
         }
 
         #region Test classes
+
+        private static string testInvocationReceiveMessage = @"{
+        ""type"":1,
+        ""target"":""ReceiveAdvancedMessage"",
+        ""arguments"": [
+            {
+                ""age"":22,
+                ""name"":""Monica"",
+                ""gender"":1,
+                ""car"":{
+                    ""age"":5,
+                    ""model"":""Tesla""
+                }
+            },
+            {
+                ""age"":88,
+                ""name"":""Grandpa"",
+                ""gender"":0,
+                ""car"":{
+                    ""age"":35,
+                    ""model"":""Buick""
+                }
+            },
+            3
+        ]}";
 
         private static string s_AzureTwinsJsonTestPayload = @"{
     ""deviceId"": ""nanoDeepSleep"",
@@ -1151,6 +1192,26 @@ namespace nanoFramework.Json.Test
             public string Prop2 { get; set; }
             public bool Prop3 { get; set; }
             public long Prop4 { get; set; }
+        }
+
+        public class Person2
+        {
+            public int age { get; set; }
+            public string name { get; set; }
+            public Gender gender { get; set; }
+            public Car car { get; set; }
+        }
+
+        public class Car
+        {
+            public int age { get; set; }
+            public string model { get; set; }
+        }
+
+        public enum Gender
+        {
+            Male,
+            Female
         }
 
         #endregion
