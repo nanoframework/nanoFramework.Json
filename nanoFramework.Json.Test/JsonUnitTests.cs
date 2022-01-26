@@ -837,7 +837,7 @@ namespace nanoFramework.Json.Test
             // loop through all arguments, except last one (already checked and it's not an hastable)
             for (int argIndex = 0; argIndex < dserResult.arguments.Count - 1; argIndex++)
             {
-                ArrayList currentArg = (ArrayList)dserResult.arguments[argIndex];
+                var currentArg = dserResult.arguments[argIndex];
 
                 int lastPersonAge = 0;
                 string lastPersonName = "";
@@ -845,18 +845,18 @@ namespace nanoFramework.Json.Test
 
                 if (currentArg != null)
                 {
-                    foreach (var ht in currentArg)
+                    if (currentArg.GetType() == typeof(Hashtable))
                     {
-                        if (ht is Hashtable argumentItem)
+                        foreach (DictionaryEntry argumentItem in currentArg as Hashtable)
                         {
-                            if (argumentItem["car"] is not null)
+                            if (argumentItem.Key as string == "car")
                             {
-                                Hashtable car = (Hashtable)argumentItem["car"];
+                                Hashtable car = (Hashtable)argumentItem.Value;
 
                                 int age = (int)car["age"];
                                 string model = (string)car["model"];
 
-                                if(age == 5)
+                                if (age == 5)
                                 {
                                     Assert.Equal(model, "Tesla", "arg_0_car.model value is not correct");
                                 }
@@ -869,17 +869,17 @@ namespace nanoFramework.Json.Test
                                     Assert.True(false, $"unexpected car age after deserialization: car age from arg {argIndex} is {age}.");
                                 }
                             }
-                            else if (argumentItem["age"] is not null)
+                            else if (argumentItem.Key as string == "age")
                             {
-                                lastPersonAge = (int)argumentItem["age"]; ;
+                                lastPersonAge = (int)argumentItem.Value; ;
                             }
-                            else if (argumentItem["name"] is not null)
+                            else if (argumentItem.Key as string == "name")
                             {
-                                lastPersonName = (string)argumentItem["name"]; ;
+                                lastPersonName = (string)argumentItem.Value; ;
                             }
-                            else if (argumentItem["gender"] is not null)
+                            else if (argumentItem.Key as string == "gender")
                             {
-                                lastPersonGender = (int)argumentItem["gender"];
+                                lastPersonGender = (int)argumentItem.Value;
                             }
                         }
                     }
@@ -911,8 +911,6 @@ namespace nanoFramework.Json.Test
                 }
 
             }
-
-            Debug.WriteLine("");
         }
 
         [TestMethod]

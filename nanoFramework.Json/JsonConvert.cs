@@ -198,6 +198,8 @@ namespace nanoFramework.Json
                     {
                         ArrayList rootArrayList = new();
 
+                        // In case we have elements to put there.
+                        var result = new Hashtable();
                         foreach (var m in rootObject.Members)
                         {
                             var memberProperty = (JsonProperty)m;
@@ -212,11 +214,7 @@ namespace nanoFramework.Json
                             }
                             else if (m is JsonToken jsonToken)
                             {
-                                var result = new Hashtable();
-
                                 result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
-
-                                rootArrayList.Add(result);
                             }
                             else
                             {
@@ -224,6 +222,10 @@ namespace nanoFramework.Json
                             }
                         }
 
+                        if (result.Count > 0)
+                        {
+                            rootArrayList.Add(result);
+                        }
                         return rootArrayList;
                     }
                     else
@@ -599,7 +601,18 @@ namespace nanoFramework.Json
 
                                     for (int i = 0; i < memberValueArrayList.Count; i++)
                                     {
-                                        targetArray.Add(memberValueArrayList[i]);
+                                        // Teswt if we have only 1 element and then the element is a Hashtable. In this case,
+                                        // We will just add the Hashtable.
+                                        if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
+                                            (((ArrayList)memberValueArrayList[i]).Count == 1) &&
+                                            ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
+                                        {
+                                            targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
+                                        }
+                                        else
+                                        {
+                                            targetArray.Add(memberValueArrayList[i]);
+                                        }
                                     }
 
                                     // Populate rootInstance
