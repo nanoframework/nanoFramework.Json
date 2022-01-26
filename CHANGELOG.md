@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.8...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.10...HEAD)
+
+**Documentation and other chores:**
+
+- Fixing complex ArrayList deserialization [\#166](https://github.com/nanoframework/nanoFramework.Json/pull/166)
+
+## [v2.1.2-preview.10](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.10) (2022-01-25)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.8...v2.1.2-preview.10)
 
 **Implemented enhancements:**
 
