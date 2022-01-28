@@ -844,7 +844,6 @@ namespace nanoFramework.Json.Test
             Assert.Equal(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
         }
 
-
         [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_04()
         {
@@ -883,6 +882,26 @@ namespace nanoFramework.Json.Test
             int argsCount = (int)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[2]), typeof(int));
 
             Assert.Equal(argsCount, 3, $"argsCount has unexpected value: {argsCount}");
+        }
+
+        [TestMethod]
+        public void CanDeserializeInvocationReceiveMessage_05()
+        {
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{""type"":1,""target"":""ReceiveMessage"",""arguments"":[""I_am_a_string"",""I_am_another_string""]}", typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 1, "type value is not correct");
+            Assert.Equal(dserResult.target, "ReceiveMessage", "target value is not correct");
+
+            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.Equal(dserResult.arguments.Count, 2, $"number of arguments is different than expected: {dserResult.arguments.Count}");
+
+            string arg0 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[0]), typeof(string));
+            string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
+
+            Assert.Equal(arg0, "I_am_a_string", $"arg0 has unexpected value: {arg0}");
+            Assert.Equal(arg1, "I_am_another_string", $"arg1 has unexpected value: {arg1}");
         }
 
         [TestMethod]
