@@ -18,9 +18,7 @@ namespace nanoFramework.Json
         {
             if (isDateTime)
             {
-                DateTime dtValue = DateTimeExtensions.ConvertFromString((string)value);
-
-                if (dtValue != DateTime.MaxValue)
+                if (DateTimeExtensions.ConvertFromString((string)value, out DateTime dtValue))
                 {
                     Value = dtValue;
                 }
