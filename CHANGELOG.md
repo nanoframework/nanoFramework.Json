@@ -2,7 +2,27 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.20...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.25...HEAD)
+
+**Implemented enhancements:**
+
+- Replace proprietary DateTime parse and ToString with standard ones [\#176](https://github.com/nanoframework/nanoFramework.Json/pull/176)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#175](https://github.com/nanoframework/nanoFramework.Json/pull/175)
+
+## [v2.1.2-preview.25](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.25) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.23...v2.1.2-preview.25)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#174](https://github.com/nanoframework/nanoFramework.Json/pull/174)
+
+## [v2.1.2-preview.23](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.23) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.20...v2.1.2-preview.23)
 
 **Implemented enhancements:**
 
