@@ -2,7 +2,28 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.16...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.20...HEAD)
+
+**Implemented enhancements:**
+
+- Improve deserialization of single string values [\#172](https://github.com/nanoframework/nanoFramework.Json/pull/172)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#173](https://github.com/nanoframework/nanoFramework.Json/pull/173)
+- Update 3 NuGet dependencies [\#171](https://github.com/nanoframework/nanoFramework.Json/pull/171)
+
+## [v2.1.2-preview.20](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.20) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.18...v2.1.2-preview.20)
+
+**Documentation and other chores:**
+
+- Update 3 NuGet dependencies [\#170](https://github.com/nanoframework/nanoFramework.Json/pull/170)
+
+## [v2.1.2-preview.18](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.18) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.16...v2.1.2-preview.18)
 
 **Documentation and other chores:**
 
