@@ -903,6 +903,18 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void CanDeserializeUnicodeData_01()
+        {
+            var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{ ""type"":3,""invocationId"":""1"",""error"":""Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.""}", typeof(InvocationReceiveMessage));
+
+            Assert.NotNull(dserResult, "Deserialization returned a null object");
+
+            Assert.Equal(dserResult.type, 3, "type value is not correct");
+            Assert.Equal(dserResult.invocationId, "1", "invocationId value is not correct");
+            Assert.Equal(dserResult.error, "Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.", "error value is not correct");
+        }
+
+        [TestMethod]
         public void SerializeArrayListInAnObject()
         {
             var invocMessage = new InvocationSendMessage
