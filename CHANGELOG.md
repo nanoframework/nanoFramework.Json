@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.27...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.29...HEAD)
+
+**Implemented enhancements:**
+
+- Add support to decode Unicode encoded chars [\#178](https://github.com/nanoframework/nanoFramework.Json/pull/178)
+
+## [v2.1.2-preview.29](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.29) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.27...v2.1.2-preview.29)
 
 **Documentation and other chores:**
 
