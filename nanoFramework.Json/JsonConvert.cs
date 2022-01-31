@@ -1346,6 +1346,7 @@ namespace nanoFramework.Json
 
                 // Handle json escapes
                 bool escaped = false;
+                bool unicodeEncoded = false;
 
                 if (ch == '\\')
                 {
@@ -1358,19 +1359,88 @@ namespace nanoFramework.Json
                     }
 
                     //TODO: replace with a mapping array? This switch is really incomplete.
-                    ch = ch switch
+                    switch (ch)
                     {
-                        't' => '\t',
-                        'r' => '\r',
-                        'n' => '\n',
-                        // unsupported escape
-                        _ => throw new DeserializationException(),
-                    };
+                        case 't':
+                            ch = '\t';
+                            break;
+
+                        case 'r':
+                            ch = '\r';
+                            break;
+
+                        case 'n':
+                            ch = '\n';
+                            break;
+
+                        case 'u':
+                            unicodeEncoded = true;
+                            break;
+
+                        default:
+                            throw new DeserializationException();
+                    }
                 }
 
                 if ((sb != null) && ((ch != openQuote) || (escaped)))
                 {
-                    sb.Append(ch);
+                    if (unicodeEncoded)
+                    {
+                        int numberCounter = 0;
+
+                        // next 4 chars have to be numeric
+                        StringBuilder encodedValue = new();
+
+                        // advance position to next char
+                        jsonPos++;
+                        ch = (char)jsonBytes[jsonPos];
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (IsNumberChar(ch))
+                            {
+                                numberCounter++;
+
+                                encodedValue.Append(ch);
+
+                                ch = (char)jsonBytes[jsonPos];
+
+                                if (IsNumberChar(ch))
+                                {
+                                    // We're still working on the number - advance jsonPos
+                                    jsonPos++;
+                                }
+                            }
+                        }
+
+                        if (numberCounter == 4)
+                        {
+                            // we're good with the encoded data
+                            // try parse number as an UTF-8 char
+                            try
+                            {
+                                // NOTE: the encoded value has hexadecimal format
+                                int unicodeChar = Convert.ToInt16(encodedValue.ToString(), 16);
+
+                                _ = sb.Append((char)unicodeChar);
+                            }
+                            catch
+                            {
+                                // couldn't parse this number as a valid Unicode value
+                                throw new DeserializationException();
+                            }
+                        }
+                        else
+                        {
+                            // anything else, we can't parse it properly
+                            // throw exception
+                            throw new DeserializationException();
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                    }
                 }
                 else if (IsNumberIntroChar(ch))
                 {
