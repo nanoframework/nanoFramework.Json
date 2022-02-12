@@ -465,6 +465,17 @@ namespace nanoFramework.Json
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
                                                         break;
 
+                                                    case nameof(TimeSpan):
+                                                        if (TimeSpanExtensions.TryConvertFromString(val.Value.ToString(), out TimeSpan value))
+                                                        {
+                                                            memberPropSetMethod.Invoke(rootInstance, new object[] { value });
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            return null;
+                                                        }
+
                                                     default:
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
                                                         break;

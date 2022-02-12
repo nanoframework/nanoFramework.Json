@@ -60,9 +60,11 @@ namespace nanoFramework.Json
 
                 var type = Value.GetType();
 
-                if (type == typeof(string) || type == typeof(char))
+                if (type == typeof(string)
+                    || type == typeof(char)
+                    || type == typeof(TimeSpan))
                 {
-                    return "\"" + this.Value.ToString() + "\"";
+                    return "\"" + Value.ToString() + "\"";
                 }
                 else if (type == typeof(DateTime))
                 {

@@ -37,6 +37,17 @@ namespace nanoFramework.Json.Test
         public DateTime FixedTimestamp { get; set; }
     }
 
+    public class JsonTestClassTimespan
+    {
+        public TimeSpan Duration1 { get; set; } = TimeSpan.FromMinutes(69);
+        public TimeSpan Duration2 { get; set; }
+        public TimeSpan Duration3 { get; set; }
+        public TimeSpan Duration4 { get; set; }
+        public TimeSpan Duration5 { get; set; }
+        public int DummyValue1 { get; set; } = -999;
+        public uint DummyValue2 { get; set; } = 777;
+    }
+
     public class JsonTestClassComplex
     {
         public int aInteger { get; set; }
@@ -273,6 +284,43 @@ namespace nanoFramework.Json.Test
             Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
 
             Debug.WriteLine("Can_serialize_deserialize_timestamp() - Finished - test succeeded.");
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_serialize_deserialize_timespan()
+        {
+            Debug.WriteLine("Can_serialize_deserialize_timespan() - Starting test...");
+
+            var randomValue = new Random();
+
+            var timeSpanTests = new JsonTestClassTimespan()
+            {
+                Duration2 = TimeSpan.FromSeconds(randomValue.Next(59)),
+                Duration3 = TimeSpan.FromMilliseconds(randomValue.Next(999)),
+                Duration4 = TimeSpan.FromHours(randomValue.Next(99)),
+                Duration5 = TimeSpan.FromDays(randomValue.Next(999)),
+            };
+
+            Debug.WriteLine($"Fixed timespan used for test = {timeSpanTests.Duration1}");
+            Debug.WriteLine($"variable timespan 2 used for test = {timeSpanTests.Duration2}");
+            Debug.WriteLine($"variable timespan 3 used for test = {timeSpanTests.Duration3}");
+            Debug.WriteLine($"variable timespan 4 used for test = {timeSpanTests.Duration4}");
+            Debug.WriteLine($"variable timespan 5 used for test = {timeSpanTests.Duration5}");
+
+            var result = JsonConvert.SerializeObject(timeSpanTests);
+            Debug.WriteLine($"Serialized class: {result}");
+
+            var dserResult = (JsonTestClassTimespan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimespan));
+            Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+            Assert.Equal(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1.ToString()}");
+            Assert.Equal(timeSpanTests.Duration2.Ticks.ToString(), dserResult.Duration2.Ticks.ToString(), $"wrong value for Duration2, expected {timeSpanTests.Duration2}, got {dserResult.Duration2}");
+            Assert.Equal(timeSpanTests.Duration3.Ticks.ToString(), dserResult.Duration3.Ticks.ToString(), $"wrong value for Duration3, expected {timeSpanTests.Duration3}, got {dserResult.Duration3}");
+            Assert.Equal(timeSpanTests.Duration4.Ticks.ToString(), dserResult.Duration4.Ticks.ToString(), $"wrong value for Duration4, expected {timeSpanTests.Duration4}, got {dserResult.Duration4}");
+            Assert.Equal(timeSpanTests.Duration5.Ticks.ToString(), dserResult.Duration5.Ticks.ToString(), $"wrong value for Duration5, expected {timeSpanTests.Duration5}, got {dserResult.Duration5}");
+
+            Debug.WriteLine("Can_serialize_deserialize_timespan() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
