@@ -213,4 +213,62 @@ namespace nanoFramework.Json
             return dateTime != DateTime.MaxValue;
         }
     }
+
+    internal static class TimeSpanExtensions
+    {
+        /// <summary>
+        /// Try converting a string value to a <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <param name="value"><see cref="string"/> to convert.</param>
+        /// <param name="timeSpan"><see cref="TimeSpan"/> converted from <paramref name="value"/>.</param>
+        /// <returns><see langword="true"/> if conversion was successful. <see langword="false"/> otherwise.</returns>
+        internal static bool TryConvertFromString(string value, out TimeSpan timeSpan)
+        {
+            timeSpan = TimeSpan.MinValue;
+
+            // split string value with all possible separators
+            // format is: ddddd.HH:mm:ss.fffffff
+            var timeSpanBits = value.Split(':', '.');
+
+            // sanity check
+            if (timeSpanBits.Length < 3)
+            {
+                return false;
+            }
+
+            int days = 0;
+            int ticks = 0;
+
+            // figure out where the separators are
+            int indexOfFirstDot = value.IndexOf('.');
+            int indexOfFirstColon = value.IndexOf(':');
+            int indexOfSecondDot = indexOfFirstDot > -1 ? value.IndexOf('.', indexOfFirstDot) : -1;
+
+            bool hasDays = indexOfFirstDot > 0 && indexOfFirstDot < indexOfFirstColon;
+            bool hasTicks = hasDays ? indexOfSecondDot > indexOfFirstDot : indexOfSecondDot > -1;
+
+            // start parsing
+            if (hasDays)
+            {
+                int.TryParse(timeSpanBits[0], out days);
+            }
+
+            int processIndex = hasDays ? 1 : 0;
+
+            int.TryParse(timeSpanBits[processIndex++], out int hours);
+            int.TryParse(timeSpanBits[processIndex++], out int minutes);
+            int.TryParse(timeSpanBits[processIndex++], out int seconds);
+
+            if (hasTicks)
+            {
+                int.TryParse(timeSpanBits[processIndex], out ticks);
+            }
+
+            // we should have everything now
+            timeSpan = new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
+
+            // done here
+            return true;
+        }
+    }
 }
