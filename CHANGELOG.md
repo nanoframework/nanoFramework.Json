@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.35...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.37...HEAD)
+
+**Implemented enhancements:**
+
+- Add support to deserialize & serialize TimeSpan [\#183](https://github.com/nanoframework/nanoFramework.Json/pull/183)
+
+## [v2.1.2-preview.37](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.37) (2022-02-08)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.35...v2.1.2-preview.37)
 
 **Documentation and other chores:**
 
