@@ -37,7 +37,7 @@ namespace nanoFramework.Json.Test
         public DateTime FixedTimestamp { get; set; }
     }
 
-    public class JsonTestClassTimespan
+    public class JsonTestClassTimeSpan
     {
         public TimeSpan Duration1 { get; set; } = TimeSpan.FromMinutes(69);
         public TimeSpan Duration2 { get; set; }
@@ -288,13 +288,13 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_serialize_deserialize_timespan()
+        public void Can_serialize_deserialize_timespan_00()
         {
-            Debug.WriteLine("Can_serialize_deserialize_timespan() - Starting test...");
+            Debug.WriteLine("Can_serialize_deserialize_timespan_00() - Starting test...");
 
             var randomValue = new Random();
 
-            var timeSpanTests = new JsonTestClassTimespan()
+            var timeSpanTests = new JsonTestClassTimeSpan()
             {
                 Duration2 = TimeSpan.FromSeconds(randomValue.Next(59)),
                 Duration3 = TimeSpan.FromMilliseconds(randomValue.Next(999)),
@@ -311,7 +311,7 @@ namespace nanoFramework.Json.Test
             var result = JsonConvert.SerializeObject(timeSpanTests);
             Debug.WriteLine($"Serialized class: {result}");
 
-            var dserResult = (JsonTestClassTimespan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimespan));
+            var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimeSpan));
             Debug.WriteLine($"After Type deserialization: {dserResult}");
 
             Assert.Equal(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1.ToString()}");
@@ -320,7 +320,114 @@ namespace nanoFramework.Json.Test
             Assert.Equal(timeSpanTests.Duration4.Ticks.ToString(), dserResult.Duration4.Ticks.ToString(), $"wrong value for Duration4, expected {timeSpanTests.Duration4}, got {dserResult.Duration4}");
             Assert.Equal(timeSpanTests.Duration5.Ticks.ToString(), dserResult.Duration5.Ticks.ToString(), $"wrong value for Duration5, expected {timeSpanTests.Duration5}, got {dserResult.Duration5}");
 
-            Debug.WriteLine("Can_serialize_deserialize_timespan() - Finished - test succeeded.");
+            Debug.WriteLine("Can_serialize_deserialize_timespan_00() - Finished - test succeeded.");
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_serialize_deserialize_timespan_01()
+        {
+            Debug.WriteLine("Can_serialize_deserialize_timespan_01() - Starting test...");
+
+            JsonTestClassTimeSpan[] _timeSpans = new JsonTestClassTimeSpan[] {
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = TimeSpan.Zero,
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(12, 00, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(10, 20, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(00, 10, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(10, 00, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(00, 00, 59),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(00, 59, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(23, 00, 00),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(23, 59, 59, 99),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(99, 23, 59, 59, 9999999),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(10, 20, 30, 40, 50),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(1, 2, 3),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = TimeSpan.FromDays(14),
+                },
+                new JsonTestClassTimeSpan()
+                {
+                    Duration2 = new TimeSpan(10, 12, 00, 00)
+                }
+            };
+
+            for (int i = 0; i < _timeSpans.Length; i++)
+            {
+                var result = JsonConvert.SerializeObject(_timeSpans[i]);
+                Debug.WriteLine($"Serialized class: {result}");
+
+                var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimeSpan));
+                Debug.WriteLine($"After Type deserialization: {dserResult}");
+
+                // can't compare TimeSpans directly, using ticks
+                Assert.Equal(_timeSpans[i].Duration2.Ticks, dserResult.Duration2.Ticks, $"wrong value, expected {_timeSpans[i].Duration2}, got {dserResult.Duration2}");
+            }
+
+            Debug.WriteLine("Can_serialize_deserialize_timespan_01() - Finished - test succeeded.");
+            Debug.WriteLine("");
+        }
+
+        [TestMethod]
+        public void Can_serialize_deserialize_timespan_02()
+        {
+            Debug.WriteLine("Can_serialize_deserialize_timespan_02() - Starting test...");
+
+            string[] strArr = new string[] {
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"24:0:0\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"0:0:60\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10:\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\":10\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10:20:\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\".123\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10.\"}",
+                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10.12\"}",
+            };
+
+            for (int i = 0; i < strArr.Length; i++)
+            {
+                var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
+
+                Assert.Null(dserResult, $"Deserialization should have failed for strArr[{i}]");
+            }
+
+            Debug.WriteLine("Can_serialize_deserialize_timespan_02() - Finished - test succeeded.");
             Debug.WriteLine("");
         }
 
