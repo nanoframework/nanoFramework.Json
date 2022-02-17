@@ -9,9 +9,6 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Text;
-#if NANOFRAMEWORK_1_0
-using Windows.Storage.Streams;
-#endif
 
 namespace nanoFramework.Json
 {
@@ -114,22 +111,22 @@ namespace nanoFramework.Json
         /// <param name="dr"></param>
         /// <param name="type">The object type to convert to</param>
         /// <returns></returns>
-        public static object DeserializeObject(DataReader dr, Type type)
+        public static object DeserializeObject(StreamReader dr, Type type)
         {
             var dserResult = Deserialize(dr);
 
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
-        private static object Deserialize(DataReader dr)
+        private static object Deserialize(StreamReader dr)
         {
             // Read the DataReader into jsonBytes[]
-            jsonBytes = new byte[dr.UnconsumedBufferLength];
+            jsonBytes = new byte[dr.BaseStream.Length];
             jsonPos = 0;
 
-            while (dr.UnconsumedBufferLength > 0)
+            while (!dr.EndOfStream)
             {
-                jsonBytes[jsonPos++] = dr.ReadByte();
+                jsonBytes[jsonPos++] = (byte)dr.Read();
             }
 
             jsonPos = 0;
