@@ -12,16 +12,16 @@ namespace nanoFramework.SignalR.Client.json
     /// JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
     /// </summary>
     internal class JsonSerializer
-	{
+    {
         internal JsonSerializer(DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
-		{
+        {
             DateFormat = dateTimeFormat;
-		}
+        }
 
-	    /// <summary>
-	    /// Gets/Sets the format that will be used to display
-	    /// and parse dates in the Json data.
-	    /// </summary>
+        /// <summary>
+        /// Gets/Sets the format that will be used to display
+        /// and parse dates in the Json data.
+        /// </summary>
         internal DateTimeFormat DateFormat { get; set; }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace nanoFramework.SignalR.Client.json
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
 		internal string Serialize(object o)
-		{
+        {
             return SerializeObject(o, this.DateFormat);
-		}
+        }
 
         /// <summary>
         /// Convert an object to a JSON string.
@@ -76,18 +76,8 @@ namespace nanoFramework.SignalR.Client.json
                         return o.ToString();
                     }
                 case "DateTime":
-                    {
-                        switch (dateTimeFormat)
-                        {
-                            case DateTimeFormat.Ajax:
-                                // This MSDN page describes the problem with JSON dates:
-                                // http://msdn.microsoft.com/en-us/library/bb299886.aspx
-                                return "\"" + DateTimeExtensions.ToASPNetAjax((DateTime)o) + "\"";
-                            case DateTimeFormat.ISO8601:
-                            case DateTimeFormat.Default:
-                            default:
-                                return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
-                        }
+                    { //TODO Remove all reference to non IS8601 DATETime
+                        return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
                     }
             }
 
@@ -108,10 +98,10 @@ namespace nanoFramework.SignalR.Client.json
                 Hashtable hashtable = new Hashtable();
                 if (o is DictionaryEntry)
                 {
-                    var dic = (DictionaryEntry)o; 
+                    var dic = (DictionaryEntry)o;
                     DictionaryEntry entry = dic;
                     hashtable.Add(entry.Key, entry.Value);
-                 
+
                 }
                 return SerializeIDictionary(hashtable, dateTimeFormat);
             }
@@ -148,7 +138,7 @@ namespace nanoFramework.SignalR.Client.json
                         }
 
                         object returnObject = method.Invoke(o, null);
-                        hashtable.Add(method.Name.Substring(4), returnObject);                 
+                        hashtable.Add(method.Name.Substring(4), returnObject);
                     }
                 }
                 return SerializeIDictionary(hashtable, dateTimeFormat);
@@ -227,7 +217,7 @@ namespace nanoFramework.SignalR.Client.json
             return result.ToString();
         }
 
-  }
+    }
 
     /// <summary>
     /// Enumeration of the popular formats of time and date
