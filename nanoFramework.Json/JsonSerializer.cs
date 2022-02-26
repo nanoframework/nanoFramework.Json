@@ -54,6 +54,7 @@ namespace nanoFramework.SignalR.Client.json
                     {
                         return (bool)o ? "true" : "false";
                     }
+                case "TimeSpan":
                 case "String":
                 case "Char":
                 case "Guid":
@@ -61,7 +62,21 @@ namespace nanoFramework.SignalR.Client.json
                         return "\"" + o.ToString() + "\"";
                     }
                 case "Single":
+                    {
+                        if (float.IsNaN((Single)o))
+                        {
+                            return "null";
+                        }
+                        return o.ToString();
+                    }
                 case "Double":
+                    {
+                        if (double.IsNaN((double)o))
+                        {
+                            return "null";
+                        }
+                        return o.ToString();
+                    }
                 case "Decimal":
                 case "Float":
                 case "Byte":
