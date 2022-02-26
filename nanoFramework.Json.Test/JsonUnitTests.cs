@@ -739,7 +739,8 @@ namespace nanoFramework.Json.Test
 
             Debug.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
-            string correctValue = "[{\"collection\":[1,null,2,\"blah\",false],\"nulltest\":null,\"stringtest\":\"hello world\"}]";
+            //string correctValue = "[{\"collection\":[1,null,2,\"blah\",false],\"nulltest\":null,\"stringtest\":\"hello world\"}]";
+            string correctValue = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[1,null,2,\"blah\",false]}]";
 
             Assert.Equal(json, correctValue, "Values did not match");
 
