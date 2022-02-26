@@ -4,6 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.SignalR.Client.json;
 using System;
 using System.Collections;
 using System.IO;
@@ -45,6 +46,9 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
+
+            return JsonSerializer.SerializeObject(oSource);
+
             var type = oSource.GetType();
 
             if (type.IsArray)
