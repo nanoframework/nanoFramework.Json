@@ -6,12 +6,12 @@ using System.Collections;
 using System.Text;
 
 
-namespace nanoFramework.SignalR.Client.json
+namespace nanoFramework.json
 {
     /// <summary>
     /// JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
     /// </summary>
-    internal class JsonSerializer
+    public class JsonSerializer
     {
         internal JsonSerializer(DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
@@ -30,9 +30,9 @@ namespace nanoFramework.SignalR.Client.json
         /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
-		internal string Serialize(object o)
+		public static string Serialize(object o)
         {
-            return SerializeObject(o, this.DateFormat);
+            return SerializeObject(o);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace nanoFramework.SignalR.Client.json
         /// </summary>
         /// <param name="enumerable">The value to convert.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-        protected static string SerializeIEnumerable(IEnumerable enumerable, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeIEnumerable(IEnumerable enumerable, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
             StringBuilder result = new StringBuilder("[");
 
@@ -190,7 +190,7 @@ namespace nanoFramework.SignalR.Client.json
         /// </summary>
         /// <param name="dictionary">The value to convert.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-        protected static string SerializeIDictionary(IDictionary dictionary, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeIDictionary(IDictionary dictionary, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
             StringBuilder result = new StringBuilder("{");
 

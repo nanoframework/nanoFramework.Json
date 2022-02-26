@@ -4,7 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.SignalR.Client.json;
+using nanoFramework.json;
 using System;
 using System.Collections;
 using System.IO;
