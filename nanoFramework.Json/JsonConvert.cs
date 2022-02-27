@@ -1046,7 +1046,7 @@ namespace nanoFramework.Json
                             }
                             else if (item is JsonToken jsonToken)
                             {
-                                throw new NotImplementedException();
+                                memberValueArrayList.Add(PopulateHashtable(jsonToken));
                             }
                             else
                             {
