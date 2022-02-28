@@ -1124,8 +1124,12 @@ namespace nanoFramework.Json.Test
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
             Assert.Equal(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
+            OutputHelper.WriteLine("Serializing dserResult.arguments[0]");
+
             Person2 person1 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[0]), typeof(Person2));
             Assert.NotNull(person1, "Deserializing person1 returned a null object");
+
+            OutputHelper.WriteLine("Serializing dserResult.arguments[1]");
 
             Person2 person2 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(Person2));
             Assert.NotNull(person2, "Deserializing person2 returned a null object");
@@ -1145,7 +1149,13 @@ namespace nanoFramework.Json.Test
             Assert.Equal(person2.car.age, 35, $"person2.car.age has unexpected value: {person2.car.age}");
             Assert.Equal(person2.car.model, "Buick", $"person2.car.model has unexpected value: {person2.car.model}");
 
-            int argsCount = (int)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[2]), typeof(int));
+            OutputHelper.WriteLine($"Serializing dserResult.arguments[2]:{dserResult.arguments[2]}");
+
+            var serializedObject = JsonConvert.SerializeObject(dserResult.arguments[2]);
+
+            OutputHelper.WriteLine($"Serialized object is:>>{serializedObject}<<");
+
+            int argsCount = (int)JsonConvert.DeserializeObject(serializedObject, typeof(int));
 
             Assert.Equal(argsCount, 3, $"argsCount has unexpected value: {argsCount}");
         }

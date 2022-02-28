@@ -92,6 +92,9 @@ namespace nanoFramework.Json
         public static object DeserializeObject(string sourceString, Type type)
         {
             var dserResult = Deserialize(sourceString);
+
+            //System.Diagnostics.Debug.WriteLine($"serializing:==={dserResult}===");
+
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
@@ -1457,9 +1460,11 @@ namespace nanoFramework.Json
                 else if (IsNumberIntroChar(ch))
                 {
                     sb = new StringBuilder();
-
+                    //System.Diagnostics.Debug.WriteLine($"IsNumberIntroChar:{ch}");
                     while (IsNumberChar(ch))
                     {
+                        //System.Diagnostics.Debug.WriteLine($"--{jsonPos}/{jsonBytes.Length}");
+
                         sb.Append(ch);
 
                         // nanoFramework doesn't support Peek() for Streams or DataReaders
