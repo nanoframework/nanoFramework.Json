@@ -40,16 +40,19 @@ namespace nanoFramework.json
         /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, TimeSpan, DictionaryEntry, Object and null.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
-        internal static string SerializeObject(object o, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeObject(object o, bool topObject = true, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
             if (o == null)
                 return "null";
 
             Type type = o.GetType();
 
-            if (!type.IsArray && type.BaseType.FullName == "System.ValueType")
+            if (topObject 
+                && !type.IsArray
+                && (type.BaseType.FullName == "System.ValueType"
+                || type.FullName == "System.String"))
             {
-                return "[" + o.ToString() + "]";
+                return $"[{SerializeObject(o, false)}]";
             }
 
             switch (type.Name)
@@ -182,7 +185,7 @@ namespace nanoFramework.json
                     result += (",");
                 }
 
-                result += (SerializeObject(current, dateTimeFormat));
+                result += (SerializeObject(current, false, dateTimeFormat));
             }
 
             result += ("]");
@@ -211,7 +214,7 @@ namespace nanoFramework.json
                 //result += (":");
 
 
-                var ser = SerializeObject(entry.Value, dateTimeFormat);
+                var ser = SerializeObject(entry.Value, false, dateTimeFormat);
                 result += (ser);
             }
 
