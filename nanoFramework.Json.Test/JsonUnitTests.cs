@@ -1163,6 +1163,8 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_05()
         {
+            OutputHelper.WriteLine($"Starting CanDeserializeInvocationReceiveMessage_05");
+
             var startTimestamp = Environment.TickCount64;
 
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{""type"":1,""target"":""ReceiveMessage"",""arguments"":[""I_am_a_string"",""I_am_another_string""]}", typeof(InvocationReceiveMessage));
@@ -1178,7 +1180,16 @@ namespace nanoFramework.Json.Test
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
             Assert.Equal(dserResult.arguments.Count, 2, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
+            OutputHelper.WriteLine($"SerializingdserResult.arguments[0]:{dserResult.arguments[0]}");
+            var serializedObject = JsonConvert.SerializeObject(dserResult.arguments[0]);
+            OutputHelper.WriteLine($"Serialized object is:>>{serializedObject}<<");
+
             string arg0 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[0]), typeof(string));
+
+            OutputHelper.WriteLine($"SerializingdserResult.arguments[0]:{dserResult.arguments[1]}");
+            serializedObject = JsonConvert.SerializeObject(dserResult.arguments[1]);
+            OutputHelper.WriteLine($"Serialized object is:>>{serializedObject}<<");
+
             string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
 
             Assert.Equal(arg0, "I_am_a_string", $"arg0 has unexpected value: {arg0}");
