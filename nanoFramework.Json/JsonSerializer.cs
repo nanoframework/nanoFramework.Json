@@ -1,10 +1,9 @@
 ﻿// Source code is modified from Mike Jones's JSON Serialization and Deserialization library (https://www.ghielectronics.com/community/codeshare/entry/357)
 
 using System;
-using System.Reflection;
 using System.Collections;
+using System.Reflection;
 using System.Text;
-using System.Diagnostics;
 
 namespace nanoFramework.json
 {
@@ -47,6 +46,11 @@ namespace nanoFramework.json
                 return "null";
 
             Type type = o.GetType();
+
+            if (!type.IsArray && type.BaseType.FullName == "System.ValueType")
+            {
+                return "[" + o.ToString() + "]";
+            }
 
             switch (type.Name)
             {
