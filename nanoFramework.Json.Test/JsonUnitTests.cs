@@ -1200,6 +1200,13 @@ namespace nanoFramework.Json.Test
             Assert.Equal(deserUInt64.OneInt32, singleUInt64.OneInt32);
         }
 
+        [TestMethod]
+        public void CompleHashtableArraysList()
+        {
+            string json = @"{""desired"":{""TimeToSleep"":2,""Files"":[{""FileName"":""https://ellerbachiotstorage.blob.core.windows.net/nano-containers/CountMeasurement.pe"",""Signature"":""4E-1E-12-45-C5-EB-EC-E3-86-D3-09-39-AE-E9-E8-81-97-A9-0E-DF-EE-D0-71-27-A7-3F-26-D0-4B-4E-CF-23""}],""Token"":""sp=r&st=2022-02-12T12:32:10Z&se=2023-11-01T20:32:10Z&spr=https&sv=2020-08-04&sr=c&sig=O32denO9Hw8mZ2OlNSBS%2FULuRn9RcArGDZ5%2BGvKgolM%3D"",""CodeVersion"":12,""UpdateTime"":120000,""$version"":43},""reported"":{""Firmware"":""nanoFramework"",""Sdk"":0.2,""TimeToSleep"":2,""CodeUpdated"":true,""CodeRunning"":true,""$version"":4353}}";
+            Hashtable deser = (Hashtable)JsonConvert.DeserializeObject(json, typeof(Hashtable));
+        }
+
         #region Test classes
 
         private static string testInvocationReceiveMessage = @"{
