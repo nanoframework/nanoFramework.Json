@@ -4,7 +4,7 @@ using System;
 using System.Reflection;
 using System.Collections;
 using System.Text;
-
+using System.Diagnostics;
 
 namespace nanoFramework.json
 {
@@ -32,13 +32,13 @@ namespace nanoFramework.json
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
 		public static string Serialize(object o)
         {
-            return SerializeObject(o);
+            return  SerializeObject(o);
         }
 
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
-        /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+        /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, TimeSpan, DictionaryEntry, Object and null.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
         internal static string SerializeObject(object o, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
@@ -169,20 +169,20 @@ namespace nanoFramework.json
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         internal static string SerializeIEnumerable(IEnumerable enumerable, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
-            StringBuilder result = new StringBuilder("[");
+            string result = ("[");
 
             foreach (object current in enumerable)
             {
                 if (result.Length > 1)
                 {
-                    result.Append(",");
+                    result += (",");
                 }
 
-                result.Append(SerializeObject(current, dateTimeFormat));
+                result += (SerializeObject(current, dateTimeFormat));
             }
 
-            result.Append("]");
-            return result.ToString();
+            result += ("]");
+            return result;
         }
 
         /// <summary>
@@ -190,24 +190,29 @@ namespace nanoFramework.json
         /// </summary>
         /// <param name="dictionary">The value to convert.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
+
         internal static string SerializeIDictionary(IDictionary dictionary, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
         {
-            StringBuilder result = new StringBuilder("{");
+            
+            string result = "{";
 
             foreach (DictionaryEntry entry in dictionary)
             {
                 if (result.Length > 1)
                 {
-                    result.Append(",");
+                    result += (",");
                 }
 
-                result.Append("\"" + entry.Key + "\"");
-                result.Append(":");
-                result.Append(SerializeObject(entry.Value, dateTimeFormat));
+                result += ("\"" + entry.Key + "\":");
+                //result += (":");
+
+
+                var ser = SerializeObject(entry.Value, dateTimeFormat);
+                result += (ser);
             }
 
-            result.Append("}");
-            return result.ToString();
+            result += ("}");
+            return result;
         }
 
         /// <summary>
