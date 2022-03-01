@@ -91,8 +91,8 @@ namespace nanoFramework.json
                     var dic = (DictionaryEntry)o;
                     DictionaryEntry entry = dic;
                     hashtable.Add(entry.Key, entry.Value);
-
                 }
+
                 return SerializeIDictionary(hashtable);
             }
 
@@ -104,15 +104,17 @@ namespace nanoFramework.json
                 MethodInfo[] methods = type.GetMethods();
                 foreach (MethodInfo method in methods)
                 {
+                    
                     // We care only about property getters when serializing
                     if (method.Name.StartsWith("get_"))
                     {
+                        
                         // Ignore abstract and virtual objects
                         if (method.IsAbstract)
                         {
                             continue;
                         }
-
+                        
                         // Ignore delegates and MethodInfos
                         if ((method.ReturnType == typeof(System.Delegate)) ||
                             (method.ReturnType == typeof(System.MulticastDelegate)) ||
@@ -120,17 +122,18 @@ namespace nanoFramework.json
                         {
                             continue;
                         }
+                        
                         // Ditto for DeclaringType
                         if ((method.DeclaringType == typeof(System.Delegate)) ||
                             (method.DeclaringType == typeof(System.MulticastDelegate)))
                         {
                             continue;
                         }
-
                         object returnObject = method.Invoke(o, null);
                         hashtable.Add(method.Name.Substring(4), returnObject);
                     }
                 }
+                
                 return SerializeIDictionary(hashtable);
             }
 
@@ -144,19 +147,18 @@ namespace nanoFramework.json
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         internal static string SerializeIEnumerable(IEnumerable enumerable)
         {
-            string result = ("[");
+            string result = "[";
 
             foreach (object current in enumerable)
             {
                 if (result.Length > 1)
                 {
-                    result += (",");
+                    result += ",";
                 }
-
-                result += (SerializeObject(current, false));
+                result += SerializeObject(current, false);
             }
-
-            result += ("]");
+            result += "]";
+ 
             return result;
         }
 
@@ -174,18 +176,14 @@ namespace nanoFramework.json
             {
                 if (result.Length > 1)
                 {
-                    result += (",");
+                    result += ",";
                 }
 
-                result += ("\"" + entry.Key + "\":");
-                //result += (":");
-
-
-                var ser = SerializeObject(entry.Value, false);
-                result += (ser);
+                result += "\"" + entry.Key + "\":";
+                result += SerializeObject(entry.Value, false);
             }
-
-            result += ("}");
+            result += "}";
+ 
             return result;
         }
 
@@ -198,18 +196,21 @@ namespace nanoFramework.json
         {
             // If the string is just fine (most are) then make a quick exit for improved performance
             if (str.IndexOf('\\') < 0 && str.IndexOf('\"') < 0)
+            {
                 return str;
+            }
 
             // Build a new string
             StringBuilder result = new StringBuilder(str.Length + 1); // we know there is at least 1 char to escape
+ 
             foreach (char ch in str.ToCharArray())
             {
                 if (ch == '\\' || ch == '\"')
                     result.Append('\\');
                 result.Append(ch);
             }
+            
             return result.ToString();
         }
-
     }
 }
