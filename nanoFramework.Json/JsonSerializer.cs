@@ -67,6 +67,8 @@ namespace nanoFramework.json
                         return o.ToString();
                 case "DateTime":
                         return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
+                default:
+                        return o.ToString();
             }
 
             if (o is IDictionary && !type.IsArray)
