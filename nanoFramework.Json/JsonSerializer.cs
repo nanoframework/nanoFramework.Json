@@ -8,39 +8,17 @@ using System.Text;
 namespace nanoFramework.json
 {
     /// <summary>
-    /// JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
+    /// Adapted from JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
     /// </summary>
     public class JsonSerializer
     {
-        internal JsonSerializer(DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
-        {
-            DateFormat = dateTimeFormat;
-        }
-
-        /// <summary>
-        /// Gets/Sets the format that will be used to display
-        /// and parse dates in the Json data.
-        /// </summary>
-        internal DateTimeFormat DateFormat { get; set; }
-
-        /// <summary>
-        /// Convert an object to a JSON string.
-        /// </summary>
-        /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
-        /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-        /// <remarks>For objects, only internal properties with getters are converted.</remarks>
-		public static string Serialize(object o)
-        {
-            return  SerializeObject(o);
-        }
-
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
         /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, TimeSpan, DictionaryEntry, Object and null.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
-        internal static string SerializeObject(object o, bool topObject = true, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeObject(object o, bool topObject = true)
         {
             if (o == null)
                 return "null";
@@ -106,13 +84,13 @@ namespace nanoFramework.json
             if (o is IDictionary && !type.IsArray)
             {
                 IDictionary dictionary = o as IDictionary;
-                return SerializeIDictionary(dictionary, dateTimeFormat);
+                return SerializeIDictionary(dictionary);
             }
 
             if (o is IEnumerable)
             {
                 IEnumerable enumerable = o as IEnumerable;
-                return SerializeIEnumerable(enumerable, dateTimeFormat);
+                return SerializeIEnumerable(enumerable);
             }
 
             if (type == typeof(System.Collections.DictionaryEntry))
@@ -125,7 +103,7 @@ namespace nanoFramework.json
                     hashtable.Add(entry.Key, entry.Value);
 
                 }
-                return SerializeIDictionary(hashtable, dateTimeFormat);
+                return SerializeIDictionary(hashtable);
             }
 
             if (type.IsClass)
@@ -163,7 +141,7 @@ namespace nanoFramework.json
                         hashtable.Add(method.Name.Substring(4), returnObject);
                     }
                 }
-                return SerializeIDictionary(hashtable, dateTimeFormat);
+                return SerializeIDictionary(hashtable);
             }
 
             return null;
@@ -174,7 +152,7 @@ namespace nanoFramework.json
         /// </summary>
         /// <param name="enumerable">The value to convert.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-        internal static string SerializeIEnumerable(IEnumerable enumerable, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeIEnumerable(IEnumerable enumerable)
         {
             string result = ("[");
 
@@ -185,7 +163,7 @@ namespace nanoFramework.json
                     result += (",");
                 }
 
-                result += (SerializeObject(current, false, dateTimeFormat));
+                result += (SerializeObject(current, false));
             }
 
             result += ("]");
@@ -197,8 +175,7 @@ namespace nanoFramework.json
         /// </summary>
         /// <param name="dictionary">The value to convert.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-
-        internal static string SerializeIDictionary(IDictionary dictionary, DateTimeFormat dateTimeFormat = DateTimeFormat.Default)
+        internal static string SerializeIDictionary(IDictionary dictionary)
         {
             
             string result = "{";
@@ -214,7 +191,7 @@ namespace nanoFramework.json
                 //result += (":");
 
 
-                var ser = SerializeObject(entry.Value, false, dateTimeFormat);
+                var ser = SerializeObject(entry.Value, false);
                 result += (ser);
             }
 
@@ -244,17 +221,5 @@ namespace nanoFramework.json
             return result.ToString();
         }
 
-    }
-
-    /// <summary>
-    /// Enumeration of the popular formats of time and date
-    /// within Json.  It's not a standard, so you have to
-    /// know which on you're using.
-    /// </summary>
-    internal enum DateTimeFormat
-    {
-        Default = 0,
-        ISO8601 = 1,
-        Ajax = 2
     }
 }

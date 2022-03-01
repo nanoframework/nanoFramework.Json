@@ -49,38 +49,6 @@ namespace nanoFramework.Json
 
             return JsonSerializer.SerializeObject(oSource);
 
-            var type = oSource.GetType();
-
-            if (type.IsArray)
-            {
-                JsonToken retToken = JsonArray.Serialize(type, oSource);
-
-                return retToken.ToString();
-            }
-            else
-            {
-                JsonToken retToken;
-
-                if (type.FullName == "System.Collections.ArrayList")
-                {
-                    retToken = JsonObject.Serialize((ArrayList)oSource);
-                }
-                else if (type.BaseType.FullName == "System.ValueType"
-                         || type.FullName == "System.String")
-                {
-                    JsonToken[] jsonValue = new JsonToken[1];
-                    jsonValue[0] = JsonValue.Serialize(type, oSource);
-                    JsonArray jsonArray = new JsonArray(jsonValue);
-
-                    return jsonArray.ToString();
-                }
-                else
-                {
-                    retToken = JsonObject.Serialize(type, oSource);
-                }
-
-                return retToken.ToString();
-            }
         }
 
         /// <summary>
