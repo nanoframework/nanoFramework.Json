@@ -21,7 +21,9 @@ namespace nanoFramework.json
         internal static string SerializeObject(object o, bool topObject = true)
         {
             if (o == null)
+            {
                 return "null";
+            }
 
             Type type = o.GetType();
 
@@ -47,12 +49,14 @@ namespace nanoFramework.json
                         {
                             return "null";
                         }
+
                         return o.ToString();
                 case "Double":
                         if (double.IsNaN((double)o))
                         {
                             return "null";
                         }
+
                         return o.ToString();
                 case "Decimal":
                 case "Float":
@@ -127,6 +131,7 @@ namespace nanoFramework.json
                         {
                             continue;
                         }
+
                         object returnObject = method.Invoke(o, null);
                         hashtable.Add(method.Name.Substring(4), returnObject);
                     }
@@ -153,8 +158,10 @@ namespace nanoFramework.json
                 {
                     result += ",";
                 }
+
                 result += SerializeObject(current, false);
             }
+
             result += "]";
  
             return result;
@@ -167,7 +174,6 @@ namespace nanoFramework.json
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         internal static string SerializeIDictionary(IDictionary dictionary)
         {
-            
             string result = "{";
 
             foreach (DictionaryEntry entry in dictionary)
@@ -180,6 +186,7 @@ namespace nanoFramework.json
                 result += "\"" + entry.Key + "\":";
                 result += SerializeObject(entry.Value, false);
             }
+
             result += "}";
  
             return result;
