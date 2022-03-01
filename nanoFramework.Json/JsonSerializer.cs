@@ -201,7 +201,7 @@ namespace nanoFramework.json
             // Build a new string
             StringBuilder result = new StringBuilder(str.Length + 1); // we know there is at least 1 char to escape
  
-            foreach (char ch in str.ToCharArray())
+            foreach (char ch in str)
             {
                 if (ch == '\\' || ch == '\"')
                     result.Append('\\');
