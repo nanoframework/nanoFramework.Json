@@ -36,32 +36,24 @@ namespace nanoFramework.json
             switch (type.Name)
             {
                 case "Boolean":
-                    {
                         return (bool)o ? "true" : "false";
-                    }
                 case "TimeSpan":
                 case "String":
                 case "Char":
                 case "Guid":
-                    {
                         return "\"" + o.ToString() + "\"";
-                    }
                 case "Single":
-                    {
                         if (float.IsNaN((Single)o))
                         {
                             return "null";
                         }
                         return o.ToString();
-                    }
                 case "Double":
-                    {
                         if (double.IsNaN((double)o))
                         {
                             return "null";
                         }
                         return o.ToString();
-                    }
                 case "Decimal":
                 case "Float":
                 case "Byte":
@@ -72,13 +64,9 @@ namespace nanoFramework.json
                 case "UInt32":
                 case "Int64":
                 case "UInt64":
-                    {
                         return o.ToString();
-                    }
                 case "DateTime":
-                    { //TODO Remove all reference to non IS8601 DATETime
                         return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
-                    }
             }
 
             if (o is IDictionary && !type.IsArray)
