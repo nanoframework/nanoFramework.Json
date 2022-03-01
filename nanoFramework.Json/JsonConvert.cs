@@ -1457,7 +1457,6 @@ namespace nanoFramework.Json
                 else if (IsNumberIntroChar(ch))
                 {
                     sb = new StringBuilder();
-
                     while (IsNumberChar(ch))
                     {
                         sb.Append(ch);
