@@ -739,7 +739,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
-            string expectedValue = "[{\"stringiest\":\"hello world\",\"nulltest\":null,\"collection\":[1,null,2,\"blah\",false]}]";
+            string expectedValue = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[1,null,2,\"blah\",false]}]";
 
             Assert.Equal(json, expectedValue, "Values did not match");
 
