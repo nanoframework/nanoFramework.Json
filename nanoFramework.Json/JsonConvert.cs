@@ -4,6 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.json;
 using System;
 using System.Collections;
 using System.IO;
@@ -45,38 +46,9 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
-            var type = oSource.GetType();
 
-            if (type.IsArray)
-            {
-                JsonToken retToken = JsonArray.Serialize(type, oSource);
+            return JsonSerializer.SerializeObject(oSource);
 
-                return retToken.ToString();
-            }
-            else
-            {
-                JsonToken retToken;
-
-                if (type.FullName == "System.Collections.ArrayList")
-                {
-                    retToken = JsonObject.Serialize((ArrayList)oSource);
-                }
-                else if (type.BaseType.FullName == "System.ValueType"
-                         || type.FullName == "System.String")
-                {
-                    JsonToken[] jsonValue = new JsonToken[1];
-                    jsonValue[0] = JsonValue.Serialize(type, oSource);
-                    JsonArray jsonArray = new JsonArray(jsonValue);
-
-                    return jsonArray.ToString();
-                }
-                else
-                {
-                    retToken = JsonObject.Serialize(type, oSource);
-                }
-
-                return retToken.ToString();
-            }
         }
 
         /// <summary>
@@ -1453,7 +1425,6 @@ namespace nanoFramework.Json
                 else if (IsNumberIntroChar(ch))
                 {
                     sb = new StringBuilder();
-
                     while (IsNumberChar(ch))
                     {
                         sb.Append(ch);

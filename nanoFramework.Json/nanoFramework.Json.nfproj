@@ -28,6 +28,7 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="JsonSerializer.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />
     <Compile Include="JsonArray.cs" />
