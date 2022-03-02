@@ -211,7 +211,10 @@ namespace nanoFramework.json
             foreach (char ch in str)
             {
                 if (ch == '\\' || ch == '\"')
+                {
                     result.Append('\\');
+                }
+
                 result.Append(ch);
             }
             
