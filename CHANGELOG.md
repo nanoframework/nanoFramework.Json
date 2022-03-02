@@ -2,7 +2,19 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.44...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.47...HEAD)
+
+**Implemented enhancements:**
+
+- Major rework on serializer [\#192](https://github.com/nanoframework/nanoFramework.Json/pull/192)
+
+**Documentation and other chores:**
+
+- Add output of operations execution time to unit tests [\#191](https://github.com/nanoframework/nanoFramework.Json/pull/191)
+
+## [v2.1.2-preview.47](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.47) (2022-02-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.44...v2.1.2-preview.47)
 
 **Documentation and other chores:**
 
