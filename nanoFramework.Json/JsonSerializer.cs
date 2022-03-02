@@ -1,4 +1,8 @@
-﻿// Source code is modified from Mike Jones's JSON Serialization and Deserialization library (https://www.ghielectronics.com/community/codeshare/entry/357)
+﻿//
+// Copyright (c) .NET Foundation and Contributors
+// Portions Copyright Mike Jones, (c) Pervasive Digital LLC
+// See LICENSE file in the project root for full license information.
+//
 
 using System;
 using System.Collections;
@@ -8,14 +12,14 @@ using System.Text;
 namespace nanoFramework.json
 {
     /// <summary>
-    /// Adapted from JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
+    /// Initializes a new instance of the <see cref="JsonSerializer"/> class.
     /// </summary>
     public class JsonSerializer
     {
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
-        /// <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, TimeSpan, DictionaryEntry, Object and null.</param>
+        /// <param name="o">The value to convert. Supported types are: <see cref="bool"/>, <see cref="string"/>, <see cref="byte"/>, <see cref="ushort"/>, <see cref="short"/>, <see cref="uint"/>,  <see cref="int"/>, <see cref="float"/>, <see cref="double"/>, <see cref="Array"/>, <see cref="IDictionary"/>, <see cref="IEnumerable"/>, <see cref="Guid"/>, <see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="DictionaryEntry"/>, <see cref="object"/> and <see langword="null"/>.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
         internal static string SerializeObject(object o, bool topObject = true)
@@ -27,7 +31,7 @@ namespace nanoFramework.json
 
             Type type = o.GetType();
 
-            if (topObject 
+            if (topObject
                 && !type.IsArray
                 && (type.BaseType.FullName == "System.ValueType"
                 || type.FullName == "System.String"))
@@ -38,26 +42,28 @@ namespace nanoFramework.json
             switch (type.Name)
             {
                 case "Boolean":
-                        return (bool)o ? "true" : "false";
+                    return (bool)o ? "true" : "false";
+
                 case "TimeSpan":
                 case "String":
                 case "Char":
                 case "Guid":
-                        return "\"" + o.ToString() + "\"";
+                    return "\"" + o.ToString() + "\"";
+
                 case "Single":
-                        if (float.IsNaN((Single)o))
-                        {
-                            return "null";
-                        }
+                    if (float.IsNaN((float)o))
+                    {
+                        return "null";
+                    }
+                    return o.ToString();
 
-                        return o.ToString();
                 case "Double":
-                        if (double.IsNaN((double)o))
-                        {
-                            return "null";
-                        }
+                    if (double.IsNaN((double)o))
+                    {
+                        return "null";
+                    }
+                    return o.ToString();
 
-                        return o.ToString();
                 case "Decimal":
                 case "Float":
                 case "Byte":
@@ -68,9 +74,10 @@ namespace nanoFramework.json
                 case "UInt32":
                 case "Int64":
                 case "UInt64":
-                        return o.ToString();
+                    return o.ToString();
+
                 case "DateTime":
-                        return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
+                    return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
 
             if (o is IDictionary && !type.IsArray)
@@ -85,12 +92,13 @@ namespace nanoFramework.json
                 return SerializeIEnumerable(enumerable);
             }
 
-            if (type == typeof(System.Collections.DictionaryEntry))
+            if (type == typeof(DictionaryEntry))
             {
-                Hashtable hashtable = new Hashtable();
+                Hashtable hashtable = new();
+
                 if (o is DictionaryEntry)
                 {
-                    var dic = (DictionaryEntry)o;
+                    DictionaryEntry dic = (DictionaryEntry)o;
                     DictionaryEntry entry = dic;
                     hashtable.Add(entry.Key, entry.Value);
                 }
@@ -104,19 +112,18 @@ namespace nanoFramework.json
 
                 // Iterate through all of the methods, looking for internal GET properties
                 MethodInfo[] methods = type.GetMethods();
+
                 foreach (MethodInfo method in methods)
                 {
-                    
                     // We care only about property getters when serializing
                     if (method.Name.StartsWith("get_"))
                     {
-                        
                         // Ignore abstract and virtual objects
                         if (method.IsAbstract)
                         {
                             continue;
                         }
-                        
+
                         // Ignore delegates and MethodInfos
                         if ((method.ReturnType == typeof(System.Delegate)) ||
                             (method.ReturnType == typeof(System.MulticastDelegate)) ||
@@ -124,7 +131,7 @@ namespace nanoFramework.json
                         {
                             continue;
                         }
-                        
+
                         // Ditto for DeclaringType
                         if ((method.DeclaringType == typeof(System.Delegate)) ||
                             (method.DeclaringType == typeof(System.MulticastDelegate)))
@@ -136,7 +143,7 @@ namespace nanoFramework.json
                         hashtable.Add(method.Name.Substring(4), returnObject);
                     }
                 }
-                
+
                 return SerializeIDictionary(hashtable);
             }
 
@@ -163,7 +170,7 @@ namespace nanoFramework.json
             }
 
             result += "]";
- 
+
             return result;
         }
 
@@ -183,12 +190,12 @@ namespace nanoFramework.json
                     result += ",";
                 }
 
-                result += "\"" + entry.Key + "\":";
+                result += $"\"{entry.Key}\":";
                 result += SerializeObject(entry.Value, false);
             }
 
             result += "}";
- 
+
             return result;
         }
 
@@ -197,7 +204,7 @@ namespace nanoFramework.json
         /// </summary>
         /// <param name="str">The string to serialize.</param>
         /// <returns>The serialized JSON string.</returns>
-        protected static string SerializeString(String str)
+        protected static string SerializeString(string str)
         {
             // If the string is just fine (most are) then make a quick exit for improved performance
             if (str.IndexOf('\\') < 0 && str.IndexOf('\"') < 0)
@@ -206,8 +213,9 @@ namespace nanoFramework.json
             }
 
             // Build a new string
-            StringBuilder result = new StringBuilder(str.Length + 1); // we know there is at least 1 char to escape
- 
+            // we know there is at least 1 char to escape
+            StringBuilder result = new(str.Length + 1);
+
             foreach (char ch in str)
             {
                 if (ch == '\\' || ch == '\"')
@@ -217,7 +225,7 @@ namespace nanoFramework.json
 
                 result.Append(ch);
             }
-            
+
             return result.ToString();
         }
     }
