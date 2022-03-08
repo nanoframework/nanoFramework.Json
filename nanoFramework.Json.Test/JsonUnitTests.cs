@@ -847,11 +847,9 @@ namespace nanoFramework.Json.Test
             var endTimestamp = Environment.TickCount64;
             OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
-            string correctValue = "{\"Address\":null,\"ArrayProperty\":[\"hello\",\"world\"],\"ID\":27,\"Birthday\":\"1988-04-23T00:00:00.0000000Z\",\"LastName\":\"Doe\",\"Friend\""
-                + ":{\"Address\":\"123 Some St\",\"ArrayProperty\":[\"hi\",\"planet\"],\"ID\":2,\"Birthday\":\"1983-07-03T00:00:00.0000000Z\",\"LastName\":\"Smith\",\"Friend\":null,\"FirstName\":\"Bob\"}"
-                + ",\"FirstName\":\"John\"}";
+            string correctValue = "{\"FirstName\":\"John\",\"LastName\":\"Doe\",\"ArrayProperty\":[\"hello\",\"world\"],\"Address\":null,\"Birthday\":\"1988-04-23T00:00:00.0000000Z\",\"ID\":27,\"Friend\":{\"FirstName\":\"Bob\",\"LastName\":\"Smith\",\"ArrayProperty\":[\"hi\",\"planet\"],\"Address\":\"123 Some St\",\"Birthday\":\"1983-07-03T00:00:00.0000000Z\",\"ID\":2,\"Friend\":null}}";
 
-            Assert.Equal(json, correctValue, "Values did not match");
+            Assert.Equal(json, correctValue, $"Values did not match. Expecting >>{json}<<");
 
             OutputHelper.WriteLine("");
         }
@@ -862,9 +860,9 @@ namespace nanoFramework.Json.Test
             AbstractClass a = new RealClass() { ID = 12 };
             string json = JsonConvert.SerializeObject(a);
 
-            string correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+            string correctValue = "{\"Test2\":\"test2\",\"Test\":\"test\",\"ID\":12}";
 
-            Assert.Equal(json, correctValue, "Value for AbstractClass did not match");
+            Assert.Equal(json, correctValue, $"Value for AbstractClass did not match. Got >>{json}<<.");
 
             RealClass b = new() { ID = 12 };
 
@@ -875,9 +873,9 @@ namespace nanoFramework.Json.Test
             var endTimestamp = Environment.TickCount64;
             OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
-            correctValue = "{\"Test2\":\"test2\",\"ID\":12,\"Test\":\"test\"}";
+            correctValue = "{\"Test2\":\"test2\",\"Test\":\"test\",\"ID\":12}";
 
-            Assert.Equal(json, correctValue, "Values for RealClass did not match");
+            Assert.Equal(json, correctValue, $"Values for RealClass did not match. Got >>{json}<<.");
 
             OutputHelper.WriteLine("");
         }
@@ -1230,7 +1228,7 @@ namespace nanoFramework.Json.Test
             var endTimestamp = Environment.TickCount64;
             OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
-            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""arguments"":[1,2],""target"":""Add""}", sentMessage);
+            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""target"":""Add"",""arguments"":[1,2]}", sentMessage, $"Sent message was >>{sentMessage}<<");
         }
 
         [TestMethod]
@@ -1285,7 +1283,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void SerializeObjectAsAProperty()
         {
-            var correctValue = "{\"Led\":{\"nodeID\":\"14\",\"value\":\"On\"}}";
+            var correctValue = "{\"Led\":{\"value\":\"On\",\"nodeID\":\"14\"}}";
             JsonSerializeObjectAsProperty ledProp = new() { value = "On", nodeID = "14" };
 
             Hashtable twin = new();
