@@ -1357,6 +1357,10 @@ namespace nanoFramework.Json
                             unicodeEncoded = true;
                             break;
 
+                        case '"':
+                            ch = '"';
+                            break;
+
                         default:
                             throw new DeserializationException();
                     }

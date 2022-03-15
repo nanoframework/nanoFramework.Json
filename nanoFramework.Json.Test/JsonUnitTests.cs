@@ -1396,6 +1396,71 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
         }
 
+        [TestMethod]
+        public void SerializeCosmosDbObject_01()
+        {
+            // TODO need to fix ToString() from string with " inside
+            Assert.SkipTest("Skipping this test for now");
+
+
+            var valueAsJsonString = @"{""_count"":1,""Databases"":[{""_users"":""users/"",""_ts"":1644173816,""id"":""HomeAutomation"",""_rid"":""MfAzAA=="",""_colls"":""colls/"",""_etag"":""\""000020002-0000-0a00-0000-620019f80000\"""",""_self"":""dbs/MFzAA==/""}],""_rid"":null}";
+
+            CosmosDbDatabaseList dbObject = new CosmosDbDatabaseList();
+            dbObject._count = 1;
+
+            dbObject.Databases = new CosmosDbDatabaseList.Database[1];
+            dbObject.Databases[0] = new CosmosDbDatabaseList.Database
+            {
+                id = "HomeAutomation",
+                _rid = "MfAzAA==",
+                _self = "dbs/MFzAA==/",
+                _etag = "\"000020002-0000-0a00-0000-620019f80000\"",
+                _colls = "colls/",
+                _users = "users/",
+                _ts = 1644173816
+            };
+
+            var serializedObject = JsonConvert.SerializeObject(dbObject);
+
+            Assert.Equal(serializedObject, valueAsJsonString, $"Got >>{serializedObject}<<");
+        }
+
+
+        [TestMethod]
+        public void SerializeCosmosDbObject_02()
+        {
+            var valueAsJsonString = @"{
+  ""_rid"": """",
+  ""Databases"": [
+    {
+            ""id"": ""HomeAutomation"",
+      ""_rid"": ""MfAzAA=="",
+      ""_self"": ""dbs/MFzAA==/"",
+      ""_etag"": ""\""000020002-0000-0a00-0000-620019f80000\"""",
+      ""_colls"": ""colls/"",
+      ""_users"": ""users/"",
+      ""_ts"": 1644173816
+    }
+  ],
+  ""_count"": 1
+}";
+
+            var result = (CosmosDbDatabaseList)JsonConvert.DeserializeObject(valueAsJsonString, typeof(CosmosDbDatabaseList));
+
+            Assert.Equal(result._rid, "", "result._rid has wrong value");
+            Assert.Equal(result._count, 1, "result._count has wrong value");
+
+            Assert.Equal(result.Databases.Length, 1, "Databases.Length count is wrong");
+
+            Assert.Equal(result.Databases[0].id, "HomeAutomation", $"Database.id is wrong, got {result.Databases[0].id}");
+            Assert.Equal(result.Databases[0]._rid, "MfAzAA==", $"Database._rid is wrong, got {result.Databases[0]._rid}");
+            Assert.Equal(result.Databases[0]._self, "dbs/MFzAA==/", $"Database._self is wrong, got {result.Databases[0]._self}");
+            Assert.Equal(result.Databases[0]._etag, "\"000020002-0000-0a00-0000-620019f80000\"", $"Database._etag is wrong, got {result.Databases[0]._etag}");
+            Assert.Equal(result.Databases[0]._colls, "colls/", $"Database._colls is wrong, got {result.Databases[0]._colls}");
+            Assert.Equal(result.Databases[0]._users, "users/", $"Database._colls is wrong, got {result.Databases[0]._users}");
+            Assert.Equal(result.Databases[0]._ts, 1644173816, $"Database._ts is wrong, got {result.Databases[0]._ts}");
+        }
+
         private static string testInvocationReceiveMessage = @"{
         ""type"":1,
         ""target"":""ReceiveAdvancedMessage"",
@@ -1701,6 +1766,24 @@ namespace nanoFramework.Json.Test
         public string invocationId { get; set; }
         public string target { get; set; }
         public ArrayList arguments { get; set; }
+    }
+
+    public class CosmosDbDatabaseList
+    {
+        public string _rid { get; set; }
+        public Database[] Databases { get; set; }
+        public int _count { get; set; }
+
+        public class Database
+        {
+            public string id { get; set; }
+            public string _rid { get; set; }
+            public string _self { get; set; }
+            public string _etag { get; set; }
+            public string _colls { get; set; }
+            public string _users { get; set; }
+            public int _ts { get; set; }
+        }
     }
 
     #endregion
