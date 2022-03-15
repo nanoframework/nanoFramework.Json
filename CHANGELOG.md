@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.56...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.58...HEAD)
+
+**Documentation and other chores:**
+
+- Fix deserialization of strings with double quotes [\#201](https://github.com/nanoframework/nanoFramework.Json/pull/201)
+
+## [v2.1.2-preview.58](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.58) (2022-03-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.56...v2.1.2-preview.58)
 
 **Documentation and other chores:**
 
