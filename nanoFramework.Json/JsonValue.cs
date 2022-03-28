@@ -18,9 +18,7 @@ namespace nanoFramework.Json
         {
             if (isDateTime)
             {
-                DateTime dtValue = DateTimeExtensions.ConvertFromString((string)value);
-
-                if (dtValue != DateTime.MaxValue)
+                if (DateTimeExtensions.ConvertFromString((string)value, out DateTime dtValue))
                 {
                     Value = dtValue;
                 }
@@ -62,9 +60,11 @@ namespace nanoFramework.Json
 
                 var type = Value.GetType();
 
-                if (type == typeof(string) || type == typeof(char))
+                if (type == typeof(string)
+                    || type == typeof(char)
+                    || type == typeof(TimeSpan))
                 {
-                    return "\"" + this.Value.ToString() + "\"";
+                    return "\"" + Value.ToString() + "\"";
                 }
                 else if (type == typeof(DateTime))
                 {

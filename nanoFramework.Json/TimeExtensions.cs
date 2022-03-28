@@ -5,6 +5,7 @@
 //
 
 using System;
+using System.Globalization;
 
 namespace nanoFramework.Json
 {
@@ -111,92 +112,6 @@ namespace nanoFramework.Json
         }
 
         /// <summary>
-        /// Converts an ISO 8601 time/date format string, which is used by JSON and others,
-        /// into a DateTime object.
-        /// </summary>
-        /// <param name="date"></param>
-        /// <returns></returns>
-        public static DateTime FromIso8601(string date)
-        {
-
-            // Check to see if format contains the timezone ID, or contains UTC reference
-            // Neither means it's local time
-            bool utc = date.EndsWith("Z");
-
-            string[] parts = date.Split(new char[] { 'T', 'Z', ':', '-', '.', '+', });
-
-            // We now have the time string to parse, and we'll adjust
-            // to UTC or timezone after parsing
-            string year = parts[0];
-            string month = (parts.Length > 1) ? parts[1] : "1";
-            string day = (parts.Length > 2) ? parts[2] : "1";
-            string hour = (parts.Length > 3) ? parts[3] : "0";
-            string minute = (parts.Length > 4) ? parts[4] : "0";
-            string second = (parts.Length > 5) ? parts[5] : "0";
-            string ms = (parts.Length > 6) ? parts[6] : "0";
-
-            // Check if any of the date time parts is non-numeric
-            if (!IsNumeric(year))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(month))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(day))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(hour))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(minute))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(second))
-            {
-                return DateTime.MaxValue;
-            }
-            else if (!IsNumeric(ms))
-            {
-                return DateTime.MaxValue;
-            }
-
-            // sanity check for bad milliseconds format
-            int milliseconds = Convert.ToInt32(ms);
-
-            if (milliseconds > 999)
-            {
-                milliseconds = 999;
-            }
-
-            DateTime dt = new(
-                Convert.ToInt32(year),
-                Convert.ToInt32(month),
-                Convert.ToInt32(day),
-                Convert.ToInt32(hour),
-                Convert.ToInt32(minute),
-                Convert.ToInt32(second),
-                milliseconds);
-
-            if (utc)
-            {
-                // Convert the Kind to DateTimeKind.Utc if string Z present
-                dt = new DateTime(dt.Ticks, DateTimeKind.Utc); //TODO!!!
-            }
-            else
-            {
-                //nF does not support non UTC dates, so should we throw an exception instead.
-                throw new NotSupportedException();
-            }
-
-            return dt;
-        }
-
-        /// <summary>
         /// Converts a DateTime object into an ISO 8601 string.  This version
         /// always returns the string in UTC format.
         /// </summary>
@@ -204,15 +119,7 @@ namespace nanoFramework.Json
         /// <returns></returns>
         public static string ToIso8601(DateTime dt)
         {
-            string result = dt.Year.ToString() + "-" +
-                            TwoDigits(dt.Month) + "-" +
-                            TwoDigits(dt.Day) + "T" +
-                            TwoDigits(dt.Hour) + ":" +
-                            TwoDigits(dt.Minute) + ":" +
-                            TwoDigits(dt.Second) + "." +
-                            ThreeDigits(dt.Millisecond) + "Z";
-
-            return result;
+            return dt.ToString($"{CultureInfo.CurrentUICulture.DateTimeFormat.SortableDateTimePattern}.fffffffZ");
         }
 
         /// <summary>
@@ -230,55 +137,6 @@ namespace nanoFramework.Json
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// Ensures a two-digit number with leading zero if necessary.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static string TwoDigits(int value)
-        {
-            if (value < 10)
-            {
-                return "0" + value.ToString();
-            }
-
-            return value.ToString();
-
-        }
-
-        /// <summary>
-        /// Ensures a three-digit number with leading zeros if necessary.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static string ThreeDigits(int value)
-        {
-            if (value < 10)
-            {
-                return "00" + value.ToString();
-            }
-            else if (value < 100)
-            {
-                return "0" + value.ToString();
-            }
-
-            return value.ToString();
-        }
-
-        /// <summary>
-        /// The ASP.NET Ajax team made up their own time date format for JSON strings, and it's
-        /// explained in this article: http://msdn.microsoft.com/en-us/library/bb299886.aspx
-        /// Converts a DateTime to the ASP.NET Ajax JSON format.
-        /// </summary>
-        /// <param name="dt"></param>
-        /// <returns></returns>
-        public static string ToASPNetAjax(DateTime dt)
-        {
-            string value = dt.Ticks.ToString();
-
-            return @"\/Date(" + value + @")\/";
         }
 
         /// <summary>
@@ -309,50 +167,41 @@ namespace nanoFramework.Json
             return dt;
         }
 
-        internal static DateTime ConvertFromString(string value)
+        internal static bool ConvertFromString(string value, out DateTime dateTime)
         {
             // check if this could be a DateTime value
             // min lenght is 18 for Java format: "Date(628318530718)": 18
 
-            DateTime dtValue = DateTime.MaxValue;
+            dateTime = DateTime.MaxValue;
 
             if (value.Length >= 18)
             {
                 // check for special case of "null" date
                 if (value == "0001-01-01T00:00:00Z")
                 {
-                    dtValue = DateTime.MinValue;
+                    dateTime = DateTime.MinValue;
+                    return true;
                 }
 
-                if (dtValue == DateTime.MaxValue)
+                if (DateTime.TryParse(value, out dateTime))
+                {
+                    return true;
+                }
+
+                try
+                {
+                    dateTime = FromASPNetAjax(value);
+                }
+                catch
+                {
+                    // intended, to catch failed conversion attempt
+                }
+
+                if (dateTime == DateTime.MaxValue)
                 {
                     try
                     {
-                        dtValue = FromIso8601(value);
-                    }
-                    catch
-                    {
-                        // intended, to catch failed conversion attempt
-                    }
-                }
-
-                if (dtValue == DateTime.MaxValue)
-                {
-                    try
-                    {
-                        dtValue = FromASPNetAjax(value);
-                    }
-                    catch
-                    {
-                        // intended, to catch failed conversion attempt
-                    }
-                }
-
-                if (dtValue == DateTime.MaxValue)
-                {
-                    try
-                    {
-                        dtValue = FromiCalendar(value);
+                        dateTime = FromiCalendar(value);
                     }
                     catch
                     {
@@ -361,7 +210,128 @@ namespace nanoFramework.Json
                 }
             }
 
-            return dtValue;
+            return dateTime != DateTime.MaxValue;
+        }
+    }
+
+    internal static class TimeSpanExtensions
+    {
+        /// <summary>
+        /// Try converting a string value to a <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <param name="value"><see cref="string"/> to convert.</param>
+        /// <param name="timeSpan"><see cref="TimeSpan"/> converted from <paramref name="value"/>.</param>
+        /// <returns><see langword="true"/> if conversion was successful. <see langword="false"/> otherwise.</returns>
+        internal static bool TryConvertFromString(string value, out TimeSpan timeSpan)
+        {
+            timeSpan = TimeSpan.Zero;
+
+            // split string value with all possible separators
+            // format is: -ddddd.HH:mm:ss.fffffff
+            var timeSpanBits = value.Split(':', '.');
+
+            // sanity check
+            if (timeSpanBits.Length == 0)
+            {
+                return false;
+            }
+
+            int days = 0;
+            int ticks = 0;
+            int hours = 0;
+            int minutes = 0;
+            int seconds = 0;
+
+            // figure out where the separators are
+            int indexOfFirstDot = value.IndexOf('.');
+            int indexOfSecondDot = indexOfFirstDot > -1 ? value.IndexOf('.', indexOfFirstDot + 1) : -1;
+            int indexOfFirstColon = value.IndexOf(':');
+            int indexOfSecondColon = indexOfFirstColon > -1 ? value.IndexOf(':', indexOfFirstColon + 1) : -1;
+
+            // sanity check for separators: all have to be ahead of string start
+            if (timeSpanBits.Length > 1
+                && indexOfFirstDot <= 0
+                && indexOfSecondDot <= 0
+                && indexOfFirstColon <= 0
+                && indexOfSecondColon <= 0)
+            {
+                return false;
+            }
+
+            // to have days, it has to have something before the 1st dot, or just have a single component
+            bool hasDays = (indexOfFirstDot > 0 && indexOfFirstDot < indexOfFirstColon) || timeSpanBits.Length == 1;
+            bool hasTicks = hasDays ? indexOfSecondDot > indexOfFirstDot : indexOfFirstDot > -1;
+            bool hasHours = indexOfFirstColon > 0;
+            bool hasMinutes = hasHours && indexOfFirstColon > -1;
+            bool hasSeconds = hasMinutes && indexOfSecondColon > -1;
+
+            // sanity check for ticks without other time components
+            if (hasTicks && !hasHours)
+            {
+                return false;
+            }
+
+            // let the parsing start!
+            if (hasDays
+                && !int.TryParse(timeSpanBits[0], out days))
+            {
+                return false;
+            }
+
+            // bump the index if days component is present
+            int processIndex = hasDays ? 1 : 0;
+
+            if (hasHours && processIndex <= timeSpanBits.Length)
+            {
+                if (!int.TryParse(timeSpanBits[processIndex++], out hours))
+                {
+                    return false;
+                }
+            }
+
+            if (hasMinutes && processIndex <= timeSpanBits.Length)
+            {
+                if (!int.TryParse(timeSpanBits[processIndex++], out minutes))
+                {
+                    return false;
+                }
+            }
+
+            if (hasSeconds && processIndex <= timeSpanBits.Length)
+            {
+                if (!int.TryParse(timeSpanBits[processIndex++], out seconds))
+                {
+                    return false;
+                }
+            }
+
+            if (hasTicks && processIndex <= timeSpanBits.Length)
+            {
+                if (!int.TryParse(timeSpanBits[processIndex], out ticks))
+                {
+                    return false;
+                }
+
+                // if ticks are under 999, that's milliseconds
+                if (ticks < 1_000)
+                {
+                    ticks *= 10_000;
+                }
+            }
+
+            // sanity check for valid ranges
+            if ((hours >= 0 && hours < 24)
+                && (minutes >= 0 && minutes < 60)
+                && (seconds >= 0 && seconds < 60))
+            {
+                // we should have everything now
+                timeSpan = new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
+
+                // done here
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -2,6 +2,298 @@
 
 ## [v2.1.1-preview.30](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.30) (2021-12-03)
 
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.71...HEAD)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#214](https://github.com/nanoframework/nanoFramework.Json/pull/214)
+
+## [v2.1.2-preview.71](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.71) (2022-03-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.69...v2.1.2-preview.71)
+
+**Documentation and other chores:**
+
+- Update 3 NuGet dependencies [\#213](https://github.com/nanoframework/nanoFramework.Json/pull/213)
+
+## [v2.1.2-preview.69](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.69) (2022-03-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.67...v2.1.2-preview.69)
+
+**Documentation and other chores:**
+
+- Update 4 NuGet dependencies [\#210](https://github.com/nanoframework/nanoFramework.Json/pull/210)
+
+## [v2.1.2-preview.67](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.67) (2022-03-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.64...v2.1.2-preview.67)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#207](https://github.com/nanoframework/nanoFramework.Json/pull/207)
+- Update 1 NuGet dependencies [\#206](https://github.com/nanoframework/nanoFramework.Json/pull/206)
+
+## [v2.1.2-preview.64](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.64) (2022-03-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.62...v2.1.2-preview.64)
+
+**Documentation and other chores:**
+
+- Update 3 NuGet dependencies [\#205](https://github.com/nanoframework/nanoFramework.Json/pull/205)
+
+## [v2.1.2-preview.62](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.62) (2022-03-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.60...v2.1.2-preview.62)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#202](https://github.com/nanoframework/nanoFramework.Json/pull/202)
+
+## [v2.1.2-preview.60](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.60) (2022-03-15)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.58...v2.1.2-preview.60)
+
+**Documentation and other chores:**
+
+- Fix deserialization of strings with double quotes [\#201](https://github.com/nanoframework/nanoFramework.Json/pull/201)
+
+## [v2.1.2-preview.58](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.58) (2022-03-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.56...v2.1.2-preview.58)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#200](https://github.com/nanoframework/nanoFramework.Json/pull/200)
+
+## [v2.1.2-preview.56](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.56) (2022-03-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.54...v2.1.2-preview.56)
+
+**Documentation and other chores:**
+
+- Update 4 NuGet dependencies [\#198](https://github.com/nanoframework/nanoFramework.Json/pull/198)
+
+## [v2.1.2-preview.54](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.54) (2022-03-14)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.52...v2.1.2-preview.54)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#194](https://github.com/nanoframework/nanoFramework.Json/pull/194)
+
+## [v2.1.2-preview.52](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.52) (2022-03-08)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.50...v2.1.2-preview.52)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#193](https://github.com/nanoframework/nanoFramework.Json/pull/193)
+
+## [v2.1.2-preview.50](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.50) (2022-03-02)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.47...v2.1.2-preview.50)
+
+**Implemented enhancements:**
+
+- Major rework on serializer [\#192](https://github.com/nanoframework/nanoFramework.Json/pull/192)
+
+**Documentation and other chores:**
+
+- Add output of operations execution time to unit tests [\#191](https://github.com/nanoframework/nanoFramework.Json/pull/191)
+
+## [v2.1.2-preview.47](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.47) (2022-02-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.44...v2.1.2-preview.47)
+
+**Documentation and other chores:**
+
+- Fixing complex deserialization with array and objects in them [\#190](https://github.com/nanoframework/nanoFramework.Json/pull/190)
+- Update 1 NuGet dependencies [\#189](https://github.com/nanoframework/nanoFramework.Json/pull/189)
+
+## [v2.1.2-preview.44](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.44) (2022-02-17)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.42...v2.1.2-preview.44)
+
+**Documentation and other chores:**
+
+- Update 4 NuGet dependencies [\#188](https://github.com/nanoframework/nanoFramework.Json/pull/188)
+
+## [v2.1.2-preview.42](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.42) (2022-02-16)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.39...v2.1.2-preview.42)
+
+**Implemented enhancements:**
+
+- Improvements in TimeSpan deserialization [\#184](https://github.com/nanoframework/nanoFramework.Json/pull/184)
+
+## [v2.1.2-preview.39](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.39) (2022-02-12)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.37...v2.1.2-preview.39)
+
+**Implemented enhancements:**
+
+- Add support to deserialize & serialize TimeSpan [\#183](https://github.com/nanoframework/nanoFramework.Json/pull/183)
+
+## [v2.1.2-preview.37](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.37) (2022-02-08)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.35...v2.1.2-preview.37)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#182](https://github.com/nanoframework/nanoFramework.Json/pull/182)
+- Update 2 NuGet dependencies [\#181](https://github.com/nanoframework/nanoFramework.Json/pull/181)
+
+## [v2.1.2-preview.35](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.35) (2022-02-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.33...v2.1.2-preview.35)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#180](https://github.com/nanoframework/nanoFramework.Json/pull/180)
+
+## [v2.1.2-preview.33](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.33) (2022-02-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.31...v2.1.2-preview.33)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#179](https://github.com/nanoframework/nanoFramework.Json/pull/179)
+
+## [v2.1.2-preview.31](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.31) (2022-01-31)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.29...v2.1.2-preview.31)
+
+**Implemented enhancements:**
+
+- Add support to decode Unicode encoded chars [\#178](https://github.com/nanoframework/nanoFramework.Json/pull/178)
+
+## [v2.1.2-preview.29](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.29) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.27...v2.1.2-preview.29)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#177](https://github.com/nanoframework/nanoFramework.Json/pull/177)
+
+## [v2.1.2-preview.27](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.27) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.25...v2.1.2-preview.27)
+
+**Implemented enhancements:**
+
+- Replace proprietary DateTime parse and ToString with standard ones [\#176](https://github.com/nanoframework/nanoFramework.Json/pull/176)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#175](https://github.com/nanoframework/nanoFramework.Json/pull/175)
+
+## [v2.1.2-preview.25](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.25) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.23...v2.1.2-preview.25)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#174](https://github.com/nanoframework/nanoFramework.Json/pull/174)
+
+## [v2.1.2-preview.23](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.23) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.20...v2.1.2-preview.23)
+
+**Implemented enhancements:**
+
+- Improve deserialization of single string values [\#172](https://github.com/nanoframework/nanoFramework.Json/pull/172)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#173](https://github.com/nanoframework/nanoFramework.Json/pull/173)
+- Update 3 NuGet dependencies [\#171](https://github.com/nanoframework/nanoFramework.Json/pull/171)
+
+## [v2.1.2-preview.20](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.20) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.18...v2.1.2-preview.20)
+
+**Documentation and other chores:**
+
+- Update 3 NuGet dependencies [\#170](https://github.com/nanoframework/nanoFramework.Json/pull/170)
+
+## [v2.1.2-preview.18](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.18) (2022-01-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.16...v2.1.2-preview.18)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#169](https://github.com/nanoframework/nanoFramework.Json/pull/169)
+
+## [v2.1.2-preview.16](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.16) (2022-01-26)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.14...v2.1.2-preview.16)
+
+**Implemented enhancements:**
+
+- More fixes and improvements in serialization/deserialization [\#168](https://github.com/nanoframework/nanoFramework.Json/pull/168)
+
+## [v2.1.2-preview.14](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.14) (2022-01-26)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.12...v2.1.2-preview.14)
+
+**Documentation and other chores:**
+
+- Fixing serialization of ArrayList in an object [\#167](https://github.com/nanoframework/nanoFramework.Json/pull/167)
+
+## [v2.1.2-preview.12](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.12) (2022-01-26)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.10...v2.1.2-preview.12)
+
+**Documentation and other chores:**
+
+- Fixing complex ArrayList deserialization [\#166](https://github.com/nanoframework/nanoFramework.Json/pull/166)
+
+## [v2.1.2-preview.10](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.10) (2022-01-25)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.8...v2.1.2-preview.10)
+
+**Implemented enhancements:**
+
+- Implement deserialization of ArrayList and complex collections [\#165](https://github.com/nanoframework/nanoFramework.Json/pull/165)
+
+## [v2.1.2-preview.8](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.8) (2022-01-21)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.6...v2.1.2-preview.8)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#164](https://github.com/nanoframework/nanoFramework.Json/pull/164)
+
+## [v2.1.2-preview.6](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.6) (2022-01-21)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.4...v2.1.2-preview.6)
+
+**Documentation and other chores:**
+
+- Update 5 NuGet dependencies [\#163](https://github.com/nanoframework/nanoFramework.Json/pull/163)
+
+## [v2.1.2-preview.4](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.4) (2022-01-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.3...v2.1.2-preview.4)
+
+**Documentation and other chores:**
+
+- Update 1 nuget dependencies [\#156](https://github.com/nanoframework/nanoFramework.Json/pull/156)
+
+## [v2.1.2-preview.3](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.3) (2022-01-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1...v2.1.2-preview.3)
+
+**Documentation and other chores:**
+
+- Bumps nanoFramework.System.Text from 1.1.2 to 1.1.3-preview.4 [\#155](https://github.com/nanoframework/nanoFramework.Json/pull/155)
+
+## [v2.1.1](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1) (2021-12-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.30...v2.1.1)
+
+## [v2.1.1-preview.30](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.30) (2021-12-03)
+
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...v2.1.1-preview.30)
 
 **Documentation and other chores:**

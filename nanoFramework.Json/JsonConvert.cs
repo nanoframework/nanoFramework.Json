@@ -4,14 +4,12 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.json;
 using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Text;
-#if NANOFRAMEWORK_1_0
-using Windows.Storage.Streams;
-#endif
 
 namespace nanoFramework.Json
 {
@@ -48,29 +46,9 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
-            var type = oSource.GetType();
 
-            if (type.IsArray)
-            {
-                JsonToken retToken = JsonArray.Serialize(type, oSource);
+            return JsonSerializer.SerializeObject(oSource);
 
-                return retToken.ToString();
-            }
-            else
-            {
-                JsonToken retToken;
-
-                if (type.FullName == "System.Collections.ArrayList")
-                {
-                    retToken = JsonObject.Serialize((ArrayList)oSource);
-                }
-                else
-                {
-                    retToken = JsonObject.Serialize(type, oSource);
-                }
-
-                return retToken.ToString();
-            }
         }
 
         /// <summary>
@@ -105,22 +83,22 @@ namespace nanoFramework.Json
         /// <param name="dr"></param>
         /// <param name="type">The object type to convert to</param>
         /// <returns></returns>
-        public static object DeserializeObject(DataReader dr, Type type)
+        public static object DeserializeObject(StreamReader dr, Type type)
         {
             var dserResult = Deserialize(dr);
 
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
-        private static object Deserialize(DataReader dr)
+        private static object Deserialize(StreamReader dr)
         {
             // Read the DataReader into jsonBytes[]
-            jsonBytes = new byte[dr.UnconsumedBufferLength];
+            jsonBytes = new byte[dr.BaseStream.Length];
             jsonPos = 0;
 
-            while (dr.UnconsumedBufferLength > 0)
+            while (!dr.EndOfStream)
             {
-                jsonBytes[jsonPos++] = dr.ReadByte();
+                jsonBytes[jsonPos++] = (byte)dr.Read();
             }
 
             jsonPos = 0;
@@ -148,11 +126,20 @@ namespace nanoFramework.Json
                 if (rootToken is JsonObject rootObject)
                 {
                     bool isHashtable = false;
+                    bool isArrayList = false;
 
                     if (rootElementType == null
                         && rootType.FullName == "System.Collections.Hashtable")
                     {
                         isHashtable = true;
+
+                        rootElementType = rootType;
+                    }
+
+                    if (rootElementType == null
+                       && rootType.FullName == "System.Collections.ArrayList")
+                    {
+                        isArrayList = true;
 
                         rootElementType = rootType;
                     }
@@ -184,6 +171,40 @@ namespace nanoFramework.Json
                         }
 
                         return rootInstance;
+                    }
+                    else if (isArrayList)
+                    {
+                        ArrayList rootArrayList = new();
+
+                        // In case we have elements to put there.
+                        var result = new Hashtable();
+                        foreach (var m in rootObject.Members)
+                        {
+                            var memberProperty = (JsonProperty)m;
+
+                            if (m is JsonValue value)
+                            {
+                                rootArrayList.Add(value.Value);
+                            }
+                            else if (m is JsonArray jsonArray)
+                            {
+                                rootArrayList.Add(PopulateArrayList(jsonArray));
+                            }
+                            else if (m is JsonToken jsonToken)
+                            {
+                                result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
+                            }
+                            else
+                            {
+                                throw new DeserializationException();
+                            }
+                        }
+
+                        if (result.Count > 0)
+                        {
+                            rootArrayList.Add(result);
+                        }
+                        return rootArrayList;
                     }
                     else
                     {
@@ -413,6 +434,17 @@ namespace nanoFramework.Json
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
                                                         break;
 
+                                                    case nameof(TimeSpan):
+                                                        if (TimeSpanExtensions.TryConvertFromString(val.Value.ToString(), out TimeSpan value))
+                                                        {
+                                                            memberPropSetMethod.Invoke(rootInstance, new object[] { value });
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            return null;
+                                                        }
+
                                                     default:
                                                         memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
                                                         break;
@@ -445,7 +477,7 @@ namespace nanoFramework.Json
                             {
                                 // Need this type when we try to populate the array elements
                                 Type memberElementType = memberType.GetElementType();
-                                bool isArrayList = false;
+                                isArrayList = false;
 
                                 if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
                                 {
@@ -558,7 +590,18 @@ namespace nanoFramework.Json
 
                                     for (int i = 0; i < memberValueArrayList.Count; i++)
                                     {
-                                        targetArray.Add(memberValueArrayList[i]);
+                                        // Test if we have only 1 element and that the element is a Hashtable.
+                                        // In this case, we'll make it more efficient and add it as an Hashtable.
+                                        if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
+                                            (((ArrayList)memberValueArrayList[i]).Count == 1) &&
+                                            ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
+                                        {
+                                            targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
+                                        }
+                                        else
+                                        {
+                                            targetArray.Add(memberValueArrayList[i]);
+                                        }
                                     }
 
                                     // Populate rootInstance
@@ -608,7 +651,9 @@ namespace nanoFramework.Json
                     if (rootElementType == null)
                     {
                         // check if this is an ArrayList
-                        if (rootType.FullName == "System.Collections.ArrayList")
+                        if (rootType.FullName == "System.Collections.ArrayList"
+                            || rootType.BaseType.FullName == "System.ValueType"
+                            || rootType.FullName == "System.String")
                         {
                             isArrayList = true;
 
@@ -641,6 +686,15 @@ namespace nanoFramework.Json
                             {
                                 throw new DeserializationException();
                             }
+                        }
+
+                        if ((rootType.BaseType.FullName == "System.ValueType"
+                             || rootType.FullName == "System.String")
+                            && rootArrayList.Count == 1)
+                        {
+                            // this is a case of deserialing a array with a single element,
+                            // so just return the element
+                            return rootArrayList[0];
                         }
 
                         return rootArrayList;
@@ -761,6 +815,60 @@ namespace nanoFramework.Json
             }
         }
 
+        private static object PopulateObject(JsonToken rootToken)
+        {
+            if (rootToken == null)
+            {
+                // can't be null
+                throw new DeserializationException();
+            }
+
+            try
+            {
+                if (rootToken is JsonObject rootObject)
+                {
+                    Hashtable rootInstance = new();
+
+                    foreach (var m in rootObject.Members)
+                    {
+                        var memberProperty = (JsonProperty)m;
+
+                        if (memberProperty.Value is JsonValue jsonValue)
+                        {
+                            rootInstance.Add(memberProperty.Name, jsonValue.Value);
+                        }
+                        else if (memberProperty.Value is JsonArray jsonArray)
+                        {
+                            rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
+                        }
+                        else if (memberProperty.Value is JsonToken jsonToken)
+                        {
+                            rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+
+                    return rootInstance;
+                }
+                else if (rootToken is JsonValue rootValue)
+                {
+                    return rootValue.Value;
+                }
+                else
+                {
+                    // not implemented
+                    throw new DeserializationException();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private static ArrayList PopulateArrayList(JsonToken rootToken)
         {
             var result = new ArrayList();
@@ -839,7 +947,7 @@ namespace nanoFramework.Json
                     }
                     else if (item is JsonToken jsonToken)
                     {
-                        throw new NotImplementedException();
+                        memberValueArrayList.Add(PopulateObject(jsonToken));
                     }
                     else
                     {
@@ -910,7 +1018,7 @@ namespace nanoFramework.Json
                             }
                             else if (item is JsonToken jsonToken)
                             {
-                                throw new NotImplementedException();
+                                memberValueArrayList.Add(PopulateHashtable(jsonToken));
                             }
                             else
                             {
@@ -1218,6 +1326,7 @@ namespace nanoFramework.Json
 
                 // Handle json escapes
                 bool escaped = false;
+                bool unicodeEncoded = false;
 
                 if (ch == '\\')
                 {
@@ -1230,24 +1339,96 @@ namespace nanoFramework.Json
                     }
 
                     //TODO: replace with a mapping array? This switch is really incomplete.
-                    ch = ch switch
+                    switch (ch)
                     {
-                        't' => '\t',
-                        'r' => '\r',
-                        'n' => '\n',
-                        // unsupported escape
-                        _ => throw new DeserializationException(),
-                    };
+                        case 't':
+                            ch = '\t';
+                            break;
+
+                        case 'r':
+                            ch = '\r';
+                            break;
+
+                        case 'n':
+                            ch = '\n';
+                            break;
+
+                        case 'u':
+                            unicodeEncoded = true;
+                            break;
+
+                        case '"':
+                            ch = '"';
+                            break;
+
+                        default:
+                            throw new DeserializationException();
+                    }
                 }
 
                 if ((sb != null) && ((ch != openQuote) || (escaped)))
                 {
-                    sb.Append(ch);
+                    if (unicodeEncoded)
+                    {
+                        int numberCounter = 0;
+
+                        // next 4 chars have to be numeric
+                        StringBuilder encodedValue = new();
+
+                        // advance position to next char
+                        jsonPos++;
+                        ch = (char)jsonBytes[jsonPos];
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (IsNumberChar(ch))
+                            {
+                                numberCounter++;
+
+                                encodedValue.Append(ch);
+
+                                ch = (char)jsonBytes[jsonPos];
+
+                                if (IsNumberChar(ch))
+                                {
+                                    // We're still working on the number - advance jsonPos
+                                    jsonPos++;
+                                }
+                            }
+                        }
+
+                        if (numberCounter == 4)
+                        {
+                            // we're good with the encoded data
+                            // try parse number as an UTF-8 char
+                            try
+                            {
+                                // NOTE: the encoded value has hexadecimal format
+                                int unicodeChar = Convert.ToInt16(encodedValue.ToString(), 16);
+
+                                _ = sb.Append((char)unicodeChar);
+                            }
+                            catch
+                            {
+                                // couldn't parse this number as a valid Unicode value
+                                throw new DeserializationException();
+                            }
+                        }
+                        else
+                        {
+                            // anything else, we can't parse it properly
+                            // throw exception
+                            throw new DeserializationException();
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                    }
                 }
                 else if (IsNumberIntroChar(ch))
                 {
                     sb = new StringBuilder();
-
                     while (IsNumberChar(ch))
                     {
                         sb.Append(ch);
@@ -1308,7 +1489,7 @@ namespace nanoFramework.Json
 
                                 var stringValue = sb.ToString();
 
-                                if (DateTimeExtensions.ConvertFromString(stringValue) != DateTime.MaxValue)
+                                if (DateTimeExtensions.ConvertFromString(stringValue, out _))
                                 {
                                     return new LexToken() { TType = TokenType.Date, TValue = stringValue };
                                 }
