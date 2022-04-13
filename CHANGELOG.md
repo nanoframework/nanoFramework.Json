@@ -1,5 +1,23 @@
 # Changelog
 
+## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2...HEAD)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#218](https://github.com/nanoframework/nanoFramework.Json/pull/218)
+- Fix escape strings during serialization [\#217](https://github.com/nanoframework/nanoFramework.Json/pull/217)
+- Update 1 NuGet dependencies [\#216](https://github.com/nanoframework/nanoFramework.Json/pull/216)
+
+## [v2.1.2](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2) (2022-03-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.73...v2.1.2)
+
+**Documentation and other chores:**
+
+- release-v2.1.2 [\#215](https://github.com/nanoframework/nanoFramework.Json/pull/215)
+
 ## [v2.1.2-preview.73](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.2-preview.73) (2022-03-28)
 
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2-preview.71...v2.1.2-preview.73)
@@ -292,6 +310,10 @@
 
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.30...v2.1.1)
 
+**Documentation and other chores:**
+
+- release-v2.1.1 [\#154](https://github.com/nanoframework/nanoFramework.Json/pull/154)
+
 ## [v2.1.1-preview.30](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.1-preview.30) (2021-12-03)
 
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.1-preview.28...v2.1.1-preview.30)
@@ -401,6 +423,10 @@
 ## [v2.1.0](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.0) (2021-09-02)
 
 [Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.0-preview.28...v2.1.0)
+
+**Documentation and other chores:**
+
+- release-v2.1.0 [\#136](https://github.com/nanoframework/nanoFramework.Json/pull/136)
 
 ## [v2.1.0-preview.28](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.0-preview.28) (2021-09-02)
 
