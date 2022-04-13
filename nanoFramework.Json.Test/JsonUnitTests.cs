@@ -461,6 +461,24 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("");
         }
 
+        public class ThingWithString
+        {
+            public string Value { get; set; }
+        }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_escaped_string()
+        {
+            var thing = new ThingWithString
+            {
+                Value = "Some string with \" that needs escaping"
+            };
+
+            var serialized = JsonConvert.SerializeObject(thing);
+            var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
+            Assert.Equal(thing.Value, deserialized.Value);
+        }
+
         [TestMethod]
         public void Can_serialize_and_deserialize_complex_object()
         {

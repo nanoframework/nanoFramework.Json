@@ -45,10 +45,11 @@ namespace nanoFramework.json
                     return (bool)o ? "true" : "false";
 
                 case "TimeSpan":
-                case "String":
                 case "Char":
                 case "Guid":
                     return "\"" + o.ToString() + "\"";
+                case "String":
+                    return "\"" + SerializeString((string)o) + "\"";
 
                 case "Single":
                     if (float.IsNaN((float)o))
