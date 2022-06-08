@@ -6,6 +6,10 @@
 
 **Documentation and other chores:**
 
+- Update 1 NuGet dependencies [\#222](https://github.com/nanoframework/nanoFramework.Json/pull/222)
+- Update 1 NuGet dependencies [\#221](https://github.com/nanoframework/nanoFramework.Json/pull/221)
+- Update 1 NuGet dependencies [\#220](https://github.com/nanoframework/nanoFramework.Json/pull/220)
+- Update 1 NuGet dependencies [\#219](https://github.com/nanoframework/nanoFramework.Json/pull/219)
 - Update 1 NuGet dependencies [\#218](https://github.com/nanoframework/nanoFramework.Json/pull/218)
 - Fix escape strings during serialization [\#217](https://github.com/nanoframework/nanoFramework.Json/pull/217)
 - Update 1 NuGet dependencies [\#216](https://github.com/nanoframework/nanoFramework.Json/pull/216)
