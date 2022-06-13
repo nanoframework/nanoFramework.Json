@@ -6,6 +6,7 @@
 
 **Documentation and other chores:**
 
+- Update 1 NuGet dependencies [\#223](https://github.com/nanoframework/nanoFramework.Json/pull/223)
 - Update 1 NuGet dependencies [\#222](https://github.com/nanoframework/nanoFramework.Json/pull/222)
 - Update 1 NuGet dependencies [\#221](https://github.com/nanoframework/nanoFramework.Json/pull/221)
 - Update 1 NuGet dependencies [\#220](https://github.com/nanoframework/nanoFramework.Json/pull/220)
