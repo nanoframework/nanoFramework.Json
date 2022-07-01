@@ -9,7 +9,7 @@ using System.Collections;
 using System.Reflection;
 using System.Text;
 
-namespace nanoFramework.json
+namespace nanoFramework.Json
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonSerializer"/> class.
