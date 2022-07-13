@@ -2,7 +2,16 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.1...HEAD)
+
+**Documentation and other chores:**
+
+- Fix nullref exception during deserialization of array with null elements [\#225](https://github.com/nanoframework/nanoFramework.Json/pull/225)
+- Fix spelling of namespace [\#224](https://github.com/nanoframework/nanoFramework.Json/pull/224)
+
+## [v2.1.3.1](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.3.1) (2022-06-13)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.2...v2.1.3.1)
 
 **Documentation and other chores:**
 
