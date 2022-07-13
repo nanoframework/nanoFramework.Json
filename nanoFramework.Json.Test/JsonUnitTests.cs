@@ -155,6 +155,62 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void Can_serialize_and_deserialize_arrays_of_class_objects_when_array_items_may_be_null()
+        {
+            OutputHelper.WriteLine("Starting test...");
+
+            Console.WriteLine($"{TimeSpan.FromHours(1).TotalMilliseconds}");
+
+            JsonTestCompany first = new JsonTestCompany
+            {
+                CompanyID = 1,
+                CompanyName = "foo"
+            };
+
+            JsonTestCompany second = null;
+
+            JsonTestCompany third = new JsonTestCompany
+            {
+                CompanyID = 3,
+                CompanyName = "foo3"
+            };
+
+            JsonTestCompany[] test = new JsonTestCompany[]
+                    {
+                    first,
+                    second,
+                    third,
+                    null,
+                    null,
+                    };
+
+            string result = JsonConvert.SerializeObject(test);
+
+            JsonTestCompany[] deserializedResult = (JsonTestCompany[])JsonConvert.DeserializeObject(result, typeof(JsonTestCompany[]));
+
+            Console.WriteLine($"dserResult== null: {deserializedResult == null}");
+
+            Assert.NotNull(deserializedResult);
+
+            Assert.Equal(deserializedResult[0].CompanyID, first.CompanyID);
+            Assert.Equal(deserializedResult[0].CompanyName, first.CompanyName);
+
+            Assert.Null(deserializedResult[1]);
+
+            Assert.Equal(deserializedResult[2].CompanyID, third.CompanyID);
+            Assert.Equal(deserializedResult[2].CompanyName, third.CompanyName);
+
+            Assert.Null(deserializedResult[3]);
+            Assert.Null(deserializedResult[4]);
+
+            Assert.Equal(deserializedResult.Length, 5);
+
+            OutputHelper.WriteLine("Finished test...");
+        }
+
+
+
+        [TestMethod]
         public void Can_serialize_int_array()
         {
             OutputHelper.WriteLine("Can_serialize_int_array() - Starting test...");
