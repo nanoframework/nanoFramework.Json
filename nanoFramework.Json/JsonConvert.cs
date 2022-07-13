@@ -705,7 +705,11 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                if (value.Value.GetType() != rootType.GetElementType())
+                                if (value.Value == null) 
+                                { 
+                                    rootArrayList.Add(null); 
+                                }
+                                else if (value.Value.GetType() != rootType.GetElementType())
                                 {
                                     switch (rootType.GetElementType().Name)
                                     {
