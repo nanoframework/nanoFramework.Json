@@ -1535,6 +1535,32 @@ namespace nanoFramework.Json.Test
             Assert.Equal(result.Databases[0]._ts, 1644173816, $"Database._ts is wrong, got {result.Databases[0]._ts}");
         }
 
+        [TestMethod]
+        public void SerializeStringWithNewLine_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "multiline\nstring";
+            var expectedJson = "[\"multiline\nstring\"]";
+
+            var json = JsonConvert.SerializeObject(inputData);
+            var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
+            
+            Assert.Equal(expectedJson, json);
+            Assert.Equal(inputData, result);
+        }
+
+        [TestMethod]
+        public void SerializeStringWithReturn_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "multiline\rstring";
+            var expectedJson = "[\"multiline\rstring\"]";
+
+            var json = JsonConvert.SerializeObject(inputData);
+            var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
+
+            Assert.Equal(expectedJson, json);
+            Assert.Equal(inputData, result);
+        }
+
         private static string testInvocationReceiveMessage = @"{
         ""type"":1,
         ""target"":""ReceiveAdvancedMessage"",
