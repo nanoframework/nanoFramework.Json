@@ -46,9 +46,7 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
-
             return JsonSerializer.SerializeObject(oSource);
-
         }
 
         /// <summary>
@@ -59,6 +57,9 @@ namespace nanoFramework.Json
         /// <returns></returns>
         public static object DeserializeObject(string sourceString, Type type)
         {
+            if (type == typeof(string))
+                return sourceString.Substring(1, sourceString.Length - 2);
+
             var dserResult = Deserialize(sourceString);
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
@@ -1071,7 +1072,7 @@ namespace nanoFramework.Json
             return Deserialize();
         }
 
-        // Deserialize() now assumes that the input has been copied int jsonBytes[]
+        // Deserialize() now assumes that the input has been copied into jsonBytes[]
         // Keep track of position with jsonPos
         private static JsonToken Deserialize()
         {

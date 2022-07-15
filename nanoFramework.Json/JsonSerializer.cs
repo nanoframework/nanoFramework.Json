@@ -33,8 +33,7 @@ namespace nanoFramework.Json
 
             if (topObject
                 && !type.IsArray
-                && (type.BaseType.FullName == "System.ValueType"
-                || type.FullName == "System.String"))
+                && type.BaseType.FullName == "System.ValueType")
             {
                 return $"[{SerializeObject(o, false)}]";
             }
