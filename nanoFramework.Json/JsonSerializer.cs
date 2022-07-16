@@ -252,7 +252,7 @@ namespace nanoFramework.Json
 
             foreach (char ch in str)
             {
-                if (ch == '\\' || ch == '\"')
+                if (CheckIfCharIsRequiresEscape(ch))
                 {
                     result.Append('\\');
                 }
