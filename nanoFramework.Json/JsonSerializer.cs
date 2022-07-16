@@ -16,6 +16,14 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
+        private static char[] escapableCharacters = new char[]
+        {
+            '\\',
+            '\"',
+            '\n',
+            '\r'
+        };
+
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
@@ -199,6 +207,32 @@ namespace nanoFramework.Json
             return result;
         }
 
+        internal static bool StringContainsCharactersToEscape(string str)
+        {
+            foreach (var item in escapableCharacters)
+            {
+                if (str.IndexOf(item) > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool CheckIfCharIsRequiresEscape(char chr)
+        {
+            foreach (var item in escapableCharacters)
+            {
+                if (item == chr)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Safely serialize a String into a JSON string value, escaping all backslash and quote characters.
         /// </summary>
@@ -207,7 +241,7 @@ namespace nanoFramework.Json
         protected static string SerializeString(string str)
         {
             // If the string is just fine (most are) then make a quick exit for improved performance
-            if (str.IndexOf('\\') < 0 && str.IndexOf('\"') < 0)
+            if (!StringContainsCharactersToEscape(str))
             {
                 return str;
             }

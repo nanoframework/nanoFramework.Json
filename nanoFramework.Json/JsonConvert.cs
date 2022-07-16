@@ -58,10 +58,45 @@ namespace nanoFramework.Json
         public static object DeserializeObject(string sourceString, Type type)
         {
             if (type == typeof(string))
-                return sourceString.Substring(1, sourceString.Length - 2);
+            {
+                return DeserializeStringObject(sourceString);
+            }
 
             var dserResult = Deserialize(sourceString);
             return PopulateObject((JsonToken)dserResult, type, "/");
+        }
+
+        private static string DeserializeStringObject(string sourceString)
+        {
+            //String by default has escaped \" at beggining and end, just remove them
+            var resultString = sourceString.Substring(1, sourceString.Length - 2);
+
+            if (JsonSerializer.StringContainsCharactersToEscape(resultString))
+            {
+                var newString = string.Empty;
+                //Last character can not be escaped, because it's last one
+                for (int i = 0; i < resultString.Length - 1; i++)
+                {
+                    var curChar = resultString[i];
+                    var nextChar = resultString[i + 1];
+                    
+                    if (JsonSerializer.CheckIfCharIsRequiresEscape(curChar) && JsonSerializer.CheckIfCharIsRequiresEscape(nextChar))
+                    {
+                        newString += nextChar;
+                        i++;
+                        continue;
+                    }
+
+                    
+                    newString += curChar;
+                }
+
+                //Append last character skkiped by loop
+                newString += resultString[resultString.Length - 1];
+                return newString.ToString();
+            }
+
+            return resultString;
         }
 
 #if NANOFRAMEWORK_1_0
