@@ -81,6 +81,11 @@ namespace nanoFramework.Json
                     return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
 
+            if (type.IsEnum)
+            {
+                return o.ToString();
+            }
+
             if (o is IDictionary && !type.IsArray)
             {
                 IDictionary dictionary = o as IDictionary;

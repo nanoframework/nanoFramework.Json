@@ -1535,6 +1535,15 @@ namespace nanoFramework.Json.Test
             Assert.Equal(result.Databases[0]._ts, 1644173816, $"Database._ts is wrong, got {result.Databases[0]._ts}");
         }
 
+        [TestMethod]
+        public void CanSerializeBoxedEnum()
+        {
+            Hashtable values = new Hashtable();
+            values.Add("gender", Gender.Male);
+
+            Assert.Equal(JsonConvert.SerializeObject(values), "{\"gender\":0}");
+        }
+
         private static string testInvocationReceiveMessage = @"{
         ""type"":1,
         ""target"":""ReceiveAdvancedMessage"",
