@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.1...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.3...HEAD)
+
+**Documentation and other chores:**
+
+- Fix boxed enums serializing [\#227](https://github.com/nanoframework/nanoFramework.Json/pull/227)
+
+## [v2.1.3.3](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.3.3) (2022-07-13)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.1...v2.1.3.3)
 
 **Documentation and other chores:**
 
