@@ -1539,7 +1539,7 @@ namespace nanoFramework.Json.Test
         public void SerializeStringWithNewLine_Should_ReturnWithoutNewLine()
         {
             var inputData = "multiline\nstring";
-            var expectedJson = "\"multiline\\\nstring\"";
+            var expectedJson = "\"multiline\\nstring\"";
 
             var json = JsonConvert.SerializeObject(inputData);
             var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
@@ -1552,7 +1552,7 @@ namespace nanoFramework.Json.Test
         public void SerializeStringWithReturn_Should_ReturnWithoutNewLine()
         {
             var inputData = "multiline\rstring";
-            var expectedJson = "\"multiline\\\rstring\"";
+            var expectedJson = "\"multiline\\rstring\"";
 
             var json = JsonConvert.SerializeObject(inputData);
             var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
