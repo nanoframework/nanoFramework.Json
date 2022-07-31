@@ -16,12 +16,11 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
-        private static char[] escapableCharacters = new char[]
+        internal static Hashtable EscapableCharactersMapping = new Hashtable()
         {
-            '\\',
-            '\"',
-            '\n',
-            '\r'
+            {'\n', 'n'},
+            {'\r', 'r'},
+            {'\"', '"' }
         };
 
         /// <summary>
@@ -207,11 +206,12 @@ namespace nanoFramework.Json
             return result;
         }
 
-        internal static bool StringContainsCharactersToEscape(string str)
+        internal static bool StringContainsCharactersToEscape(string str, bool deserializing)
         {
-            foreach (var item in escapableCharacters)
+            foreach (var item in EscapableCharactersMapping.Keys)
             {
-                if (str.IndexOf(item) > 0)
+                var charToCheck = deserializing ? $"\\{EscapableCharactersMapping[item]}" : item.ToString();
+                if (str.IndexOf(charToCheck) > 0)
                 {
                     return true;
                 }
@@ -222,9 +222,9 @@ namespace nanoFramework.Json
 
         internal static bool CheckIfCharIsRequiresEscape(char chr)
         {
-            foreach (var item in escapableCharacters)
+            foreach (var item in EscapableCharactersMapping.Keys)
             {
-                if (item == chr)
+                if ((char)item == chr)
                 {
                     return true;
                 }
@@ -241,7 +241,7 @@ namespace nanoFramework.Json
         protected static string SerializeString(string str)
         {
             // If the string is just fine (most are) then make a quick exit for improved performance
-            if (!StringContainsCharactersToEscape(str))
+            if (!StringContainsCharactersToEscape(str, false))
             {
                 return str;
             }
@@ -252,12 +252,14 @@ namespace nanoFramework.Json
 
             foreach (char ch in str)
             {
-                if (CheckIfCharIsRequiresEscape(ch))
+                var charToAppend = ch;
+                if (CheckIfCharIsRequiresEscape(charToAppend))
                 {
                     result.Append('\\');
+                    charToAppend = (char)EscapableCharactersMapping[charToAppend];
                 }
 
-                result.Append(ch);
+                result.Append(charToAppend);
             }
 
             return result.ToString();

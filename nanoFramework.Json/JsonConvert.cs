@@ -66,12 +66,26 @@ namespace nanoFramework.Json
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
+        private static char GetEscapableCharKeyBasedOnValue(char inputeChar)
+        {
+            foreach (var item in JsonSerializer.EscapableCharactersMapping.Keys)
+            {
+                var value = (char)JsonSerializer.EscapableCharactersMapping[item];
+                if (value == inputeChar)
+                {
+                    return (char)item;
+                }
+            }
+
+            throw new InvalidOperationException($"Value {inputeChar} is not supported.");
+        }
+
         private static string DeserializeStringObject(string sourceString)
         {
             //String by default has escaped \" at beggining and end, just remove them
             var resultString = sourceString.Substring(1, sourceString.Length - 2);
 
-            if (JsonSerializer.StringContainsCharactersToEscape(resultString))
+            if (JsonSerializer.StringContainsCharactersToEscape(resultString, true))
             {
                 var newString = string.Empty;
                 //Last character can not be escaped, because it's last one
@@ -80,9 +94,10 @@ namespace nanoFramework.Json
                     var curChar = resultString[i];
                     var nextChar = resultString[i + 1];
                     
-                    if (JsonSerializer.CheckIfCharIsRequiresEscape(curChar) && JsonSerializer.CheckIfCharIsRequiresEscape(nextChar))
+                    if (curChar == '\\')
                     {
-                        newString += nextChar;
+                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
+                        newString += charToAppend;
                         i++;
                         continue;
                     }

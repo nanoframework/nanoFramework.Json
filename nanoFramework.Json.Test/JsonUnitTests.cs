@@ -1542,10 +1542,8 @@ namespace nanoFramework.Json.Test
             var expectedJson = "\"multiline\\nstring\"";
 
             var json = JsonConvert.SerializeObject(inputData);
-            var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
             
             Assert.Equal(expectedJson, json);
-            Assert.Equal(inputData, result);
         }
 
         [TestMethod]
@@ -1555,10 +1553,30 @@ namespace nanoFramework.Json.Test
             var expectedJson = "\"multiline\\rstring\"";
 
             var json = JsonConvert.SerializeObject(inputData);
-            var result = (string)JsonConvert.DeserializeObject(json, typeof(string));
 
             Assert.Equal(expectedJson, json);
-            Assert.Equal(inputData, result);
+        }
+
+        [TestMethod]
+        public void DeserializeStringWithNewLine_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "\"multiline\\nstring\"";
+            var expectedValue = "multiline\nstring";
+
+            var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
+
+            Assert.Equal(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void DeserializeStringWithReturn_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "\"multiline\\rstring\"";
+            var expectedValue = "multiline\rstring";
+
+            var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
+
+            Assert.Equal(expectedValue, result);
         }
 
         private static string testInvocationReceiveMessage = @"{
