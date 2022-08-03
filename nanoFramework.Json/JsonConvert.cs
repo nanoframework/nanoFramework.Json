@@ -66,18 +66,18 @@ namespace nanoFramework.Json
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
-        private static char GetEscapableCharKeyBasedOnValue(char inputeChar)
+        private static char GetEscapableCharKeyBasedOnValue(char inputChar)
         {
             foreach (var item in JsonSerializer.EscapableCharactersMapping.Keys)
             {
                 var value = (char)JsonSerializer.EscapableCharactersMapping[item];
-                if (value == inputeChar)
+                if (value == inputChar)
                 {
                     return (char)item;
                 }
             }
 
-            throw new InvalidOperationException($"Value {inputeChar} is not supported.");
+            throw new InvalidOperationException($"Value {inputChar} is not supported.");
         }
 
         private static string DeserializeStringObject(string sourceString)
