@@ -2,7 +2,31 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.1...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.7...HEAD)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#229](https://github.com/nanoframework/nanoFramework.Json/pull/229)
+
+## [v2.1.3.7](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.3.7) (2022-08-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.5...v2.1.3.7)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#228](https://github.com/nanoframework/nanoFramework.Json/pull/228)
+
+## [v2.1.3.5](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.3.5) (2022-07-25)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.3...v2.1.3.5)
+
+**Documentation and other chores:**
+
+- Fix boxed enums serializing [\#227](https://github.com/nanoframework/nanoFramework.Json/pull/227)
+
+## [v2.1.3.3](https://github.com/nanoframework/nanoframework.Json/tree/v2.1.3.3) (2022-07-13)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.1.3.1...v2.1.3.3)
 
 **Documentation and other chores:**
 

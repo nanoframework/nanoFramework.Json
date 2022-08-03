@@ -1578,6 +1578,15 @@ namespace nanoFramework.Json.Test
 
             Assert.Equal(expectedValue, result);
         }
+        
+        [TestMethod]
+        public void CanSerializeBoxedEnum()
+        {
+            Hashtable values = new Hashtable();
+            values.Add("gender", Gender.Male);
+
+            Assert.Equal(JsonConvert.SerializeObject(values), "{\"gender\":0}");
+        }
 
         private static string testInvocationReceiveMessage = @"{
         ""type"":1,
