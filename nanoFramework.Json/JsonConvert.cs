@@ -46,9 +46,7 @@ namespace nanoFramework.Json
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
         {
-
             return JsonSerializer.SerializeObject(oSource);
-
         }
 
         /// <summary>
@@ -59,8 +57,62 @@ namespace nanoFramework.Json
         /// <returns></returns>
         public static object DeserializeObject(string sourceString, Type type)
         {
+            if (type == typeof(string))
+            {
+                return DeserializeStringObject(sourceString);
+            }
+
             var dserResult = Deserialize(sourceString);
             return PopulateObject((JsonToken)dserResult, type, "/");
+        }
+
+        private static char GetEscapableCharKeyBasedOnValue(char inputChar)
+        {
+            foreach (var item in JsonSerializer.EscapableCharactersMapping.Keys)
+            {
+                var value = (char)JsonSerializer.EscapableCharactersMapping[item];
+                if (value == inputChar)
+                {
+                    return (char)item;
+                }
+            }
+
+            // in case inputChar is not supported
+            throw new InvalidOperationException();
+        }
+
+        private static string DeserializeStringObject(string sourceString)
+        {
+            //String by default has escaped \" at beggining and end, just remove them
+            var resultString = sourceString.Substring(1, sourceString.Length - 2);
+
+            if (JsonSerializer.StringContainsCharactersToEscape(resultString, true))
+            {
+                var newString = string.Empty;
+
+                //Last character can not be escaped, because it's last one
+                for (int i = 0; i < resultString.Length - 1; i++)
+                {
+                    var curChar = resultString[i];
+                    var nextChar = resultString[i + 1];
+                    
+                    if (curChar == '\\')
+                    {
+                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
+                        newString += charToAppend;
+                        i++;
+                        continue;
+                    }
+
+                    newString += curChar;
+                }
+
+                //Append last character skkiped by loop
+                newString += resultString[resultString.Length - 1];
+                return newString.ToString();
+            }
+
+            return resultString;
         }
 
 #if NANOFRAMEWORK_1_0
@@ -1071,7 +1123,7 @@ namespace nanoFramework.Json
             return Deserialize();
         }
 
-        // Deserialize() now assumes that the input has been copied int jsonBytes[]
+        // Deserialize() now assumes that the input has been copied into jsonBytes[]
         // Keep track of position with jsonPos
         private static JsonToken Deserialize()
         {

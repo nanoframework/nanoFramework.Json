@@ -16,6 +16,13 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
+        internal static Hashtable EscapableCharactersMapping = new Hashtable()
+        {
+            {'\n', 'n'},
+            {'\r', 'r'},
+            {'\"', '"' }
+        };
+
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
@@ -33,8 +40,7 @@ namespace nanoFramework.Json
 
             if (topObject
                 && !type.IsArray
-                && (type.BaseType.FullName == "System.ValueType"
-                || type.FullName == "System.String"))
+                && type.BaseType.FullName == "System.ValueType")
             {
                 return $"[{SerializeObject(o, false)}]";
             }
@@ -205,6 +211,33 @@ namespace nanoFramework.Json
             return result;
         }
 
+        internal static bool StringContainsCharactersToEscape(string str, bool deserializing)
+        {
+            foreach (var item in EscapableCharactersMapping.Keys)
+            {
+                var charToCheck = deserializing ? $"\\{EscapableCharactersMapping[item]}" : item.ToString();
+                if (str.IndexOf(charToCheck) > 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static bool CheckIfCharIsRequiresEscape(char chr)
+        {
+            foreach (var item in EscapableCharactersMapping.Keys)
+            {
+                if ((char)item == chr)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Safely serialize a String into a JSON string value, escaping all backslash and quote characters.
         /// </summary>
@@ -213,7 +246,7 @@ namespace nanoFramework.Json
         protected static string SerializeString(string str)
         {
             // If the string is just fine (most are) then make a quick exit for improved performance
-            if (str.IndexOf('\\') < 0 && str.IndexOf('\"') < 0)
+            if (!StringContainsCharactersToEscape(str, false))
             {
                 return str;
             }
@@ -224,12 +257,14 @@ namespace nanoFramework.Json
 
             foreach (char ch in str)
             {
-                if (ch == '\\' || ch == '\"')
+                var charToAppend = ch;
+                if (CheckIfCharIsRequiresEscape(charToAppend))
                 {
                     result.Append('\\');
+                    charToAppend = (char)EscapableCharactersMapping[charToAppend];
                 }
 
-                result.Append(ch);
+                result.Append(charToAppend);
             }
 
             return result.ToString();

@@ -1536,6 +1536,50 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void SerializeStringWithNewLine_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "multiline\nstring";
+            var expectedJson = "\"multiline\\nstring\"";
+
+            var json = JsonConvert.SerializeObject(inputData);
+            
+            Assert.Equal(expectedJson, json);
+        }
+
+        [TestMethod]
+        public void SerializeStringWithReturn_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "multiline\rstring";
+            var expectedJson = "\"multiline\\rstring\"";
+
+            var json = JsonConvert.SerializeObject(inputData);
+
+            Assert.Equal(expectedJson, json);
+        }
+
+        [TestMethod]
+        public void DeserializeStringWithNewLine_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "\"multiline\\nstring\"";
+            var expectedValue = "multiline\nstring";
+
+            var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
+
+            Assert.Equal(expectedValue, result);
+        }
+
+        [TestMethod]
+        public void DeserializeStringWithReturn_Should_ReturnWithoutNewLine()
+        {
+            var inputData = "\"multiline\\rstring\"";
+            var expectedValue = "multiline\rstring";
+
+            var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
+
+            Assert.Equal(expectedValue, result);
+        }
+        
+        [TestMethod]
         public void CanSerializeBoxedEnum()
         {
             Hashtable values = new Hashtable();
