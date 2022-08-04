@@ -77,7 +77,8 @@ namespace nanoFramework.Json
                 }
             }
 
-            throw new InvalidOperationException($"Value {inputChar} is not supported.");
+            // in case inputChar is not supported
+            throw new InvalidOperationException();
         }
 
         private static string DeserializeStringObject(string sourceString)
@@ -88,6 +89,7 @@ namespace nanoFramework.Json
             if (JsonSerializer.StringContainsCharactersToEscape(resultString, true))
             {
                 var newString = string.Empty;
+
                 //Last character can not be escaped, because it's last one
                 for (int i = 0; i < resultString.Length - 1; i++)
                 {
@@ -102,7 +104,6 @@ namespace nanoFramework.Json
                         continue;
                     }
 
-                    
                     newString += curChar;
                 }
 
