@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.4...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.6...HEAD)
+
+**Documentation and other chores:**
+
+- Fix JSON serialization for string object and escaped multiline characters [\#226](https://github.com/nanoframework/nanoFramework.Json/pull/226)
+
+## [v2.2.6](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.6) (2022-08-04)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.4...v2.2.6)
 
 **Documentation and other chores:**
 
