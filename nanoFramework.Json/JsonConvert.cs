@@ -215,9 +215,8 @@ namespace nanoFramework.Json
                         return null;
                     }
 
-                // Passed type is not supported
                 default:
-                    throw new NotImplementedException();
+                    return value;
             }
         }
 
