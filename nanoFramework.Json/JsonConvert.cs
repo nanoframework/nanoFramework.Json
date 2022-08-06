@@ -176,27 +176,13 @@ namespace nanoFramework.Json
 
                 if (rootToken is JsonObject rootObject)
                 {
-                    bool isHashtable = false;
                     bool isArrayList = false;
 
                     if (rootElementType == null
                         && rootType.FullName == "System.Collections.Hashtable")
                     {
-                        isHashtable = true;
-
                         rootElementType = rootType;
-                    }
 
-                    if (rootElementType == null
-                       && rootType.FullName == "System.Collections.ArrayList")
-                    {
-                        isArrayList = true;
-
-                        rootElementType = rootType;
-                    }
-
-                    if (isHashtable)
-                    {
                         Hashtable rootInstance = new();
 
                         foreach (var m in rootObject.Members)
@@ -223,7 +209,16 @@ namespace nanoFramework.Json
 
                         return rootInstance;
                     }
-                    else if (isArrayList)
+
+                    if (rootElementType == null
+                       && rootType.FullName == "System.Collections.ArrayList")
+                    {
+                        isArrayList = true;
+
+                        rootElementType = rootType;
+                    }
+
+                    if (isArrayList)
                     {
                         ArrayList rootArrayList = new();
 
