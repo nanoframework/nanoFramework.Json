@@ -159,15 +159,20 @@ namespace nanoFramework.Json
 
 #endif
 
-        private static object ConvertToType(string sourceTypeName, string targetTypeName, object value)
+        private static object ConvertToType(Type sourceType, Type targetType, object value)
         {
             // No need to convert if values matches
-            if (sourceTypeName == targetTypeName)
+            if (sourceType.Name == targetType.Name)
             {
                 return value;
             }
 
-            switch (targetTypeName)
+            if (targetType.IsArray)
+            {
+                return ConvertToType(sourceType, targetType.GetElementType(), value);
+            }
+
+            switch (targetType.Name)
             {
                 case nameof(Int16):
                     return Convert.ToInt16(value.ToString());
@@ -482,7 +487,7 @@ namespace nanoFramework.Json
                                 {
                                     if (memberIsProperty)
                                     {
-                                        var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType().Name, memberType.Name, memberPropertyValue.Value);
+                                        var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(), memberType, memberPropertyValue.Value);
                                         memberPropSetMethod.Invoke(rootInstance, new object[] { convertedValueAsObject });
                                     }
                                     else
@@ -535,10 +540,7 @@ namespace nanoFramework.Json
                                         throw new DeserializationException();
                                     }
 
-                                    // ReturnType is an array, so we need to delete last two character '[]' from the type name
-                                    var targetPropNameArray = memberPropGetMethod.ReturnType.Name;
-                                    var targetPropName = targetPropNameArray.Substring(0, targetPropNameArray.Length - 2);
-                                    var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, targetPropName, value.Value);
+                                    var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberPropGetMethod.ReturnType, value.Value);
                                     memberValueArrayList.Add(valueToAddAsObject);
                                 }
                                 else if (item != null)
@@ -689,7 +691,7 @@ namespace nanoFramework.Json
                                     continue;
                                 }
 
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, rootType.GetElementType().Name, value.Value);
+                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), rootType.GetElementType(), value.Value);
                                 rootArrayList.Add(valueToAddAsObject);
                             }
                             else
