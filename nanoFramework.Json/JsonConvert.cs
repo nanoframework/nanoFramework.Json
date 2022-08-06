@@ -1095,7 +1095,8 @@ namespace nanoFramework.Json
                 // unexpected token in json object
                 throw new DeserializationException();
             }
-            else if (token.TType != TokenType.RBrace)
+
+            if (token.TType != TokenType.RBrace)
             {
                 // unterminated json object
                 throw new DeserializationException();
