@@ -777,15 +777,14 @@ namespace nanoFramework.Json
 
                     return rootInstance;
                 }
-                else if (rootToken is JsonValue rootValue)
+
+                if (rootToken is JsonValue rootValue)
                 {
                     return rootValue.Value;
                 }
-                else
-                {
-                    // not implemented
-                    throw new DeserializationException();
-                }
+
+                // not implemented
+                throw new DeserializationException();
             }
             catch
             {
