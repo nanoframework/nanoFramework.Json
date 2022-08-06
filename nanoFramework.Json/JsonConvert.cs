@@ -1611,10 +1611,8 @@ namespace nanoFramework.Json
             {
                 return new LexToken() { TType = TokenType.Error, TValue = null };
             }
-            else
-            {
-                return new LexToken() { TType = TokenType.End, TValue = null };
-            }
+
+            return new LexToken() { TType = TokenType.End, TValue = null };
         }
 
         // Legal first characters for numbers
