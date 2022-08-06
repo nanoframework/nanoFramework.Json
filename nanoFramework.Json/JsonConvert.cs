@@ -1134,7 +1134,8 @@ namespace nanoFramework.Json
                 // unexpected token in array
                 throw new DeserializationException();
             }
-            else if (token.TType != TokenType.RArray)
+
+            if (token.TType != TokenType.RArray)
             {
                 // unterminated json array
                 throw new DeserializationException();
