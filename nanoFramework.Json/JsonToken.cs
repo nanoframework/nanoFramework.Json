@@ -20,17 +20,18 @@ namespace nanoFramework.Json
         {
             lock (SyncObj)
             {
-                if (JsonConvert.SerializationContext == null)
+                if (JsonConvert.SerializationContext != null)
                 {
-                    JsonConvert.SerializationContext = new JsonConvert.SerializationCtx
-                    {
-                        Indent = 0
-                    };
-
-                    Monitor.Enter(JsonConvert.SerializationContext);
-
-                    _fOwnsContext = true;
+                    return;
                 }
+                JsonConvert.SerializationContext = new JsonConvert.SerializationCtx
+                {
+                    Indent = 0
+                };
+
+                Monitor.Enter(JsonConvert.SerializationContext);
+
+                _fOwnsContext = true;
             }
         }
 
@@ -38,14 +39,15 @@ namespace nanoFramework.Json
         {
             lock (SyncObj)
             {
-                if (_fOwnsContext)
+                if (!_fOwnsContext)
                 {
-                    var monitorObj = JsonConvert.SerializationContext;
-                    JsonConvert.SerializationContext = null;
-                    _fOwnsContext = false;
-
-                    Monitor.Exit(monitorObj);
+                    return;
                 }
+                var monitorObj = JsonConvert.SerializationContext;
+                JsonConvert.SerializationContext = null;
+                _fOwnsContext = false;
+
+                Monitor.Exit(monitorObj);
             }
         }
 
@@ -93,10 +95,12 @@ namespace nanoFramework.Json
 
             while (current < buffer.Length)
             {
-                if (buffer[current++] == 0)
+                if (buffer[current++] != 0)
                 {
-                    return current - 1;
+                    continue;
                 }
+
+                return current - 1;
             }
 
             return -1;
