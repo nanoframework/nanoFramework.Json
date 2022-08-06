@@ -84,7 +84,7 @@ namespace nanoFramework.Json
                     return o.ToString();
 
                 case "DateTime":
-                    return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
+                    return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
 
             if (type.IsEnum)
