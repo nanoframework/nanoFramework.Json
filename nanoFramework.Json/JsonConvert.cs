@@ -1041,7 +1041,8 @@ namespace nanoFramework.Json
                 // unexpected end token in json parse
                 throw new DeserializationException();
             }
-            else if (token.TType == TokenType.Error)
+
+            if (token.TType == TokenType.Error)
             {
                 // unexpected lexical token during json parse
                 throw new DeserializationException();
