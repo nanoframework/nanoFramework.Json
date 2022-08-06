@@ -535,7 +535,10 @@ namespace nanoFramework.Json
                                         throw new DeserializationException();
                                     }
 
-                                    var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, memberPropGetMethod.ReturnType.Name, value.Value);
+                                    // ReturnType is an array, so we need to delete last two character '[]' from the type name
+                                    var targetPropNameArray = memberPropGetMethod.ReturnType.Name;
+                                    var targetPropName = targetPropNameArray.Substring(0, targetPropNameArray.Length - 2);
+                                    var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, targetPropName, value.Value);
                                     memberValueArrayList.Add(valueToAddAsObject);
                                 }
                                 else if (item != null)
