@@ -128,32 +128,34 @@ namespace nanoFramework.Json
                 foreach (MethodInfo method in methods)
                 {
                     // We care only about property getters when serializing
-                    if (method.Name.StartsWith("get_"))
+                    if (!method.Name.StartsWith("get_"))
                     {
-                        // Ignore abstract and virtual objects
-                        if (method.IsAbstract)
-                        {
-                            continue;
-                        }
-
-                        // Ignore delegates and MethodInfos
-                        if ((method.ReturnType == typeof(System.Delegate)) ||
-                            (method.ReturnType == typeof(System.MulticastDelegate)) ||
-                            (method.ReturnType == typeof(System.Reflection.MethodInfo)))
-                        {
-                            continue;
-                        }
-
-                        // Ditto for DeclaringType
-                        if ((method.DeclaringType == typeof(System.Delegate)) ||
-                            (method.DeclaringType == typeof(System.MulticastDelegate)))
-                        {
-                            continue;
-                        }
-
-                        object returnObject = method.Invoke(o, null);
-                        hashtable.Add(method.Name.Substring(4), returnObject);
+                        continue;
                     }
+
+                    // Ignore abstract and virtual objects
+                    if (method.IsAbstract)
+                    {
+                        continue;
+                    }
+
+                    // Ignore delegates and MethodInfos
+                    if ((method.ReturnType == typeof(System.Delegate)) ||
+                        (method.ReturnType == typeof(System.MulticastDelegate)) ||
+                        (method.ReturnType == typeof(System.Reflection.MethodInfo)))
+                    {
+                        continue;
+                    }
+
+                    // Ditto for DeclaringType
+                    if ((method.DeclaringType == typeof(System.Delegate)) ||
+                        (method.DeclaringType == typeof(System.MulticastDelegate)))
+                    {
+                        continue;
+                    }
+
+                    object returnObject = method.Invoke(o, null);
+                    hashtable.Add(method.Name.Substring(4), returnObject);
                 }
 
                 return SerializeIDictionary(hashtable);
