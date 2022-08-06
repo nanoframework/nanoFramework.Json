@@ -1156,71 +1156,78 @@ namespace nanoFramework.Json
                 //  so this is an empty array
                 return null;
             }
-            else if (token.TType == TokenType.String)
+
+            if (token.TType == TokenType.String)
             {
                 return new JsonValue(token.TValue);
             }
-            else if (token.TType == TokenType.Number)
+
+            if (token.TType == TokenType.Number)
             {
                 if (token.TValue.IndexOfAny(new char[] { '.', 'f', 'F', 'd', 'D', 'e', 'E' }) != -1)
                 {
                     return new JsonValue(double.Parse(token.TValue));
                 }
-                else
+
+                // int.MaxValue:    2,147,483,647
+                // int.MinValue:   -2,147,483,648
+                // uint.MaxValue:   4,294,967,295
+                // long.MaxValue:   9,223,372,036,854,775,807
+                // long.MinValue:  -9,223,372,036,854,775,808
+                // If we are sure, don't go to the try catch
+                if (token.TValue.Length < 9)
                 {
-                    // int.MaxValue:    2,147,483,647
-                    // int.MinValue:   -2,147,483,648
-                    // uint.MaxValue:   4,294,967,295
-                    // long.MaxValue:   9,223,372,036,854,775,807
-                    // long.MinValue:  -9,223,372,036,854,775,808
-                    // If we are sure, don't go to the try catch
-                    if (token.TValue.Length < 9)
-                    {
-                        return new JsonValue(int.Parse(token.TValue));
-                    }
-                    else if ((token.TValue.Length >= 12) && (token.TValue.Length < 20))
+                    return new JsonValue(int.Parse(token.TValue));
+                }
+
+                if ((token.TValue.Length >= 12) && (token.TValue.Length < 20))
+                {
+                    return new JsonValue(long.Parse(token.TValue));
+                }
+
+                try
+                {
+                    return new JsonValue(int.Parse(token.TValue));
+                }
+                catch
+                {
+                    try
                     {
                         return new JsonValue(long.Parse(token.TValue));
                     }
-
-                    try
-                    {
-                        return new JsonValue(int.Parse(token.TValue));
-                    }
                     catch
                     {
-                        try
-                        {
-                            return new JsonValue(long.Parse(token.TValue));
-                        }
-                        catch
-                        {
-                            return new JsonValue(ulong.Parse(token.TValue));
-                        }
+                        return new JsonValue(ulong.Parse(token.TValue));
                     }
                 }
             }
-            else if (token.TType == TokenType.True)
+
+            if (token.TType == TokenType.True)
             {
                 return new JsonValue(true);
             }
-            else if (token.TType == TokenType.False)
+
+            if (token.TType == TokenType.False)
             {
                 return new JsonValue(false);
             }
-            else if (token.TType == TokenType.Null)
+
+            if (token.TType == TokenType.Null)
             {
                 return new JsonValue(null);
             }
-            else if (token.TType == TokenType.Date)
+
+            if (token.TType == TokenType.Date)
             {
                 return new JsonValue(token.TValue, true);
             }
-            else if (token.TType == TokenType.LBrace)
+
+            if (token.TType == TokenType.LBrace)
             {
                 return ParseObject(ref token);
             }
-            else if (token.TType == TokenType.LArray)
+
+            if (token.TType == TokenType.LArray)
             {
                 return ParseArray(ref token);
             }
