@@ -293,7 +293,7 @@ namespace nanoFramework.Json
                             {
                                 rootArrayList.Add(PopulateArrayList(jsonArray));
                             }
-                            else if (m is JsonToken jsonToken)
+                            else if (m is JsonToken)
                             {
                                 result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
                             }
