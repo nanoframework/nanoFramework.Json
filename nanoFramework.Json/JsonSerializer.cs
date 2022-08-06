@@ -140,16 +140,16 @@ namespace nanoFramework.Json
                     }
 
                     // Ignore delegates and MethodInfos
-                    if ((method.ReturnType == typeof(System.Delegate)) ||
-                        (method.ReturnType == typeof(System.MulticastDelegate)) ||
-                        (method.ReturnType == typeof(System.Reflection.MethodInfo)))
+                    if ((method.ReturnType == typeof(Delegate)) ||
+                        (method.ReturnType == typeof(MulticastDelegate)) ||
+                        (method.ReturnType == typeof(MethodInfo)))
                     {
                         continue;
                     }
 
                     // Ditto for DeclaringType
-                    if ((method.DeclaringType == typeof(System.Delegate)) ||
-                        (method.DeclaringType == typeof(System.MulticastDelegate)))
+                    if ((method.DeclaringType == typeof(Delegate)) ||
+                        (method.DeclaringType == typeof(MulticastDelegate)))
                     {
                         continue;
                     }
