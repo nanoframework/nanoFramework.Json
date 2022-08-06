@@ -674,62 +674,60 @@ namespace nanoFramework.Json
 
                         return rootArrayList;
                     }
-                    else
-                    {
-                        foreach (var item in rootArray.Items)
-                        {
-                            if (item is JsonValue value)
-                            {
-                                if (value.Value == null)
-                                {
-                                    rootArrayList.Add(null);
-                                    continue;
-                                }
 
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), rootType.GetElementType(), value.Value);
-                                rootArrayList.Add(valueToAddAsObject);
+                    foreach (var item in rootArray.Items)
+                    {
+                        if (item is JsonValue value)
+                        {
+                            if (value.Value == null)
+                            {
+                                rootArrayList.Add(null);
+                                continue;
+                            }
+
+                            var valueToAddAsObject = ConvertToType(value.Value.GetType(), rootType.GetElementType(), value.Value);
+                            rootArrayList.Add(valueToAddAsObject);
+                        }
+                        else
+                        {
+                            if (isArrayList)
+                            {
+                                rootArrayList = PopulateArrayList(item);
                             }
                             else
                             {
-                                if (isArrayList)
+                                // Pass rootElementType and rootPath with rootElementType appended to PopulateObject for this item 
+                                string itemPath = rootPath;
+
+                                if (itemPath[itemPath.Length - 1] == '/')
                                 {
-                                    rootArrayList = PopulateArrayList(item);
+                                    // Don't need to add a slash before appending rootElementType
+                                    itemPath += rootElementType.Name;
                                 }
                                 else
                                 {
-                                    // Pass rootElementType and rootPath with rootElementType appended to PopulateObject for this item 
-                                    string itemPath = rootPath;
-
-                                    if (itemPath[itemPath.Length - 1] == '/')
-                                    {
-                                        // Don't need to add a slash before appending rootElementType
-                                        itemPath += rootElementType.Name;
-                                    }
-                                    else
-                                    {
-                                        // Need to add a slash before appending rootElementType
-                                        itemPath = itemPath + '/' + rootElementType.Name;
-                                    }
-
-                                    var itemObj = PopulateObject(item, rootElementType, itemPath);
-
-                                    rootArrayList.Add(itemObj);
+                                    // Need to add a slash before appending rootElementType
+                                    itemPath = itemPath + '/' + rootElementType.Name;
                                 }
+
+                                var itemObj = PopulateObject(item, rootElementType, itemPath);
+
+                                rootArrayList.Add(itemObj);
                             }
                         }
-
-                        Array targetArray = Array.CreateInstance(rootType.GetElementType(), rootArray.Length);
-
-                        if (targetArray == null)
-                        {
-                            //  CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}
-                            throw new DeserializationException();
-                        }
-
-                        rootArrayList.CopyTo(targetArray);
-
-                        return targetArray;
                     }
+
+                    Array targetArray = Array.CreateInstance(rootType.GetElementType(), rootArray.Length);
+
+                    if (targetArray == null)
+                    {
+                        //  CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}
+                        throw new DeserializationException();
+                    }
+
+                    rootArrayList.CopyTo(targetArray);
+
+                    return targetArray;
 
                 }
 
