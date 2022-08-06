@@ -619,7 +619,8 @@ namespace nanoFramework.Json
 
                     return rootInstance;
                 }
-                else if (rootToken is JsonArray rootArray)
+
+                if (rootToken is JsonArray rootArray)
                 {
                     bool isArrayList = false;
 
@@ -728,7 +729,6 @@ namespace nanoFramework.Json
                     rootArrayList.CopyTo(targetArray);
 
                     return targetArray;
-
                 }
 
                 return null;
