@@ -12,11 +12,13 @@ namespace nanoFramework.Json
 {
     internal abstract class JsonToken
     {
-        private bool _fOwnsContext;
+        private static object SyncObj = new();
 
+        private bool _fOwnsContext;
+        
         protected void EnterSerialization()
         {
-            lock (JsonConvert.SyncObj)
+            lock (SyncObj)
             {
                 if (JsonConvert.SerializationContext == null)
                 {
@@ -34,7 +36,7 @@ namespace nanoFramework.Json
 
         protected void ExitSerialization()
         {
-            lock (JsonConvert.SyncObj)
+            lock (SyncObj)
             {
                 if (_fOwnsContext)
                 {

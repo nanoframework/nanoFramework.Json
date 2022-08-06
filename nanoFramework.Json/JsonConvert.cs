@@ -36,7 +36,6 @@ namespace nanoFramework.Json
         }
 
         internal static SerializationCtx SerializationContext = null;
-        internal static object SyncObj = new();
 
         /// <summary>
         /// Convert an object to a JSON string.
