@@ -468,9 +468,6 @@ namespace nanoFramework.Json
                                                 case "Double":
                                                     memberPropSetMethod.Invoke(rootInstance, new object[] { double.NaN });
                                                     break;
-
-                                                default:
-                                                    break;
                                             }
 
                                         }
