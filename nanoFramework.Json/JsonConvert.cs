@@ -159,6 +159,68 @@ namespace nanoFramework.Json
 
 #endif
 
+        private static object ConvertToType(string sourceTypeName, string targetTypeName, object value)
+        {
+            // No need to convert if values matches
+            if (sourceTypeName == targetTypeName)
+            {
+                return value;
+            }
+
+            switch (targetTypeName)
+            {
+                case nameof(Int16):
+                    return Convert.ToInt16(value.ToString());
+
+                case nameof(UInt16):
+                    return Convert.ToUInt16(value.ToString());
+
+                case nameof(Int32):
+                    return Convert.ToInt32(value.ToString());
+
+                case nameof(UInt32):
+                    return Convert.ToUInt32(value.ToString());
+
+                case nameof(Int64):
+                    return Convert.ToInt64(value.ToString());
+
+                case nameof(UInt64):
+                    return Convert.ToUInt64(value.ToString());
+
+                case nameof(Byte):
+                    return Convert.ToByte(value.ToString());
+
+                case nameof(SByte):
+                    return Convert.ToSByte(value.ToString());
+
+                case nameof(Single):
+                    return Convert.ToSingle(value.ToString());
+
+                case nameof(Double):
+                    return Convert.ToDouble(value.ToString());
+
+                case nameof(Boolean):
+                    return Convert.ToBoolean(Convert.ToByte(value.ToString()));
+
+                case nameof(String):
+                    return value.ToString();
+
+                case nameof(TimeSpan):
+                    if (TimeSpanExtensions.TryConvertFromString(value.ToString(), out TimeSpan timeSpanValue))
+                    {
+                        return timeSpanValue;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+                // Passed type is not supported
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
         {
             if (
@@ -421,77 +483,8 @@ namespace nanoFramework.Json
                                 {
                                     if (memberIsProperty)
                                     {
-                                        JsonValue val = memberPropertyValue;
-
-                                        if (val.Value.GetType() != memberType)
-                                        {
-                                            // Note: keeping the full names Int16, UInt16 for readability
-                                            switch (memberType.Name)
-                                            {
-                                                case nameof(Int16):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(UInt16):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt16(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Int32):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt32(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(UInt32):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt32(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Int64):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt64(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(UInt64):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt64(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Byte):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(SByte):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSByte(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Single):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Double):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToDouble(val.Value.ToString()) });
-                                                    break;
-
-                                                case nameof(Boolean):
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
-                                                    break;
-
-                                                case nameof(TimeSpan):
-                                                    if (TimeSpanExtensions.TryConvertFromString(val.Value.ToString(), out TimeSpan value))
-                                                    {
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { value });
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        return null;
-                                                    }
-
-                                                default:
-                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                                                    break;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                                        }
+                                        var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType().Name, memberType.Name, memberPropertyValue.Value);
+                                        memberPropSetMethod.Invoke(rootInstance, new object[] { convertedValueAsObject });
                                     }
                                     else
                                     {
@@ -543,62 +536,8 @@ namespace nanoFramework.Json
                                         throw new DeserializationException();
                                     }
 
-                                    if (value.Value.GetType() != memberPropGetMethod.ReturnType)
-                                    {
-                                        if (memberPropGetMethod.ReturnType.Name.Contains("UInt16"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("UInt32"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int32"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToInt32(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("UInt64"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int64"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("SByte"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Double"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToDouble(value.Value.ToString()));
-                                        }
-                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Boolean"))
-                                        {
-                                            memberValueArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
-                                        }
-                                        else
-                                        {
-                                            memberValueArrayList.Add(value.Value);
-                                        }
-                                    }
-
-                                    else
-                                    {
-                                        memberValueArrayList.Add(value.Value);
-                                    }
+                                    var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, memberPropGetMethod.ReturnType.Name, value.Value);
+                                    memberValueArrayList.Add(valueToAddAsObject);
                                 }
                                 else if (item != null)
                                 {
@@ -745,64 +684,11 @@ namespace nanoFramework.Json
                                 if (value.Value == null)
                                 {
                                     rootArrayList.Add(null);
+                                    continue;
                                 }
-                                else if (value.Value.GetType() != rootType.GetElementType())
-                                {
-                                    switch (rootType.GetElementType().Name)
-                                    {
-                                        case nameof(Int16):
-                                            rootArrayList.Add(Convert.ToInt16(value.Value.ToString()));
-                                            break;
 
-                                        case nameof(UInt16):
-                                            rootArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Int32):
-                                            rootArrayList.Add(Convert.ToInt32(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(UInt32):
-                                            rootArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Int64):
-                                            rootArrayList.Add(Convert.ToInt64(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(UInt64):
-                                            rootArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Byte):
-                                            rootArrayList.Add(Convert.ToByte(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(SByte):
-                                            rootArrayList.Add(Convert.ToSByte(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Single):
-                                            rootArrayList.Add(Convert.ToSingle(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Double):
-                                            rootArrayList.Add(Convert.ToDouble(value.Value.ToString()));
-                                            break;
-
-                                        case nameof(Boolean):
-                                            rootArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
-                                            break;
-
-                                        default:
-                                            rootArrayList.Add(value.Value);
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    rootArrayList.Add(value.Value);
-                                }
+                                var valueToAddAsObject = ConvertToType(value.Value.GetType().Name, rootType.GetElementType().Name, value.Value);
+                                rootArrayList.Add(valueToAddAsObject);
                             }
                             else
                             {
