@@ -1113,17 +1113,19 @@ namespace nanoFramework.Json
             {
                 var value = ParseValue(ref token);
 
-                if (value != null)
+                if (value == null)
                 {
-                    list.Add(value);
+                    continue;
+                }
 
-                    token = GetNextToken();
+                list.Add(value);
 
-                    if (token.TType != TokenType.Comma && token.TType != TokenType.RArray)
-                    {
-                        // badly formed array
-                        throw new DeserializationException();
-                    }
+                token = GetNextToken();
+
+                if (token.TType != TokenType.Comma && token.TType != TokenType.RArray)
+                {
+                    // badly formed array
+                    throw new DeserializationException();
                 }
             }
 
