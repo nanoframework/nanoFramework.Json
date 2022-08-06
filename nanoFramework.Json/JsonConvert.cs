@@ -176,14 +176,12 @@ namespace nanoFramework.Json
 
                 if (rootToken is JsonObject rootObject)
                 {
-                    bool isArrayList = false;
-
                     if (rootElementType == null
                         && rootType.FullName == "System.Collections.Hashtable")
                     {
                         rootElementType = rootType;
 
-                        Hashtable rootInstance = new();
+                        Hashtable rootInstanceHashtable = new Hashtable();
 
                         foreach (var m in rootObject.Members)
                         {
@@ -191,15 +189,15 @@ namespace nanoFramework.Json
 
                             if (memberProperty.Value is JsonValue jsonValue)
                             {
-                                rootInstance.Add(memberProperty.Name, jsonValue.Value);
+                                rootInstanceHashtable.Add(memberProperty.Name, jsonValue.Value);
                             }
                             else if (memberProperty.Value is JsonArray jsonArray)
                             {
-                                rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
+                                rootInstanceHashtable.Add(memberProperty.Name, PopulateArrayList(jsonArray));
                             }
                             else if (memberProperty.Value is JsonToken jsonToken)
                             {
-                                rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
+                                rootInstanceHashtable.Add(memberProperty.Name, PopulateHashtable(jsonToken));
                             }
                             else
                             {
@@ -207,19 +205,14 @@ namespace nanoFramework.Json
                             }
                         }
 
-                        return rootInstance;
+                        return rootInstanceHashtable;
                     }
 
                     if (rootElementType == null
                        && rootType.FullName == "System.Collections.ArrayList")
                     {
-                        isArrayList = true;
-
                         rootElementType = rootType;
-                    }
 
-                    if (isArrayList)
-                    {
                         ArrayList rootArrayList = new();
 
                         // In case we have elements to put there.
@@ -252,266 +245,253 @@ namespace nanoFramework.Json
                         }
                         return rootArrayList;
                     }
-                    else
+
+                    // This is the object that gets populated and returned
+                    // Create rootInstance from the rootType's constructor
+                    object rootInstance = null;
+
+                    // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
+                    Type[] types = { };
+
+                    ConstructorInfo ci = rootType.GetConstructor(types);
+
+                    if (ci == null)
                     {
-                        // This is the object that gets populated and returned
-                        // Create rootInstance from the rootType's constructor
-                        object rootInstance = null;
+                        // failed to create target instance
+                        throw new DeserializationException();
+                    }
 
-                        // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
-                        Type[] types = { };
+                    rootInstance = ci.Invoke(null);
 
-                        ConstructorInfo ci = rootType.GetConstructor(types);
+                    // If we haven't successfully created rootInstance, bail out
+                    if (rootInstance == null)
+                    {
+                        // failed to create target instance from rootType
+                        throw new DeserializationException();
+                    }
 
-                        if (ci == null)
+                    if ((rootObject == null) || (rootObject.Members == null))
+                    {
+                        // failed to create target instance from rootType
+                        throw new DeserializationException();
+                    }
+
+                    // Process all members for this rootObject
+                    foreach (var m in rootObject.Members)
+                    {
+                        var memberProperty = (JsonProperty)m;
+
+                        string memberPropertyName = memberProperty.Name;
+
+                        // workaround for for property names that start with '$' like Azure Twins
+                        if (memberPropertyName[0] == '$')
                         {
-                            // failed to create target instance
-                            throw new DeserializationException();
+                            memberPropertyName = "_" + memberProperty.Name.Substring(1);
                         }
 
-                        rootInstance = ci.Invoke(null);
+                        // Figure out if we're dealing with a Field or a Property and handle accordingly
+                        Type memberType = null;
+                        FieldInfo memberFieldInfo = null;
+                        MethodInfo memberPropSetMethod = null;
+                        MethodInfo memberPropGetMethod = null;
+                        bool memberIsProperty = false;
 
-                        // If we haven't successfully created rootInstance, bail out
-                        if (rootInstance == null)
+                        memberFieldInfo = rootType.GetField(memberPropertyName);
+
+                        if (memberFieldInfo != null)
                         {
-                            // failed to create target instance from rootType
-                            throw new DeserializationException();
+                            memberType = memberFieldInfo.FieldType;
+                            memberIsProperty = false;
                         }
-
-                        if ((rootObject == null) || (rootObject.Members == null))
+                        else
                         {
-                            // failed to create target instance from rootType
-                            throw new DeserializationException();
-                        }
+                            memberPropGetMethod = rootType.GetMethod("get_" + memberPropertyName);
 
-                        // Process all members for this rootObject
-                        foreach (var m in rootObject.Members)
-                        {
-                            var memberProperty = (JsonProperty)m;
-
-                            string memberPropertyName = memberProperty.Name;
-
-                            // workaround for for property names that start with '$' like Azure Twins
-                            if (memberPropertyName[0] == '$')
+                            if (memberPropGetMethod == null)
                             {
-                                memberPropertyName = "_" + memberProperty.Name.Substring(1);
-                            }
-
-                            // Figure out if we're dealing with a Field or a Property and handle accordingly
-                            Type memberType = null;
-                            FieldInfo memberFieldInfo = null;
-                            MethodInfo memberPropSetMethod = null;
-                            MethodInfo memberPropGetMethod = null;
-                            bool memberIsProperty = false;
-
-                            memberFieldInfo = rootType.GetField(memberPropertyName);
-
-                            if (memberFieldInfo != null)
-                            {
-                                memberType = memberFieldInfo.FieldType;
-                                memberIsProperty = false;
+                                continue;
                             }
                             else
                             {
-                                memberPropGetMethod = rootType.GetMethod("get_" + memberPropertyName);
+                                memberType = memberPropGetMethod.ReturnType;
+                                memberPropSetMethod = rootType.GetMethod("set_" + memberPropertyName);
 
-                                if (memberPropGetMethod == null)
+                                if (memberType == null)
                                 {
-                                    continue;
+                                    // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
+                                    throw new DeserializationException();
                                 }
-                                else
-                                {
-                                    memberType = memberPropGetMethod.ReturnType;
-                                    memberPropSetMethod = rootType.GetMethod("set_" + memberPropertyName);
 
-                                    if (memberType == null)
-                                    {
-                                        // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
-                                        throw new DeserializationException();
-                                    }
-
-                                    memberIsProperty = true;
-                                }
+                                memberIsProperty = true;
                             }
-                            // Process the member based on JObject, JValue, or JArray
-                            if (memberProperty.Value is JsonObject @object)
+                        }
+                        // Process the member based on JObject, JValue, or JArray
+                        if (memberProperty.Value is JsonObject @object)
+                        {
+                            // Call PopulateObject() for this member - i.e. recursion
+                            var memberPath = rootPath;
+
+                            if (memberPath[memberPath.Length - 1] == '/')
                             {
-                                // Call PopulateObject() for this member - i.e. recursion
-                                var memberPath = rootPath;
-
-                                if (memberPath[memberPath.Length - 1] == '/')
-                                {
-                                    // Don't need to add a slash before appending rootElementType
-                                    memberPath += memberPropertyName;
-                                }
-                                else
-                                {
-                                    // Need to add a slash before appending rootElementType
-                                    memberPath = memberPath + '/' + memberPropertyName;
-                                }
-
-                                object memberObject = null;
-
-                                // check if property type it's HashTable
-                                if (memberType.FullName == "System.Collections.Hashtable")
-                                {
-                                    Hashtable table = new();
-
-                                    foreach (JsonProperty v in @object.Members)
-                                    {
-                                        if (v.Value is JsonValue jsonValue)
-                                        {
-                                            table.Add(v.Name, (jsonValue).Value);
-                                        }
-                                        else if (v.Value is JsonObject JsonObject)
-                                        {
-                                            table.Add(v.Name, PopulateHashtable(JsonObject));
-                                        }
-                                        else if (v.Value is JsonArray jsonArrayAttribute)
-                                        {
-                                            throw new NotImplementedException();
-                                        }
-                                    }
-
-                                    memberObject = table;
-                                }
-                                else
-                                {
-                                    memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
-                                }
-
-                                if (memberIsProperty)
-                                {
-                                    memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
-                                }
-                                else
-                                {
-                                    memberFieldInfo.SetValue(rootInstance, memberObject);
-                                }
+                                // Don't need to add a slash before appending rootElementType
+                                memberPath += memberPropertyName;
                             }
-                            else if (memberProperty.Value is JsonValue memberPropertyValue)
+                            else
                             {
-                                if (memberType != typeof(DateTime))
+                                // Need to add a slash before appending rootElementType
+                                memberPath = memberPath + '/' + memberPropertyName;
+                            }
+
+                            object memberObject = null;
+
+                            // check if property type it's HashTable
+                            if (memberType.FullName == "System.Collections.Hashtable")
+                            {
+                                Hashtable table = new();
+
+                                foreach (JsonProperty v in @object.Members)
                                 {
-                                    if (memberPropertyValue.Value == null)
+                                    if (v.Value is JsonValue jsonValue)
                                     {
-                                        if (memberIsProperty)
+                                        table.Add(v.Name, (jsonValue).Value);
+                                    }
+                                    else if (v.Value is JsonObject JsonObject)
+                                    {
+                                        table.Add(v.Name, PopulateHashtable(JsonObject));
+                                    }
+                                    else if (v.Value is JsonArray jsonArrayAttribute)
+                                    {
+                                        throw new NotImplementedException();
+                                    }
+                                }
+
+                                memberObject = table;
+                            }
+                            else
+                            {
+                                memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
+                            }
+
+                            if (memberIsProperty)
+                            {
+                                memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
+                            }
+                            else
+                            {
+                                memberFieldInfo.SetValue(rootInstance, memberObject);
+                            }
+                        }
+                        else if (memberProperty.Value is JsonValue memberPropertyValue)
+                        {
+                            if (memberType != typeof(DateTime))
+                            {
+                                if (memberPropertyValue.Value == null)
+                                {
+                                    if (memberIsProperty)
+                                    {
+                                        if (!memberPropGetMethod.ReturnType.IsValueType)
                                         {
-                                            if (!memberPropGetMethod.ReturnType.IsValueType)
-                                            {
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { null });
-                                            }
-                                            else
-                                            {
-                                                switch (memberPropGetMethod.ReturnType.Name)
-                                                {
-                                                    case "Single":
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { float.NaN });
-                                                        break;
-
-                                                    case "Double":
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { double.NaN });
-                                                        break;
-
-                                                    default:
-                                                        break;
-                                                }
-
-                                            }
+                                            memberPropSetMethod.Invoke(rootInstance, new object[] { null });
                                         }
                                         else
                                         {
-                                            object obj = null;
-                                            memberFieldInfo.SetValue(rootInstance, obj);
+                                            switch (memberPropGetMethod.ReturnType.Name)
+                                            {
+                                                case "Single":
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { float.NaN });
+                                                    break;
+
+                                                case "Double":
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { double.NaN });
+                                                    break;
+
+                                                default:
+                                                    break;
+                                            }
+
                                         }
                                     }
                                     else
                                     {
-                                        if (memberIsProperty)
-                                        {
-                                            JsonValue val = memberPropertyValue;
-
-                                            if (val.Value.GetType() != memberType)
-                                            {
-                                                // Note: keeping the full names Int16, UInt16 for readability
-                                                switch (memberType.Name)
-                                                {
-                                                    case nameof(Int16):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(UInt16):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt16(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Int32):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt32(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(UInt32):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt32(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Int64):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt64(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(UInt64):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt64(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Byte):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(SByte):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSByte(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Single):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Double):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToDouble(val.Value.ToString()) });
-                                                        break;
-
-                                                    case nameof(Boolean):
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
-                                                        break;
-
-                                                    case nameof(TimeSpan):
-                                                        if (TimeSpanExtensions.TryConvertFromString(val.Value.ToString(), out TimeSpan value))
-                                                        {
-                                                            memberPropSetMethod.Invoke(rootInstance, new object[] { value });
-                                                            break;
-                                                        }
-                                                        else
-                                                        {
-                                                            return null;
-                                                        }
-
-                                                    default:
-                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                                                        break;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                                            }
-                                        }
-                                        else
-                                        {
-                                            memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
-                                        }
+                                        object obj = null;
+                                        memberFieldInfo.SetValue(rootInstance, obj);
                                     }
                                 }
                                 else
                                 {
                                     if (memberIsProperty)
                                     {
-                                        memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
+                                        JsonValue val = memberPropertyValue;
+
+                                        if (val.Value.GetType() != memberType)
+                                        {
+                                            // Note: keeping the full names Int16, UInt16 for readability
+                                            switch (memberType.Name)
+                                            {
+                                                case nameof(Int16):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt16(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(UInt16):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt16(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Int32):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt32(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(UInt32):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt32(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Int64):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToInt64(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(UInt64):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToUInt64(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Byte):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToByte(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(SByte):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSByte(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Single):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToSingle(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Double):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToDouble(val.Value.ToString()) });
+                                                    break;
+
+                                                case nameof(Boolean):
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { Convert.ToBoolean(Convert.ToByte(val.Value.ToString())) });
+                                                    break;
+
+                                                case nameof(TimeSpan):
+                                                    if (TimeSpanExtensions.TryConvertFromString(val.Value.ToString(), out TimeSpan value))
+                                                    {
+                                                        memberPropSetMethod.Invoke(rootInstance, new object[] { value });
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        return null;
+                                                    }
+
+                                                default:
+                                                    memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
+                                        }
                                     }
                                     else
                                     {
@@ -519,176 +499,187 @@ namespace nanoFramework.Json
                                     }
                                 }
                             }
-                            else if (memberProperty.Value is JsonArray array)
+                            else
                             {
-                                // Need this type when we try to populate the array elements
-                                Type memberElementType = memberType.GetElementType();
-                                isArrayList = false;
-
-                                if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
+                                if (memberIsProperty)
                                 {
-                                    memberElementType = memberType;
-
-                                    isArrayList = true;
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
                                 }
-
-                                // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                                var memberValueArray = array;
-
-                                // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                                var memberValueArrayList = new ArrayList();
-
-                                // Create a JToken[] array for Items associated for this memberProperty.Value
-                                JsonToken[] memberItems = memberValueArray.Items;
-
-                                foreach (JsonToken item in memberItems)
+                                else
                                 {
-                                    if (item is JsonValue value)
+                                    memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
+                                }
+                            }
+                        }
+                        else if (memberProperty.Value is JsonArray array)
+                        {
+                            // Need this type when we try to populate the array elements
+                            Type memberElementType = memberType.GetElementType();
+                            bool isArrayList = false;
+
+                            if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
+                            {
+                                memberElementType = memberType;
+
+                                isArrayList = true;
+                            }
+
+                            // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
+                            var memberValueArray = array;
+
+                            // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
+                            var memberValueArrayList = new ArrayList();
+
+                            // Create a JToken[] array for Items associated for this memberProperty.Value
+                            JsonToken[] memberItems = memberValueArray.Items;
+
+                            foreach (JsonToken item in memberItems)
+                            {
+                                if (item is JsonValue value)
+                                {
+                                    if (memberPropGetMethod == null)
                                     {
-                                        if (memberPropGetMethod == null)
-                                        {
-                                            // {rootType.Name} must have a valid Property Get Method
-                                            throw new DeserializationException();
-                                        }
+                                        // {rootType.Name} must have a valid Property Get Method
+                                        throw new DeserializationException();
+                                    }
 
-                                        if (value.Value.GetType() != memberPropGetMethod.ReturnType)
+                                    if (value.Value.GetType() != memberPropGetMethod.ReturnType)
+                                    {
+                                        if (memberPropGetMethod.ReturnType.Name.Contains("UInt16"))
                                         {
-                                            if (memberPropGetMethod.ReturnType.Name.Contains("UInt16"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt32"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int32"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToInt32(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("UInt64"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Int64"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("SByte"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Double"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToDouble(value.Value.ToString()));
-                                            }
-                                            else if (memberPropGetMethod.ReturnType.Name.Contains("Boolean"))
-                                            {
-                                                memberValueArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
-                                            }
-                                            else
-                                            {
-                                                memberValueArrayList.Add(value.Value);
-                                            }
+                                            memberValueArrayList.Add(Convert.ToUInt16(value.Value.ToString()));
                                         }
-
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int16"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToInt16(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("UInt32"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToUInt32(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int32"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToInt32(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("UInt64"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToUInt64(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Int64"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToInt64(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("SByte"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToSByte(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Byte"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToByte(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Single"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToSingle(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Double"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToDouble(value.Value.ToString()));
+                                        }
+                                        else if (memberPropGetMethod.ReturnType.Name.Contains("Boolean"))
+                                        {
+                                            memberValueArrayList.Add(Convert.ToBoolean(Convert.ToByte(value.Value.ToString())));
+                                        }
                                         else
                                         {
                                             memberValueArrayList.Add(value.Value);
                                         }
                                     }
-                                    else if (item != null)
-                                    {
-                                        // sanity check for null memberElementType
-                                        if (memberElementType == null)
-                                        {
-                                            // {memberType.Name} is null and this can't happen.
-                                            throw new DeserializationException();
-                                        }
 
-                                        string memberElementPath = $"{rootPath}/{memberProperty.Name}/{memberElementType.Name}";
-
-                                        var itemObj = PopulateObject(item, memberElementType, memberElementPath);
-
-                                        memberValueArrayList.Add(itemObj);
-                                    }
                                     else
                                     {
-                                        // item is not a JToken or a JValue - this case is not handled
+                                        memberValueArrayList.Add(value.Value);
                                     }
                                 }
-
-                                // Fill targetArray with the memberValueArrayList
-                                if (isArrayList)
+                                else if (item != null)
                                 {
-                                    ArrayList targetArray = new();
-
-                                    for (int i = 0; i < memberValueArrayList.Count; i++)
+                                    // sanity check for null memberElementType
+                                    if (memberElementType == null)
                                     {
-                                        // Test if we have only 1 element and that the element is a Hashtable.
-                                        // In this case, we'll make it more efficient and add it as an Hashtable.
-                                        if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
-                                            (((ArrayList)memberValueArrayList[i]).Count == 1) &&
-                                            ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
-                                        {
-                                            targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
-                                        }
-                                        else
-                                        {
-                                            targetArray.Add(memberValueArrayList[i]);
-                                        }
-                                    }
-
-                                    // Populate rootInstance
-                                    if (memberIsProperty)
-                                    {
-                                        memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-                                    }
-                                    else
-                                    {
-                                        memberFieldInfo.SetValue(rootInstance, targetArray);
-                                    }
-                                }
-                                else
-                                {
-                                    // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
-
-                                    Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
-
-                                    if (targetArray == null)
-                                    {
-                                        // failed to create Array of type: {memberElementType}[]
+                                        // {memberType.Name} is null and this can't happen.
                                         throw new DeserializationException();
                                     }
 
-                                    memberValueArrayList.CopyTo(targetArray);
+                                    string memberElementPath = $"{rootPath}/{memberProperty.Name}/{memberElementType.Name}";
 
-                                    // Populate rootInstance
-                                    if (memberIsProperty)
+                                    var itemObj = PopulateObject(item, memberElementType, memberElementPath);
+
+                                    memberValueArrayList.Add(itemObj);
+                                }
+                                else
+                                {
+                                    // item is not a JToken or a JValue - this case is not handled
+                                }
+                            }
+
+                            // Fill targetArray with the memberValueArrayList
+                            if (isArrayList)
+                            {
+                                ArrayList targetArray = new();
+
+                                for (int i = 0; i < memberValueArrayList.Count; i++)
+                                {
+                                    // Test if we have only 1 element and that the element is a Hashtable.
+                                    // In this case, we'll make it more efficient and add it as an Hashtable.
+                                    if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
+                                        (((ArrayList)memberValueArrayList[i]).Count == 1) &&
+                                        ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
                                     {
-                                        memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                        targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
                                     }
                                     else
                                     {
-                                        memberFieldInfo.SetValue(rootInstance, targetArray);
+                                        targetArray.Add(memberValueArrayList[i]);
                                     }
+                                }
+
+                                // Populate rootInstance
+                                if (memberIsProperty)
+                                {
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                }
+                                else
+                                {
+                                    memberFieldInfo.SetValue(rootInstance, targetArray);
+                                }
+                            }
+                            else
+                            {
+                                // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
+
+                                Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
+
+                                if (targetArray == null)
+                                {
+                                    // failed to create Array of type: {memberElementType}[]
+                                    throw new DeserializationException();
+                                }
+
+                                memberValueArrayList.CopyTo(targetArray);
+
+                                // Populate rootInstance
+                                if (memberIsProperty)
+                                {
+                                    memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
+                                }
+                                else
+                                {
+                                    memberFieldInfo.SetValue(rootInstance, targetArray);
                                 }
                             }
                         }
-
-                        return rootInstance;
                     }
+
+                    return rootInstance;
                 }
                 else if (rootToken is JsonArray rootArray)
                 {
@@ -751,9 +742,9 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                if (value.Value == null) 
-                                { 
-                                    rootArrayList.Add(null); 
+                                if (value.Value == null)
+                                {
+                                    rootArrayList.Add(null);
                                 }
                                 else if (value.Value.GetType() != rootType.GetElementType())
                                 {
