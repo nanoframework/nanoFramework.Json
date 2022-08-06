@@ -277,8 +277,6 @@ namespace nanoFramework.Json
                     if (rootElementType == null
                        && rootType.FullName == "System.Collections.ArrayList")
                     {
-                        rootElementType = rootType;
-
                         ArrayList rootArrayList = new();
 
                         // In case we have elements to put there.
