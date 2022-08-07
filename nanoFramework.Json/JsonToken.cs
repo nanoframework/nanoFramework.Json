@@ -15,21 +15,29 @@ namespace nanoFramework.Json
         private static object SyncObj = new();
 
         private bool _fOwnsContext;
-        
+
+        internal class SerializationCtx
+        {
+            public int Indent;
+        }
+
+        internal static SerializationCtx SerializationContext = null;
+
         protected void EnterSerialization()
         {
             lock (SyncObj)
             {
-                if (JsonConvert.SerializationContext != null)
+                if (SerializationContext != null)
                 {
                     return;
                 }
-                JsonConvert.SerializationContext = new JsonConvert.SerializationCtx
+
+                SerializationContext = new SerializationCtx
                 {
                     Indent = 0
                 };
 
-                Monitor.Enter(JsonConvert.SerializationContext);
+                Monitor.Enter(SerializationContext);
 
                 _fOwnsContext = true;
             }
@@ -43,8 +51,9 @@ namespace nanoFramework.Json
                 {
                     return;
                 }
-                var monitorObj = JsonConvert.SerializationContext;
-                JsonConvert.SerializationContext = null;
+
+                var monitorObj = SerializationContext;
+                SerializationContext = null;
                 _fOwnsContext = false;
 
                 Monitor.Exit(monitorObj);

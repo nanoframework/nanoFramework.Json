@@ -30,13 +30,6 @@ namespace nanoFramework.Json
             public string TValue;
         }
 
-        internal class SerializationCtx
-        {
-            public int Indent;
-        }
-
-        internal static SerializationCtx SerializationContext = null;
-
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
