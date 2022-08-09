@@ -421,7 +421,7 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_serialize_deserialize_timespan_02()
+        public void DeserialzieInvalidTimeSpan_Should_ThrowInvalidCaseException()
         {
             OutputHelper.WriteLine("Can_serialize_deserialize_timespan_02() - Starting test...");
 
@@ -436,19 +436,17 @@ namespace nanoFramework.Json.Test
                 "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10.12\"}",
             };
 
-            long startTimestamp;
-            long endTimestamp;
-
             for (int i = 0; i < strArr.Length; i++)
             {
-                startTimestamp = Environment.TickCount64;
+                try
+                {
+                    var _ = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
+                    throw new Exception($"Should throw exception {nameof(InvalidCastException)}.");
+                }
+                catch (InvalidCastException) // Should throw InvalidCaseException
+                {
 
-                var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
-
-                endTimestamp = Environment.TickCount64;
-                OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
-
-                Assert.Null(dserResult, $"Deserialization should have failed for strArr[{i}]");
+                }
             }
 
             OutputHelper.WriteLine("Can_serialize_deserialize_timespan_02() - Finished - test succeeded.");
