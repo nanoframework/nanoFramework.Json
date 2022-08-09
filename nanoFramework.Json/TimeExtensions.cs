@@ -222,10 +222,8 @@ namespace nanoFramework.Json
         /// <param name="value"><see cref="string"/> to convert.</param>
         /// <param name="timeSpan"><see cref="TimeSpan"/> converted from <paramref name="value"/>.</param>
         /// <returns><see langword="true"/> if conversion was successful. <see langword="false"/> otherwise.</returns>
-        internal static bool TryConvertFromString(string value, out TimeSpan timeSpan)
+        internal static TimeSpan TryConvertFromString(string value)
         {
-            timeSpan = TimeSpan.Zero;
-
             // split string value with all possible separators
             // format is: -ddddd.HH:mm:ss.fffffff
             var timeSpanBits = value.Split(':', '.');
@@ -233,7 +231,7 @@ namespace nanoFramework.Json
             // sanity check
             if (timeSpanBits.Length == 0)
             {
-                return false;
+                return TimeSpan.Zero;
             }
 
             int days = 0;
@@ -255,7 +253,7 @@ namespace nanoFramework.Json
                 && indexOfFirstColon <= 0
                 && indexOfSecondColon <= 0)
             {
-                return false;
+                throw new InvalidCastException();
             }
 
             // to have days, it has to have something before the 1st dot, or just have a single component
@@ -268,14 +266,14 @@ namespace nanoFramework.Json
             // sanity check for ticks without other time components
             if (hasTicks && !hasHours)
             {
-                return false;
+                throw new InvalidCastException();
             }
 
             // let the parsing start!
             if (hasDays
                 && !int.TryParse(timeSpanBits[0], out days))
             {
-                return false;
+                throw new InvalidCastException();
             }
 
             // bump the index if days component is present
@@ -285,7 +283,7 @@ namespace nanoFramework.Json
             {
                 if (!int.TryParse(timeSpanBits[processIndex++], out hours))
                 {
-                    return false;
+                    throw new InvalidCastException();
                 }
             }
 
@@ -293,7 +291,7 @@ namespace nanoFramework.Json
             {
                 if (!int.TryParse(timeSpanBits[processIndex++], out minutes))
                 {
-                    return false;
+                    throw new InvalidCastException();
                 }
             }
 
@@ -301,7 +299,7 @@ namespace nanoFramework.Json
             {
                 if (!int.TryParse(timeSpanBits[processIndex++], out seconds))
                 {
-                    return false;
+                    throw new InvalidCastException();
                 }
             }
 
@@ -309,7 +307,7 @@ namespace nanoFramework.Json
             {
                 if (!int.TryParse(timeSpanBits[processIndex], out ticks))
                 {
-                    return false;
+                    throw new InvalidCastException();
                 }
 
                 // if ticks are under 999, that's milliseconds
@@ -325,13 +323,10 @@ namespace nanoFramework.Json
                 && (seconds >= 0 && seconds < 60))
             {
                 // we should have everything now
-                timeSpan = new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
-
-                // done here
-                return true;
+                return new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
             }
 
-            return false;
+            throw new InvalidCastException();
         }
     }
 }
