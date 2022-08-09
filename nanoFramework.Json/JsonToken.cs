@@ -12,38 +12,51 @@ namespace nanoFramework.Json
 {
     internal abstract class JsonToken
     {
+        private static object SyncObj = new();
+
         private bool _fOwnsContext;
+
+        internal class SerializationCtx
+        {
+            public int Indent;
+        }
+
+        internal static SerializationCtx SerializationContext = null;
 
         protected void EnterSerialization()
         {
-            lock (JsonConvert.SyncObj)
+            lock (SyncObj)
             {
-                if (JsonConvert.SerializationContext == null)
+                if (SerializationContext != null)
                 {
-                    JsonConvert.SerializationContext = new JsonConvert.SerializationCtx
-                    {
-                        Indent = 0
-                    };
-
-                    Monitor.Enter(JsonConvert.SerializationContext);
-
-                    _fOwnsContext = true;
+                    return;
                 }
+
+                SerializationContext = new SerializationCtx
+                {
+                    Indent = 0
+                };
+
+                Monitor.Enter(SerializationContext);
+
+                _fOwnsContext = true;
             }
         }
 
         protected void ExitSerialization()
         {
-            lock (JsonConvert.SyncObj)
+            lock (SyncObj)
             {
-                if (_fOwnsContext)
+                if (!_fOwnsContext)
                 {
-                    var monitorObj = JsonConvert.SerializationContext;
-                    JsonConvert.SerializationContext = null;
-                    _fOwnsContext = false;
-
-                    Monitor.Exit(monitorObj);
+                    return;
                 }
+
+                var monitorObj = SerializationContext;
+                SerializationContext = null;
+                _fOwnsContext = false;
+
+                Monitor.Exit(monitorObj);
             }
         }
 
@@ -91,10 +104,12 @@ namespace nanoFramework.Json
 
             while (current < buffer.Length)
             {
-                if (buffer[current++] == 0)
+                if (buffer[current++] != 0)
                 {
-                    return current - 1;
+                    continue;
                 }
+
+                return current - 1;
             }
 
             return -1;

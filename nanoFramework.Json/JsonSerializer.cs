@@ -84,7 +84,7 @@ namespace nanoFramework.Json
                     return o.ToString();
 
                 case "DateTime":
-                    return "\"" + nanoFramework.Json.DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
+                    return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
 
             if (type.IsEnum)
@@ -128,32 +128,34 @@ namespace nanoFramework.Json
                 foreach (MethodInfo method in methods)
                 {
                     // We care only about property getters when serializing
-                    if (method.Name.StartsWith("get_"))
+                    if (!method.Name.StartsWith("get_"))
                     {
-                        // Ignore abstract and virtual objects
-                        if (method.IsAbstract)
-                        {
-                            continue;
-                        }
-
-                        // Ignore delegates and MethodInfos
-                        if ((method.ReturnType == typeof(System.Delegate)) ||
-                            (method.ReturnType == typeof(System.MulticastDelegate)) ||
-                            (method.ReturnType == typeof(System.Reflection.MethodInfo)))
-                        {
-                            continue;
-                        }
-
-                        // Ditto for DeclaringType
-                        if ((method.DeclaringType == typeof(System.Delegate)) ||
-                            (method.DeclaringType == typeof(System.MulticastDelegate)))
-                        {
-                            continue;
-                        }
-
-                        object returnObject = method.Invoke(o, null);
-                        hashtable.Add(method.Name.Substring(4), returnObject);
+                        continue;
                     }
+
+                    // Ignore abstract and virtual objects
+                    if (method.IsAbstract)
+                    {
+                        continue;
+                    }
+
+                    // Ignore delegates and MethodInfos
+                    if ((method.ReturnType == typeof(Delegate)) ||
+                        (method.ReturnType == typeof(MulticastDelegate)) ||
+                        (method.ReturnType == typeof(MethodInfo)))
+                    {
+                        continue;
+                    }
+
+                    // Ditto for DeclaringType
+                    if ((method.DeclaringType == typeof(Delegate)) ||
+                        (method.DeclaringType == typeof(MulticastDelegate)))
+                    {
+                        continue;
+                    }
+
+                    object returnObject = method.Invoke(o, null);
+                    hashtable.Add(method.Name.Substring(4), returnObject);
                 }
 
                 return SerializeIDictionary(hashtable);

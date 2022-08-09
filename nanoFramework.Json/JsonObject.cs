@@ -25,6 +25,7 @@ namespace nanoFramework.Json
                 {
                     throw new ArgumentException("index value must match property name");
                 }
+
                 _members.Add(value.Name.ToLower(), value);
             }
         }
@@ -39,9 +40,6 @@ namespace nanoFramework.Json
         {
             _members.Add(name.ToLower(), new JsonProperty(name, value));
         }
-
-        
-
 
         //Use minimalist JSON, pretty can be handled on the client!
         public override string ToString()
