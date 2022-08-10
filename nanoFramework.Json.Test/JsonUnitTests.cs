@@ -440,10 +440,13 @@ namespace nanoFramework.Json.Test
             {
                 try
                 {
+                    // The method should throw InvalidCaseException as each strArr has at least one invalid value for TimeSpan
                     var _ = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
+
+                    // If the method above haven't throw InvalidCastException then the test should fail
                     throw new Exception($"Should throw exception {nameof(InvalidCastException)}.");
                 }
-                catch (InvalidCastException) // Should throw InvalidCaseException
+                catch (InvalidCastException)
                 {
 
                 }
