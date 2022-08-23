@@ -73,22 +73,8 @@ namespace nanoFramework.Json.Test
                 }
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(myTown);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Array: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
-
-            endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
-
             OutputHelper.WriteLine($"After deserialization - type: JsonTestTown");
 
             Assert.Equal(
@@ -216,21 +202,8 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Can_serialize_int_array() - Starting test...");
             int[] intArray = new[] { 1, 3, 5, 7, 9 };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(intArray);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Array: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (int[])JsonConvert.DeserializeObject(result, typeof(int[]));
-
-            endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -254,20 +227,8 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine($"fixed timestamp used for test = {timestampTests.FixedTimestamp}");
             OutputHelper.WriteLine($"variable timestamp used for test = {timestampTests.Timestamp}");
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(timestampTests);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Array: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassTimestamp)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimestamp));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -299,20 +260,8 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine($"variable timespan 4 used for test = {timeSpanTests.Duration4}");
             OutputHelper.WriteLine($"variable timespan 5 used for test = {timeSpanTests.Duration5}");
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(timeSpanTests);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized class: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimeSpan));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -390,25 +339,10 @@ namespace nanoFramework.Json.Test
                 }
             };
 
-            long startTimestamp;
-            long endTimestamp;
-
             for (int i = 0; i < _timeSpans.Length; i++)
             {
-                startTimestamp = Environment.TickCount64;
-
                 var result = JsonConvert.SerializeObject(_timeSpans[i]);
-
-                endTimestamp = Environment.TickCount64;
-
-                OutputHelper.WriteLine($"Serialized class: {result} took {endTimestamp - startTimestamp}ms");
-
-                startTimestamp = Environment.TickCount64;
-
                 var dserResult = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(result, typeof(JsonTestClassTimeSpan));
-
-                endTimestamp = Environment.TickCount64;
-                OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
                 OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -462,20 +396,8 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Can_serialize_short_array() - Starting test...");
             short[] shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(shortArray);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Array: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (short[])JsonConvert.DeserializeObject(result, typeof(short[]));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -497,23 +419,11 @@ namespace nanoFramework.Json.Test
                 four = 4,
             };
 
-            var startTimestamp = Environment.TickCount64;
 
             var serialized = JsonConvert.SerializeObject(source);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {serialized} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassChild)JsonConvert.DeserializeObject(serialized, typeof(JsonTestClassChild));
 
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
-
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
-
             OutputHelper.WriteLine("Can_serialize_and_deserialize_simple_object() - Finished - test succeeded");
             OutputHelper.WriteLine("");
         }
@@ -564,20 +474,8 @@ namespace nanoFramework.Json.Test
                 nanDouble = double.NaN,
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(test);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassComplex)JsonConvert.DeserializeObject(result, typeof(JsonTestClassComplex));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization:");
             OutputHelper.WriteLine($"   aString:   {dserResult.aString} ");
@@ -672,20 +570,8 @@ namespace nanoFramework.Json.Test
                 aFloat = 2567.454f, //TODO Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(test);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassFloat)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloat));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -705,20 +591,8 @@ namespace nanoFramework.Json.Test
                 aFloat = float.NaN,
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(test);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassFloat)JsonConvert.DeserializeObject(result, typeof(JsonTestClassFloat));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -738,20 +612,8 @@ namespace nanoFramework.Json.Test
                 aDouble = 123.4567,
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(test);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -770,20 +632,8 @@ namespace nanoFramework.Json.Test
                 aDouble = double.NaN,
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var result = JsonConvert.SerializeObject(test);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialized Object: {result} took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var dserResult = (JsonTestClassDouble)JsonConvert.DeserializeObject(result, typeof(JsonTestClassDouble));
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
@@ -806,14 +656,7 @@ namespace nanoFramework.Json.Test
 
             object[] array = new object[] { hashtable };
 
-            var startTimestamp = Environment.TickCount64;
-
             string json = JsonConvert.SerializeObject(array);
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
-
             string expectedValue = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[1,null,2,\"blah\",false]}]";
 
             Assert.Equal(json, expectedValue, "Values did not match");
@@ -826,13 +669,7 @@ namespace nanoFramework.Json.Test
         {
             string json = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[-1,null,24.565657576,\"blah\",false]}]";
 
-            var startTimestamp = Environment.TickCount64;
-
             ArrayList arrayList = (ArrayList)JsonConvert.DeserializeObject(json, typeof(ArrayList));
-
-            var endTimestamp = Environment.TickCount64;
-
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Hashtable hashtable = arrayList[0] as Hashtable;
             string stringtest = hashtable["stringtest"].ToString();
@@ -875,12 +712,7 @@ namespace nanoFramework.Json.Test
 
             ICollection collection = new ArrayList() { testTime };
 
-            var startTimestamp = Environment.TickCount64;
-
             string jsonString = JsonConvert.SerializeObject(collection);
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
             OutputHelper.WriteLine($"Json payload: {jsonString}");
 
@@ -915,13 +747,7 @@ namespace nanoFramework.Json.Test
                 Friend = friend
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             string json = JsonConvert.SerializeObject(person);
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
-
             string correctValue = "{\"FirstName\":\"John\",\"LastName\":\"Doe\",\"ArrayProperty\":[\"hello\",\"world\"],\"Address\":null,\"Birthday\":\"1988-04-23T00:00:00.0000000Z\",\"ID\":27,\"Friend\":{\"FirstName\":\"Bob\",\"LastName\":\"Smith\",\"ArrayProperty\":[\"hi\",\"planet\"],\"Address\":\"123 Some St\",\"Birthday\":\"1983-07-03T00:00:00.0000000Z\",\"ID\":2,\"Friend\":null}}";
 
             Assert.Equal(json, correctValue, $"Values did not match. Expecting >>{json}<<");
@@ -941,12 +767,7 @@ namespace nanoFramework.Json.Test
 
             RealClass b = new() { ID = 12 };
 
-            var startTimestamp = Environment.TickCount64;
-
             json = JsonConvert.SerializeObject(b);
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
             correctValue = "{\"Test2\":\"test2\",\"Test\":\"test\",\"ID\":12}";
 
@@ -960,12 +781,8 @@ namespace nanoFramework.Json.Test
         {
             var testString = "{\"desired\":{\"TimeToSleep\":5,\"$version\":2},\"reported\":{\"Firmware\":\"nanoFramework\",\"TimeToSleep\":2,\"$version\":94}}";
 
-            var startTimestamp = Environment.TickCount64;
 
             var twinPayload = (TwinProperties)JsonConvert.DeserializeObject(testString, typeof(TwinProperties));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
@@ -982,12 +799,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_02()
         {
-            var startTimestamp = Environment.TickCount64;
-
             TwinPayload twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
@@ -1007,12 +819,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_03()
         {
-            var startTimestamp = Environment.TickCount64;
-
             TwinPayloadProperties twinPayload = (TwinPayloadProperties)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadProperties));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
@@ -1026,12 +833,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_04()
         {
-            var startTimestamp = Environment.TickCount64;
-
             Hashtable twinPayload = (Hashtable)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(Hashtable));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
@@ -1081,13 +883,7 @@ namespace nanoFramework.Json.Test
         {
 
             var testString = "{\"type\":6}";
-
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1110,12 +906,7 @@ namespace nanoFramework.Json.Test
     ]
     }";
 
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1134,12 +925,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_03()
         {
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1180,12 +966,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeInvocationReceiveMessage_04()
         {
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1237,12 +1018,7 @@ namespace nanoFramework.Json.Test
         {
             OutputHelper.WriteLine($"Starting CanDeserializeInvocationReceiveMessage_05");
 
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{""type"":1,""target"":""ReceiveMessage"",""arguments"":[""I_am_a_string"",""I_am_another_string""]}", typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1271,12 +1047,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeUnicodeData_01()
         {
-            var startTimestamp = Environment.TickCount64;
-
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{ ""type"":3,""invocationId"":""1"",""error"":""Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.""}", typeof(InvocationReceiveMessage));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
@@ -1296,12 +1067,7 @@ namespace nanoFramework.Json.Test
                 target = "Add"
             };
 
-            var startTimestamp = Environment.TickCount64;
-
             var sentMessage = JsonConvert.SerializeObject(invocMessage);
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
             Assert.Equal(@"{""type"":1,""invocationId"":""0"",""target"":""Add"",""arguments"":[1,2]}", sentMessage, $"Sent message was >>{sentMessage}<<");
         }
@@ -1313,12 +1079,8 @@ namespace nanoFramework.Json.Test
                 "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
                 "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}}";
 
-            var startTimestamp = Environment.TickCount64;
 
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Hashtable desired = (Hashtable)hash["desired"];
 
@@ -1339,12 +1101,7 @@ namespace nanoFramework.Json.Test
                 "\"Authorization\":\"sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D\"," +
                 "\"Files\":[\"Iot.Device.Bmxx80.pe\"]}";
 
-            var startTimestamp = Environment.TickCount64;
-
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.IsType(typeof(string), hash["Authorization"], "Authorization is not a string and it should be.");
             Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
@@ -1364,12 +1121,7 @@ namespace nanoFramework.Json.Test
             Hashtable twin = new();
             twin.Add("Led", ledProp);
 
-            var startTimestamp = Environment.TickCount64;
-
             string json = JsonConvert.SerializeObject(twin);
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
 
             Assert.Equal(correctValue, json, "Serialize object as property fails");
         }
@@ -1379,12 +1131,7 @@ namespace nanoFramework.Json.Test
         {
             var json = "{\"OneByte\":42,\"OneSByte\":-42,\"OneInt16\":1234,\"OneUInt16\":5678,\"OneInt32\":-789012,\"OneUInt32\":78912,\"OneInt64\":-1234567,\"OneUInt64\":1234567,\"OneSingle\":34.45,\"OneDouble\":45678.23,\"OneBoolean\":true,\"TwoBoolean\":false}";
 
-            var startTimestamp = Environment.TickCount64;
-
             var deser = JsonConvert.DeserializeObject(json, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.Equal((byte)42, deser.OneByte, "Byte");
             Assert.Equal((sbyte)-42, deser.OneSByte, "SByte");
@@ -1407,19 +1154,9 @@ namespace nanoFramework.Json.Test
             ArrayToDeserialize obj1 = new() { Prop1 = -42, Prop2 = "second2", Prop3 = false, Prop4 = 123456 };
             ArrayToDeserialize[] array = new[] { obj0, obj1 };
 
-            var startTimestamp = Environment.TickCount64;
-
             var json = JsonConvert.SerializeObject(array);
 
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Serialization took {endTimestamp - startTimestamp}ms");
-
-            startTimestamp = Environment.TickCount64;
-
             var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
-
-            endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
 
             Assert.Equal(deser.Length, array.Length, "Array length");
             Assert.Equal(deser[0].Prop1, obj0.Prop1);
@@ -1460,15 +1197,9 @@ namespace nanoFramework.Json.Test
         {
             string json = @"{""desired"":{""TimeToSleep"":2,""Files"":[{""FileName"":""https://ellerbachiotstorage.blob.core.windows.net/nano-containers/CountMeasurement.pe"",""Signature"":""4E-1E-12-45-C5-EB-EC-E3-86-D3-09-39-AE-E9-E8-81-97-A9-0E-DF-EE-D0-71-27-A7-3F-26-D0-4B-4E-CF-23""}],""Token"":""sp=r&st=2022-02-12T12:32:10Z&se=2023-11-01T20:32:10Z&spr=https&sv=2020-08-04&sr=c&sig=O32denO9Hw8mZ2OlNSBS%2FULuRn9RcArGDZ5%2BGvKgolM%3D"",""CodeVersion"":12,""UpdateTime"":120000,""$version"":43},""reported"":{""Firmware"":""nanoFramework"",""Sdk"":0.2,""TimeToSleep"":2,""CodeUpdated"":true,""CodeRunning"":true,""$version"":4353}}";
 
-            var startTimestamp = Environment.TickCount64;
-
             Hashtable deser = (Hashtable)JsonConvert.DeserializeObject(json, typeof(Hashtable));
 
-
             Assert.NotNull(deser, "Deserialization returned a null object");
-
-            var endTimestamp = Environment.TickCount64;
-            OutputHelper.WriteLine($"Deserialization took {endTimestamp - startTimestamp}ms");
         }
 
         [TestMethod]
