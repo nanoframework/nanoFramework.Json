@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.Json.Test", "nanoFramework.Json.Test\nanoFramework.Json.Test.nfproj", "{5A9F99EF-C654-4AA3-BCE1-35691CC2DE56}"
 EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.Json.Benchmark", "nanoFramework.Json.Benchmark\nanoFramework.Json.Benchmark.nfproj", "{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,12 @@ Global
 		{5A9F99EF-C654-4AA3-BCE1-35691CC2DE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A9F99EF-C654-4AA3-BCE1-35691CC2DE56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5A9F99EF-C654-4AA3-BCE1-35691CC2DE56}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
