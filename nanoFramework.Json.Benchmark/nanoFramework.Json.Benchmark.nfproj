@@ -53,6 +53,9 @@
     <Reference Include="nanoFramework.System.Text">
       <HintPath>..\packages\nanoFramework.System.Text.1.2.3\lib\nanoFramework.System.Text.dll</HintPath>
     </Reference>
+    <Reference Include="System.Diagnostics.Stopwatch">
+      <HintPath>..\packages\nanoFramework.System.Diagnostics.Stopwatch.1.1.113.2032\lib\System.Diagnostics.Stopwatch.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.Streams">
       <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.9\lib\System.IO.Streams.dll</HintPath>
     </Reference>

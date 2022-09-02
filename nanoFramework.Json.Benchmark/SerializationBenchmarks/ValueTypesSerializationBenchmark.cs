@@ -14,6 +14,8 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         double doubleTestValue;
         DateTime dateTimeTestValue;
         long longTestValue;
+        Gender enumValue;
+        Hashtable boxedEnum;
 
         [Setup]
         public void Setup()
@@ -25,6 +27,11 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
             doubleTestValue = random.NextDouble();
             dateTimeTestValue = new DateTime(random.Next(1000) + 1601, random.Next(11) + 1, random.Next(20) + 1);
             longTestValue = random.Next();
+            enumValue = Gender.Male;
+            boxedEnum= new Hashtable
+            {
+                { "gender", Gender.Male }
+            };
         }
 
         [Benchmark]
@@ -36,39 +43,43 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         [Benchmark]
         public void TimeSpanT()
         {
-            JsonConvert.SerializeObject(timeSpanTestValue);
+            var value = JsonConvert.SerializeObject(timeSpanTestValue);
         }
 
         [Benchmark]
         public void Float()
         {
-            JsonConvert.SerializeObject(floatTestValue);
+            var value = JsonConvert.SerializeObject(floatTestValue);
         }
 
         [Benchmark]
         public void Double()
         {
-            JsonConvert.SerializeObject(doubleTestValue);
+            var value = JsonConvert.SerializeObject(doubleTestValue);
         }
 
         [Benchmark]
         public void DateTimeT()
         {
-            JsonConvert.SerializeObject(dateTimeTestValue);
+            var value = JsonConvert.SerializeObject(dateTimeTestValue);
         }
 
         [Benchmark]
         public void Long()
         {
-            JsonConvert.SerializeObject(longTestValue);
+            var value = JsonConvert.SerializeObject(longTestValue);
+        }
+
+        [Benchmark]
+        public void Enum()
+        {
+            var value = JsonConvert.SerializeObject(enumValue);
         }
 
         [Benchmark]
         public void EnumBoxed()
         {
-            Hashtable values = new Hashtable();
-            values.Add("gender", Gender.Male);
-            JsonConvert.SerializeObject(values);
+            var value = JsonConvert.SerializeObject(boxedEnum);
         }
     }
 }
