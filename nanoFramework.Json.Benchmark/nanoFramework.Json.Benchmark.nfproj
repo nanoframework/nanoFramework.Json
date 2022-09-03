@@ -39,7 +39,7 @@
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.12.0\lib\mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Benchmark">
-      <HintPath>..\..\nanoFramework.Benchmark\nanoFramework.Benchmark\bin\Debug\nanoFramework.Benchmark.dll</HintPath>
+      <HintPath>..\packages\nanoFramework.Benchmark.1.0.4\lib\nanoFramework.Benchmark.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Logging">
       <HintPath>..\packages\nanoFramework.Logging.1.1.2\lib\nanoFramework.Logging.dll</HintPath>
