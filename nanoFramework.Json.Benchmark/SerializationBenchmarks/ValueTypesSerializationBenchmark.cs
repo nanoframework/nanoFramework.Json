@@ -1,12 +1,14 @@
 ﻿using nanoFramework.Benchmark;
+using nanoFramework.Benchmark.Attributes;
+using nanoFramework.Json.Benchmark.Base;
 using nanoFramework.Json.Benchmark.TestClasses;
 using System;
 using System.Collections;
-using System.Text;
 
 namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
 {
-    public class ValueTypesSerializationBenchmark
+    [IterationCount(5)]
+    public class ValueTypesSerializationBenchmark : BaseIterationBenchmark
     {
         short shortTestValue;
         TimeSpan timeSpanTestValue;
@@ -16,6 +18,8 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         long longTestValue;
         Gender enumValue;
         Hashtable boxedEnum;
+
+        protected override int IterationCount => 100;
 
         [Setup]
         public void Setup()
@@ -37,49 +41,73 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         [Benchmark]
         public void Short()
         {
-            JsonConvert.SerializeObject(shortTestValue);
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(shortTestValue);
+            });
         }
 
         [Benchmark]
         public void TimeSpanT()
         {
-            var value = JsonConvert.SerializeObject(timeSpanTestValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(timeSpanTestValue);
+            });
         }
 
         [Benchmark]
         public void Float()
         {
-            var value = JsonConvert.SerializeObject(floatTestValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(floatTestValue);
+            });
         }
 
         [Benchmark]
         public void Double()
         {
-            var value = JsonConvert.SerializeObject(doubleTestValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(doubleTestValue);
+            });
         }
 
         [Benchmark]
         public void DateTimeT()
         {
-            var value = JsonConvert.SerializeObject(dateTimeTestValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(dateTimeTestValue);
+            });
         }
 
         [Benchmark]
         public void Long()
         {
-            var value = JsonConvert.SerializeObject(longTestValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(longTestValue);
+            });
         }
 
         [Benchmark]
         public void Enum()
         {
-            var value = JsonConvert.SerializeObject(enumValue);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(enumValue);
+            });
         }
 
         [Benchmark]
         public void EnumBoxed()
         {
-            var value = JsonConvert.SerializeObject(boxedEnum);
+            RunInIteration(() =>
+            {
+                var value = JsonConvert.SerializeObject(boxedEnum);
+            });
         }
     }
 }

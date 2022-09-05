@@ -1,11 +1,13 @@
 ﻿using nanoFramework.Benchmark;
-using nanoFramework.Json.Benchmark.TestClasses;
+using nanoFramework.Benchmark.Attributes;
+using nanoFramework.Json.Benchmark.Base;
 using System;
 using System.Collections;
 
 namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
 {
-    public class ValueTypesDeserializationBenchmark
+    [IterationCount(5)]
+    public class ValueTypesDeserializationBenchmark : BaseIterationBenchmark
     {
         const string ShortJson = "[9134]";
         const string TimeSpanJson = "[\"14.04:16:48.8920000\"]";
@@ -19,41 +21,59 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         [Benchmark]
         public void Short()
         {
-            // TODO: Return value should be of type short
-            var value = (int)JsonConvert.DeserializeObject(ShortJson, typeof(short));
+            RunInIteration(() =>
+            {
+                // TODO: Return value should be of type short
+                var value = (int)JsonConvert.DeserializeObject(ShortJson, typeof(short));
+            });
         }
 
         [Benchmark]
         public void TimeSpanT()
         {
-            // TODO: Return value should be of type timespan
-            var value = JsonConvert.DeserializeObject(TimeSpanJson, typeof(TimeSpan));
+            RunInIteration(() =>
+            {
+                // TODO: Return value should be of type timespan
+                var value = JsonConvert.DeserializeObject(TimeSpanJson, typeof(TimeSpan));
+            });
         }
 
         [Benchmark]
         public void Float()
         {
-            // TODO: Return value should be of type float
-            var value = (double)JsonConvert.DeserializeObject(FloatJson, typeof(float));
+            RunInIteration(() =>
+            {
+                // TODO: Return value should be of type float
+                var value = (double)JsonConvert.DeserializeObject(FloatJson, typeof(float));
+            });
         }
 
         [Benchmark]
         public void Double()
         {
-            var value = (double)JsonConvert.DeserializeObject(DoubleJson, typeof(double));
+            RunInIteration(() =>
+            {
+                var value = (double)JsonConvert.DeserializeObject(DoubleJson, typeof(double));
+            });
         }
 
         [Benchmark]
         public void DateTimeT()
         {
-            var value = (DateTime)JsonConvert.DeserializeObject(DateTimeJson, typeof(DateTime));
+            RunInIteration(() =>
+            {
+                var value = (DateTime)JsonConvert.DeserializeObject(DateTimeJson, typeof(DateTime));
+            });
         }
 
         [Benchmark]
         public void Long()
         {
-            // TODO: Return value should be of type long
-            var value = (int)JsonConvert.DeserializeObject(LongJson, typeof(long));
+            RunInIteration(() =>
+            {
+                // TODO: Return value should be of type long
+                var value = (int)JsonConvert.DeserializeObject(LongJson, typeof(long));
+            });
         }
 
         //[Benchmark]
@@ -66,7 +86,10 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         [Benchmark]
         public void EnumBoxed()
         {
-            var value = (Hashtable)JsonConvert.DeserializeObject(BoxedEnumJson, typeof(Hashtable));
+            RunInIteration(() =>
+            {
+                var value = (Hashtable)JsonConvert.DeserializeObject(BoxedEnumJson, typeof(Hashtable));
+            });
         }
     }
 }

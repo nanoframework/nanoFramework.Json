@@ -18,6 +18,7 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="Base\BaseIterationBenchmark.cs" />
     <Compile Include="DeserializationBenchmarks\ReferenceTypesDeserializationBenchmark.cs" />
     <Compile Include="DeserializationBenchmarks\ValueTypesDeserializationBenchmark.cs" />
     <Compile Include="IAssemblyHandler.cs" />

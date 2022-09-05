@@ -1,10 +1,14 @@
 ﻿using nanoFramework.Benchmark;
+using nanoFramework.Benchmark.Attributes;
+using nanoFramework.Json.Benchmark.Base;
 using nanoFramework.Json.Benchmark.TestClasses;
 using System;
+using System.Collections;
 
 namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
 {
-    public class ReferenceTypesDeserializationBenchmark
+    [IterationCount(5)]
+    public class ReferenceTypesDeserializationBenchmark : BaseIterationBenchmark
     {
         const string testString = "TestStringToSerialize";
         const short arrayElementCount = 5;
@@ -13,6 +17,7 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         private Person nestedTestClass;
         private JsonTestClassComplex complexClass;
         private JsonTestTown myTown;
+        private ArrayList arrayList;
 
         [Setup]
         public void Setup()
@@ -109,24 +114,42 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
                     }
                 }
             };
+
+            arrayList = new ArrayList()
+            {
+                { "testString" },
+                { 42 },
+                { null },
+                { DateTime.UtcNow },
+                { TimeSpan.FromSeconds(100) }
+            };
         }
 
         [Benchmark]
         public void IntArray()
         {
-            JsonConvert.SerializeObject(intArray);
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(intArray);
+            });
         }
 
         [Benchmark]
         public void ShortArray()
         {
-            JsonConvert.SerializeObject(shortArray);
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(shortArray);
+            });
         }
 
         [Benchmark]
         public void String()
         {
-            JsonConvert.SerializeObject(testString);
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(testString);
+            });
         }
 
         [Benchmark]
@@ -145,13 +168,15 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         public void ComplexArrayObject()
         {
             JsonConvert.SerializeObject(myTown);
-            //JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
         }
 
         [Benchmark]
         public void ArrayList()
         {
-
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(arrayList);
+            });
         }
     }
 }
