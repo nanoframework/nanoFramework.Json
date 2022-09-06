@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text;
 
-namespace nanoFramework.Json.Benchmark.TestClasses
+namespace nanoFramework.Json.Test.Shared
 {
-    class JsonTestTown
+    public class JsonTestTown
     {
         public int TownID { get; set; }
         public string TownName { get; set; }

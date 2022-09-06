@@ -3,6 +3,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.Json.Test.Shared;
 using nanoFramework.TestFramework;
 using System;
 using System.Collections;
@@ -799,7 +800,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanDeserializeAzureTwinProperties_02()
         {
-            TwinPayload twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
+            TwinPayloadTestClass twinPayload = (TwinPayloadTestClass)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadTestClass));
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
@@ -1398,19 +1399,8 @@ namespace nanoFramework.Json.Test
 
     #region Test classes
 
-    public class TwinPayload
+    public class TwinPayloadTestClass : TwinPayload
     {
-        public string deviceId { get; set; }
-        public string etag { get; set; }
-        public string status { get; set; }
-        public DateTime statusUpdateTime { get; set; }
-        public string connectionState { get; set; }
-        public DateTime lastActivityTime { get; set; }
-        public int cloudToDeviceMessageCount { get; set; }
-        public string authenticationType { get; set; }
-        public Hashtable x509Thumbprint { get; set; }
-        public string modelId { get; set; }
-        public int version { get; set; }
         public TwinProperties properties { get; set; }
     }
 
@@ -1452,17 +1442,6 @@ namespace nanoFramework.Json.Test
         public string error { get; set; }
         public bool allowReconnect { get; set; }
         public object result { get; set; }
-    }
-
-    public class Person
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Address { get; set; }
-        public DateTime Birthday { get; set; }
-        public int ID { get; set; }
-        public string[] ArrayProperty { get; set; }
-        public Person Friend { get; set; }
     }
 
     public abstract class AbstractClass
@@ -1515,27 +1494,6 @@ namespace nanoFramework.Json.Test
         public string model { get; set; }
     }
 
-    public enum Gender
-    {
-        Male,
-        Female
-    }
-
-    public class JsonTestClassChild
-    {
-        public int one { get; set; }
-        public int two { get; set; }
-        public int three { get; set; }
-#pragma warning disable S1104 // Fields should not have public accessibility
-        public int four; //not a property on purpose!
-#pragma warning restore S1104 // Fields should not have public accessibility
-
-        public override string ToString()
-        {
-            return $"ChildClass: one={one}, two={two}, three={three}, four={four}";
-        }
-    }
-
     public class JsonTestClassFloat
     {
         public float aFloat { get; set; }
@@ -1563,61 +1521,12 @@ namespace nanoFramework.Json.Test
         public uint DummyValue2 { get; set; } = 777;
     }
 
-    public class JsonTestClassComplex
-    {
-        public int aInteger { get; set; }
-        public short aShort { get; set; }
-        public byte aByte { get; set; }
-        public string aString { get; set; }
-        public float aFloat { get; set; }
-        public double aDouble { get; set; }
-        public bool aBoolean { get; set; }
-        public DateTime Timestamp { get; set; }
-        public DateTime FixedTimestamp { get; set; }
-        public int[] intArray { get; set; }
-        public short[] shortArray { get; set; }
-        public byte[] byteArray { get; set; }
-        public string[] stringArray { get; set; }
-        public float[] floatArray { get; set; }
-        public double[] doubleArray { get; set; }
-        public JsonTestClassChild child1;
-        public JsonTestClassChild Child { get; set; }
-        public object nullObject { get; set; }
-        public float nanFloat { get; set; }
-        public double nanDouble { get; set; }
-#pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
-        private string dontSerializeStr = "dontPublish";
-#pragma warning restore 0414
-        private string dontSerialize { get; set; } = "dontPublish";
-    }
-
     // Classes to more thoroughly test array serialization/deserialization
-    public class JsonTestCompany
-    {
-        public int CompanyID { get; set; }
-        public string CompanyName { get; set; }
-    }
-    public class JsonTestEmployee
-    {
-        public int EmployeeID { get; set; }
-        public string EmployeeName { get; set; }
-        public JsonTestCompany CurrentEmployer { get; set; }
-        public JsonTestCompany[] FormerEmployers { get; set; }
-    }
-    public class JsonTestTown
-    {
-        public int TownID { get; set; }
-        public string TownName { get; set; }
-        public JsonTestCompany[] CompaniesInThisTown { get; set; }
-        public JsonTestEmployee[] EmployeesInThisTown { get; set; }
-    }
-
     public class JsonSerializeObjectAsProperty
     {
         public string value { get; set; }
         public string nodeID { get; set; }
     }
-
 
     public class InvocationSendMessage
     {

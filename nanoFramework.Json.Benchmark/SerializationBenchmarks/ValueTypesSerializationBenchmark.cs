@@ -1,7 +1,7 @@
 ﻿using nanoFramework.Benchmark;
 using nanoFramework.Benchmark.Attributes;
 using nanoFramework.Json.Benchmark.Base;
-using nanoFramework.Json.Benchmark.TestClasses;
+using nanoFramework.Json.Test.Shared;
 using System;
 using System.Collections;
 

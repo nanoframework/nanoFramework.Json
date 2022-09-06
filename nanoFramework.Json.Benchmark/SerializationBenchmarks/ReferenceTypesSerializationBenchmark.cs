@@ -1,9 +1,9 @@
 ﻿using nanoFramework.Benchmark;
-using nanoFramework.Json.Benchmark.TestClasses;
 using System;
 using System.Collections;
 using nanoFramework.Benchmark.Attributes;
 using nanoFramework.Json.Benchmark.Base;
+using nanoFramework.Json.Test.Shared;
 
 namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
 {

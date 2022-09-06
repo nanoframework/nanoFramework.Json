@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
 
-namespace nanoFramework.Json.Benchmark.TestClasses
+namespace nanoFramework.Json.Test.Shared
 {
-    class TwinPayload
+    public class TwinPayload
     {
         public string deviceId { get; set; }
         public string etag { get; set; }

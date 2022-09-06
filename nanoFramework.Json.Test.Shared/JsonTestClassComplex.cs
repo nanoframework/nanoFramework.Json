@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text;
 
-namespace nanoFramework.Json.Benchmark.TestClasses
+namespace nanoFramework.Json.Test.Shared
 {
-    class JsonTestClassComplex
+    public class JsonTestClassComplex
     {
         public int aInteger { get; set; }
         public short aShort { get; set; }

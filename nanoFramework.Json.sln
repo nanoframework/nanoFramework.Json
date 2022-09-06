@@ -15,6 +15,10 @@ Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.Json.Test", "
 EndProject
 Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.Json.Benchmark", "nanoFramework.Json.Benchmark\nanoFramework.Json.Benchmark.nfproj", "{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{365AFDD4-E454-498E-A297-7EB823C77555}"
+EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "nanoFramework.Json.Test.Shared", "nanoFramework.Json.Test.Shared\nanoFramework.Json.Test.Shared.nfproj", "{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,20 @@ Global
 		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A9F99EF-C654-4AA3-BCE1-35691CC2DE56} = {365AFDD4-E454-498E-A297-7EB823C77555}
+		{5E288BDC-FC7B-4ED8-B1E2-2C20F2868159} = {365AFDD4-E454-498E-A297-7EB823C77555}
+		{67CF57C4-B414-40CF-9A69-3BBFF2D58EAA} = {365AFDD4-E454-498E-A297-7EB823C77555}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9CFAABAD-B894-4D38-8BDB-F6F219787E08}
