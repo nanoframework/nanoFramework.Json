@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>8b3c55a9-7586-49f2-806b-e877e364a70e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>nanoFramework.Json.Test.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Gender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTestClassChild.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTestClassComplex.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTestCompany.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTestEmployee.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTestTown.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Person.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TwinPayload.cs" />
+  </ItemGroup>
+</Project>
