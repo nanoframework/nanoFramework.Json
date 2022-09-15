@@ -2,7 +2,24 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.15...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.20...HEAD)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#244](https://github.com/nanoframework/nanoFramework.Json/pull/244)
+- Update 3 NuGet dependencies [\#243](https://github.com/nanoframework/nanoFramework.Json/pull/243)
+
+## [v2.2.20](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.20) (2022-09-15)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.18...v2.2.20)
+
+**Documentation and other chores:**
+
+- Update 3 NuGet dependencies [\#242](https://github.com/nanoframework/nanoFramework.Json/pull/242)
+
+## [v2.2.18](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.18) (2022-09-15)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.15...v2.2.18)
 
 **Documentation and other chores:**
 
