@@ -33,12 +33,12 @@
     <Reference Include="mscorlib">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.12.0\lib\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.Benchmark, Version=1.0.17.17769, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Benchmark.1.0.17\lib\nanoFramework.Benchmark.dll</HintPath>
+    <Reference Include="nanoFramework.Benchmark, Version=1.0.19.20701, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Benchmark.1.0.19\lib\nanoFramework.Benchmark.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nanoFramework.Logging, Version=1.1.15.11581, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Logging.1.1.15\lib\nanoFramework.Logging.dll</HintPath>
+    <Reference Include="nanoFramework.Logging, Version=1.1.17.60938, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Logging.1.1.17\lib\nanoFramework.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native">
