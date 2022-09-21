@@ -222,7 +222,7 @@ namespace nanoFramework.Json
         /// <param name="value"><see cref="string"/> to convert.</param>
         /// <param name="timeSpan"><see cref="TimeSpan"/> converted from <paramref name="value"/>.</param>
         /// <returns><see langword="true"/> if conversion was successful. <see langword="false"/> otherwise.</returns>
-        internal static TimeSpan TryConvertFromString(string value)
+        internal static TimeSpan ConvertFromString(string value)
         {
             // split string value with all possible separators
             // format is: -ddddd.HH:mm:ss.fffffff
