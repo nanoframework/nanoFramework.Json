@@ -225,7 +225,7 @@ namespace nanoFramework.Json
                 return value.ToString();
             }
 
-            if (targetType == typeof(string))
+            if (targetType == typeof(TimeSpan))
             {
                 return TimeSpanExtensions.ConvertFromString(value.ToString());
             }
