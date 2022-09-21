@@ -45,46 +45,104 @@ namespace nanoFramework.Json
                 return $"[{SerializeObject(o, false)}]";
             }
 
-            switch (type.Name)
+            if (type == typeof(bool))
             {
-                case "Boolean":
-                    return (bool)o ? "true" : "false";
+                return (bool)o ? "true" : "false";
+            }
 
-                case "TimeSpan":
-                case "Char":
-                case "Guid":
-                    return "\"" + o.ToString() + "\"";
-                case "String":
-                    return "\"" + SerializeString((string)o) + "\"";
+            if (type == typeof(TimeSpan))
+            {
+                return "\"" + o.ToString() + "\"";
+            }
 
-                case "Single":
-                    if (float.IsNaN((float)o))
-                    {
-                        return "null";
-                    }
-                    return o.ToString();
+            if (type == typeof(char))
+            {
+                return "\"" + o.ToString() + "\"";
+            }
 
-                case "Double":
-                    if (double.IsNaN((double)o))
-                    {
-                        return "null";
-                    }
-                    return o.ToString();
+            if (type == typeof(Guid))
+            {
+                return "\"" + o.ToString() + "\"";
+            }
 
-                case "Decimal":
-                case "Float":
-                case "Byte":
-                case "SByte":
-                case "Int16":
-                case "UInt16":
-                case "Int32":
-                case "UInt32":
-                case "Int64":
-                case "UInt64":
-                    return o.ToString();
+            if (type == typeof(string))
+            {
+                return "\"" + SerializeString((string)o) + "\"";
+            }
 
-                case "DateTime":
-                    return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
+            if (type == typeof(float))
+            {
+                if (float.IsNaN((float)o))
+                {
+                    return "null";
+                }
+
+                return o.ToString();
+            }
+
+            if (type == typeof(double))
+            {
+                if (double.IsNaN((double)o))
+                {
+                    return "null";
+                }
+
+                return o.ToString();
+            }
+
+            if (type.Name == "Decimal")
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(float))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(byte))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(sbyte))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(short))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(ushort))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(int))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(uint))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(long))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(ulong))
+            {
+                return o.ToString();
+            }
+
+            if (type == typeof(DateTime))
+            {
+                return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
 
             if (type.IsEnum)
