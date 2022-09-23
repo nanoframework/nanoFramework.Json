@@ -73,7 +73,7 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var dserResult = (int[])JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
+                JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
             });
         }
 
@@ -82,14 +82,14 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var arrayList = (ArrayList)JsonConvert.DeserializeObject(ArrayListJson, typeof(ArrayList));
+                JsonConvert.DeserializeObject(ArrayListJson, typeof(ArrayList));
             });
         }
 
         [Benchmark]
         public void ComplexObjectAzureTwinPayload()
         {
-            var twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
+            JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
         }
 
         [Benchmark]
@@ -97,7 +97,7 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var dserResult = (short[])JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
+                JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
             });
         }
 
@@ -106,14 +106,14 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var dserResult = (string)JsonConvert.DeserializeObject(StringJson, typeof(string));
+                JsonConvert.DeserializeObject(StringJson, typeof(string));
             });
         }
 
         [Benchmark]
         public void NestedClass()
         {
-            var desrResult = (Person)JsonConvert.DeserializeObject(NestedClassJson, typeof(Person));
+            JsonConvert.DeserializeObject(NestedClassJson, typeof(Person));
         }
 
         // Sometime it may throw ++++ Exception System.InvalidCastException - CLR_E_INVALID_CAST (1) ++++
@@ -121,7 +121,7 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         [Benchmark]
         public void ComplexArrayObject()
         {
-            var desrResult = (JsonTestTown)JsonConvert.DeserializeObject(ComplexArrayJson, typeof(JsonTestTown));
+            JsonConvert.DeserializeObject(ComplexArrayJson, typeof(JsonTestTown));
         }
     }
 }
