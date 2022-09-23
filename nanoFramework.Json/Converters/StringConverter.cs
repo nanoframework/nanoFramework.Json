@@ -5,7 +5,7 @@ namespace nanoFramework.Json.Converters
 {
     internal sealed class StringConverter : IConverter
     {
-        internal static Hashtable EscapableCharactersMapping = new Hashtable()
+        internal static readonly Hashtable EscapableCharactersMapping = new Hashtable()
         {
             {'\n', 'n'},
             {'\r', 'r'},
@@ -63,7 +63,7 @@ namespace nanoFramework.Json.Converters
             foreach (var item in EscapableCharactersMapping.Keys)
             {
                 var charToCheck = deserializing ? $"\\{EscapableCharactersMapping[item]}" : item.ToString();
-                if (str.IndexOf(charToCheck) > 0)
+                if (str.IndexOf(charToCheck) >= 0)
                 {
                     return true;
                 }

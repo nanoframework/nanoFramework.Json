@@ -12,8 +12,8 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
     {
         const string testString = "TestStringToSerialize";
         const short arrayElementCount = 5;
-        int[] intArray = new int[arrayElementCount];
-        short[] shortArray = new short[arrayElementCount];
+        readonly int[] intArray = new int[arrayElementCount];
+        readonly short[] shortArray = new short[arrayElementCount];
         private Person nestedTestClass;
         private JsonTestClassComplex complexClass;
         private JsonTestTown myTown;
