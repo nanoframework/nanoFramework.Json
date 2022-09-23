@@ -152,8 +152,7 @@ namespace nanoFramework.Json
         }
 
 #endif
-
-        public static object ConvertToType(Type sourceType, Type targetType, object value)
+        internal static object ConvertToType(Type sourceType, Type targetType, object value)
         {
             // No need to convert if values matches
             if (sourceType == targetType)
