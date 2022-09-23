@@ -5,6 +5,7 @@
 //
 
 using nanoFramework.Json;
+using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.IO;
@@ -51,7 +52,7 @@ namespace nanoFramework.Json
         {
             if (type == typeof(string))
             {
-                return DeserializeStringObject(sourceString);
+                return DeserializeStringObject(sourceString); // TODO: should use IConverter?
             }
 
             var dserResult = Deserialize(sourceString);
@@ -60,9 +61,9 @@ namespace nanoFramework.Json
 
         private static char GetEscapableCharKeyBasedOnValue(char inputChar)
         {
-            foreach (var item in JsonSerializer.EscapableCharactersMapping.Keys)
+            foreach (var item in StringConverter.EscapableCharactersMapping.Keys)
             {
-                var value = (char)JsonSerializer.EscapableCharactersMapping[item];
+                var value = (char)StringConverter.EscapableCharactersMapping[item];
                 if (value == inputChar)
                 {
                     return (char)item;
@@ -78,7 +79,7 @@ namespace nanoFramework.Json
             //String by default has escaped \" at beggining and end, just remove them
             var resultString = sourceString.Substring(1, sourceString.Length - 2);
 
-            if (JsonSerializer.StringContainsCharactersToEscape(resultString, true))
+            if (StringConverter.StringContainsCharactersToEscape(resultString, true))
             {
                 var newString = string.Empty;
 
@@ -152,7 +153,7 @@ namespace nanoFramework.Json
 
 #endif
 
-        private static object ConvertToType(Type sourceType, Type targetType, object value)
+        public static object ConvertToType(Type sourceType, Type targetType, object value)
         {
             // No need to convert if values matches
             if (sourceType == targetType)
@@ -165,69 +166,9 @@ namespace nanoFramework.Json
                 return ConvertToType(sourceType, targetType.GetElementType(), value);
             }
 
-            if (targetType == typeof(short))
+            if (ConvertersMapping.ConversionTable.Contains(targetType))
             {
-                return Convert.ToInt16(value.ToString());
-            }
-
-            if (targetType == typeof(ushort))
-            {
-                return Convert.ToUInt16(value.ToString());
-            }
-
-            if (targetType == typeof(int))
-            {
-                return Convert.ToInt32(value.ToString());
-            }
-
-            if (targetType == typeof(uint))
-            {
-                return Convert.ToUInt32(value.ToString());
-            }
-
-            if (targetType == typeof(long))
-            {
-                return Convert.ToInt64(value.ToString());
-            }
-
-            if (targetType == typeof(ulong))
-            {
-                return Convert.ToUInt64(value.ToString());
-            }
-
-            if (targetType == typeof(byte))
-            {
-                return Convert.ToByte(value.ToString());
-            }
-
-            if (targetType == typeof(sbyte))
-            {
-                return Convert.ToSByte(value.ToString());
-            }
-
-            if (targetType == typeof(float))
-            {
-                return Convert.ToSingle(value.ToString());
-            }
-
-            if (targetType == typeof(double))
-            {
-                return Convert.ToDouble(value.ToString());
-            }
-
-            if (targetType == typeof(bool))
-            {
-                return Convert.ToBoolean(Convert.ToByte(value.ToString()));
-            }
-
-            if (targetType == typeof(string))
-            {
-                return value.ToString();
-            }
-
-            if (targetType == typeof(TimeSpan))
-            {
-                return TimeSpanExtensions.ConvertFromString(value.ToString());
+                return ((IConverter)ConvertersMapping.ConversionTable[targetType]).ToType(value);
             }
 
             return value;

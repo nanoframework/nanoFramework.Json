@@ -4,6 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.Reflection;
@@ -16,20 +17,13 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
-        internal static Hashtable EscapableCharactersMapping = new Hashtable()
-        {
-            {'\n', 'n'},
-            {'\r', 'r'},
-            {'\"', '"' }
-        };
-
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
         /// <param name="o">The value to convert. Supported types are: <see cref="bool"/>, <see cref="string"/>, <see cref="byte"/>, <see cref="ushort"/>, <see cref="short"/>, <see cref="uint"/>,  <see cref="int"/>, <see cref="float"/>, <see cref="double"/>, <see cref="Array"/>, <see cref="IDictionary"/>, <see cref="IEnumerable"/>, <see cref="Guid"/>, <see cref="DateTime"/>, <see cref="TimeSpan"/>, <see cref="DictionaryEntry"/>, <see cref="object"/> and <see langword="null"/>.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only internal properties with getters are converted.</remarks>
-        internal static string SerializeObject(object o, bool topObject = true)
+        public static string SerializeObject(object o, bool topObject = true)
         {
             if (o == null)
             {
@@ -45,14 +39,10 @@ namespace nanoFramework.Json
                 return $"[{SerializeObject(o, false)}]";
             }
 
-            if (type == typeof(bool))
+            if (ConvertersMapping.ConversionTable.Contains(type))
             {
-                return (bool)o ? "true" : "false";
-            }
-
-            if (type == typeof(TimeSpan))
-            {
-                return "\"" + o.ToString() + "\"";
+                var converter = (IConverter)ConvertersMapping.ConversionTable[type];
+                return converter.ToJson(o);
             }
 
             if (type == typeof(char))
@@ -65,77 +55,7 @@ namespace nanoFramework.Json
                 return "\"" + o.ToString() + "\"";
             }
 
-            if (type == typeof(string))
-            {
-                return "\"" + SerializeString((string)o) + "\"";
-            }
-
-            if (type == typeof(float))
-            {
-                if (float.IsNaN((float)o))
-                {
-                    return "null";
-                }
-
-                return o.ToString();
-            }
-
-            if (type == typeof(double))
-            {
-                if (double.IsNaN((double)o))
-                {
-                    return "null";
-                }
-
-                return o.ToString();
-            }
-
             if (type.Name == "Decimal")
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(float))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(byte))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(sbyte))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(short))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(ushort))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(int))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(uint))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(long))
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(ulong))
             {
                 return o.ToString();
             }
@@ -269,65 +189,6 @@ namespace nanoFramework.Json
             result += "}";
 
             return result;
-        }
-
-        internal static bool StringContainsCharactersToEscape(string str, bool deserializing)
-        {
-            foreach (var item in EscapableCharactersMapping.Keys)
-            {
-                var charToCheck = deserializing ? $"\\{EscapableCharactersMapping[item]}" : item.ToString();
-                if (str.IndexOf(charToCheck) > 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        internal static bool CheckIfCharIsRequiresEscape(char chr)
-        {
-            foreach (var item in EscapableCharactersMapping.Keys)
-            {
-                if ((char)item == chr)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Safely serialize a String into a JSON string value, escaping all backslash and quote characters.
-        /// </summary>
-        /// <param name="str">The string to serialize.</param>
-        /// <returns>The serialized JSON string.</returns>
-        protected static string SerializeString(string str)
-        {
-            // If the string is just fine (most are) then make a quick exit for improved performance
-            if (!StringContainsCharactersToEscape(str, false))
-            {
-                return str;
-            }
-
-            // Build a new string
-            // we know there is at least 1 char to escape
-            StringBuilder result = new(str.Length + 1);
-
-            foreach (char ch in str)
-            {
-                var charToAppend = ch;
-                if (CheckIfCharIsRequiresEscape(charToAppend))
-                {
-                    result.Append('\\');
-                    charToAppend = (char)EscapableCharactersMapping[charToAppend];
-                }
-
-                result.Append(charToAppend);
-            }
-
-            return result.ToString();
         }
     }
 }

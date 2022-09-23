@@ -30,6 +30,21 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="Converters\BoolConverter.cs" />
+    <Compile Include="Converters\ByteConverter.cs" />
+    <Compile Include="Converters\ConvertersMapping.cs" />
+    <Compile Include="Converters\DoubleConverter.cs" />
+    <Compile Include="Converters\FloatConverter.cs" />
+    <Compile Include="Converters\IConverter.cs" />
+    <Compile Include="Converters\IntConverter.cs" />
+    <Compile Include="Converters\LongConverter.cs" />
+    <Compile Include="Converters\SByteConverter.cs" />
+    <Compile Include="Converters\ShortConverter.cs" />
+    <Compile Include="Converters\StringConverter.cs" />
+    <Compile Include="Converters\TimeSpanConverter.cs" />
+    <Compile Include="Converters\UIntConverter.cs" />
+    <Compile Include="Converters\ULongConverter.cs" />
+    <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />
