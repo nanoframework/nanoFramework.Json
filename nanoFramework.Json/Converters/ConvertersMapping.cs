@@ -25,7 +25,8 @@ namespace nanoFramework.Json.Converters
             { typeof(TimeSpan), new TimeSpanConverter() },
             { typeof(DateTime), new DateTimeConverter() },
             { typeof(char), new CharConverter() },
-            { typeof(Guid), new GuidConverter() }
+            { typeof(Guid), new GuidConverter() },
+            { typeof(DictionaryEntry), new DictionaryEntryConverter() }
         };
 
         /// <summary>

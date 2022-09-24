@@ -62,20 +62,6 @@ namespace nanoFramework.Json
                 return SerializeIEnumerable(enumerable);
             }
 
-            if (type == typeof(DictionaryEntry)) //TODO: move to converters
-            {
-                Hashtable hashtable = new();
-
-                if (o is DictionaryEntry)
-                {
-                    DictionaryEntry dic = (DictionaryEntry)o;
-                    DictionaryEntry entry = dic;
-                    hashtable.Add(entry.Key, entry.Value);
-                }
-
-                return SerializeIDictionary(hashtable);
-            }
-
             if (type.IsClass)
             {
                 return SerializeClass(o, type);
