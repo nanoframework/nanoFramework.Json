@@ -45,22 +45,22 @@ namespace nanoFramework.Json
                 return converter.ToJson(o);
             }
 
-            if (type == typeof(char))
+            if (type == typeof(char)) //TODO: move to converters
             {
                 return "\"" + o.ToString() + "\"";
             }
 
-            if (type == typeof(Guid))
+            if (type == typeof(Guid)) //TODO: move to converters
             {
                 return "\"" + o.ToString() + "\"";
             }
 
-            if (type.Name == "Decimal")
+            if (type.Name == "Decimal") //TODO: move to converters
             {
                 return o.ToString();
             }
 
-            if (type == typeof(DateTime))
+            if (type == typeof(DateTime)) //TODO: move to converters
             {
                 return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
             }
@@ -70,19 +70,19 @@ namespace nanoFramework.Json
                 return o.ToString();
             }
 
-            if (o is IDictionary && !type.IsArray)
+            if (o is IDictionary && !type.IsArray) //TODO: move to converters?
             {
                 IDictionary dictionary = o as IDictionary;
                 return SerializeIDictionary(dictionary);
             }
 
-            if (o is IEnumerable)
+            if (o is IEnumerable) //TODO: move to converters?
             {
                 IEnumerable enumerable = o as IEnumerable;
                 return SerializeIEnumerable(enumerable);
             }
 
-            if (type == typeof(DictionaryEntry))
+            if (type == typeof(DictionaryEntry)) //TODO: move to converters
             {
                 Hashtable hashtable = new();
 
@@ -122,30 +122,30 @@ namespace nanoFramework.Json
 
         private static bool ShouldSerializeMethod(MethodInfo method)
         {
-                    // We care only about property getters when serializing
-                    if (!method.Name.StartsWith("get_"))
-                    {
+            // We care only about property getters when serializing
+            if (!method.Name.StartsWith("get_"))
+            {
                 return false;
-                    }
+            }
 
-                    // Ignore abstract and virtual objects
-                    if (method.IsAbstract)
-                    {
+            // Ignore abstract and virtual objects
+            if (method.IsAbstract)
+            {
                 return false;
-                    }
+            }
 
-                    // Ignore delegates and MethodInfos
-                    if ((method.ReturnType == typeof(Delegate)) ||
-                        (method.ReturnType == typeof(MulticastDelegate)) ||
-                        (method.ReturnType == typeof(MethodInfo)))
-                    {
+            // Ignore delegates and MethodInfos
+            if ((method.ReturnType == typeof(Delegate)) ||
+                (method.ReturnType == typeof(MulticastDelegate)) ||
+                (method.ReturnType == typeof(MethodInfo)))
+            {
                 return false;
-                    }
+            }
 
-                    // Ditto for DeclaringType
-                    if ((method.DeclaringType == typeof(Delegate)) ||
-                        (method.DeclaringType == typeof(MulticastDelegate)))
-                    {
+            // Ditto for DeclaringType
+            if ((method.DeclaringType == typeof(Delegate)) ||
+                (method.DeclaringType == typeof(MulticastDelegate)))
+            {
                 return false;
             }
 

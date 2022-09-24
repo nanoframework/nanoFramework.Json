@@ -3,7 +3,9 @@ using System.Text;
 
 namespace nanoFramework.Json.Converters
 {
-    internal interface IConverter
+    //TODO: comments and tests
+    // Tests should: Check values and types
+    public interface IConverter
     {
         object ToType(object value);
         string ToJson(object value);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
 
 namespace nanoFramework.Json.Converters
 {
@@ -23,6 +22,23 @@ namespace nanoFramework.Json.Converters
             { typeof(TimeSpan), new TimeSpanConverter() }
         };
 
-        // TODO: Add method: Add, Replace, Remove
+        public static void Add(Type type, IConverter converter)
+        {
+            ConversionTable.Add(type, converter);
+        }
+
+        public static void Remove(Type type)
+        {
+            ConversionTable.Remove(type);
+        }
+
+        public static void Replace(Type type, IConverter converter)
+        {
+            ConversionTable.Remove(type);
+            ConversionTable.Add(type, converter);
+        }
+
+        // TODO: Tests for this class
+        // TODO: Tests if inject new type (class), we will be able to serizalize from other type
     }
 }

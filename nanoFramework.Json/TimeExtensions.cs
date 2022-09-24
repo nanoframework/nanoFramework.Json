@@ -127,7 +127,7 @@ namespace nanoFramework.Json
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private static bool IsNumeric(string str)
+        private static bool IsNumeric(string str) //TODO: convert to int in try catch? Benchmark that!
         {
             foreach (char c in str)
             {

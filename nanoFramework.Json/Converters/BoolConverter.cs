@@ -3,8 +3,7 @@ using System.ComponentModel;
 
 namespace nanoFramework.Json.Converters
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class BoolConverter : IConverter
+    internal sealed class BoolConverter : IConverter
     {
         public string ToJson(object value)
         {
