@@ -776,7 +776,6 @@ namespace nanoFramework.Json.Test
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.Equal((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
-            //Assert.Equal(((DateTime)twinPayload["statusUpdateTime"]).Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
             Assert.Equal((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
             Assert.Equal(((Hashtable)twinPayload["x509Thumbprint"]).Count, 2, "x509Thumbprint collection count doesn't match");
             Assert.Equal((int)twinPayload["version"], 381, "version doesn't match");
@@ -1076,11 +1075,11 @@ namespace nanoFramework.Json.Test
             Assert.Equal((short)1234, deser.OneInt16, "Int16");
             Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
             Assert.Equal(-789012, deser.OneInt32, "Int32");
-            Assert.Equal((uint)78912, deser.OneUInt32, "UInt32");
-            Assert.Equal((long)-1234567, deser.OneInt64, "Int64");
-            Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
+            Assert.Equal(78912, deser.OneUInt32, "UInt32");
+            Assert.Equal(-1234567, deser.OneInt64, "Int64");
+            Assert.Equal(1234567, deser.OneUInt64, "UInt64");
             Assert.Equal((float)34.45, deser.OneSingle, "Single");
-            Assert.Equal((double)45678.23, deser.OneDouble, "Double");
+            Assert.Equal(45678.23, deser.OneDouble, "Double");
             Assert.True(deser.OneBoolean, "Boolean true");
             Assert.False(deser.TwoBoolean, "Boolean false");
         }
