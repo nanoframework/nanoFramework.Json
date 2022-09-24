@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Text;
 
 namespace nanoFramework.Json.Converters
@@ -80,7 +81,46 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
-            return value.ToString();
+            var sourceString = value.ToString();
+            //String by default has escaped \" at beggining and end, just remove them
+            var resultString = sourceString.Substring(1, sourceString.Length - 2);
+            if (StringContainsCharactersToEscape(resultString, true))
+            {
+                var newString = string.Empty;
+                //Last character can not be escaped, because it's last one
+                for (int i = 0; i < resultString.Length - 1; i++)
+                {
+                    var curChar = resultString[i];
+                    var nextChar = resultString[i + 1];
+
+                    if (curChar == '\\')
+                    {
+                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
+                        newString += charToAppend;
+                        i++;
+                        continue;
+                    }
+                    newString += curChar;
+                }
+                //Append last character skkiped by loop
+                newString += resultString[resultString.Length - 1];
+                return newString.ToString();
+            }
+            return resultString;
+        }
+
+        private static char GetEscapableCharKeyBasedOnValue(char inputChar)
+        {
+            foreach (var item in EscapableCharactersMapping.Keys)
+            {
+                var value = (char)EscapableCharactersMapping[item];
+                if (value == inputChar)
+                {
+                    return (char)item;
+                }
+            }
+            // in case inputChar is not supported
+            throw new InvalidOperationException();
         }
     }
 }

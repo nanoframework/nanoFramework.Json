@@ -52,60 +52,12 @@ namespace nanoFramework.Json
         {
             if (type == typeof(string))
             {
-                return DeserializeStringObject(sourceString); // TODO: should use IConverter?
+                var stringConverter = (IConverter)ConvertersMapping.ConversionTable[typeof(string)];
+                return stringConverter.ToType(sourceString);
             }
 
             var dserResult = Deserialize(sourceString);
             return PopulateObject((JsonToken)dserResult, type, "/");
-        }
-
-        private static char GetEscapableCharKeyBasedOnValue(char inputChar)
-        {
-            foreach (var item in StringConverter.EscapableCharactersMapping.Keys)
-            {
-                var value = (char)StringConverter.EscapableCharactersMapping[item];
-                if (value == inputChar)
-                {
-                    return (char)item;
-                }
-            }
-
-            // in case inputChar is not supported
-            throw new InvalidOperationException();
-        }
-
-        private static string DeserializeStringObject(string sourceString)
-        {
-            //String by default has escaped \" at beggining and end, just remove them
-            var resultString = sourceString.Substring(1, sourceString.Length - 2);
-
-            if (StringConverter.StringContainsCharactersToEscape(resultString, true))
-            {
-                var newString = string.Empty;
-
-                //Last character can not be escaped, because it's last one
-                for (int i = 0; i < resultString.Length - 1; i++)
-                {
-                    var curChar = resultString[i];
-                    var nextChar = resultString[i + 1];
-                    
-                    if (curChar == '\\')
-                    {
-                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
-                        newString += charToAppend;
-                        i++;
-                        continue;
-                    }
-
-                    newString += curChar;
-                }
-
-                //Append last character skkiped by loop
-                newString += resultString[resultString.Length - 1];
-                return newString.ToString();
-            }
-
-            return resultString;
         }
 
 #if NANOFRAMEWORK_1_0
