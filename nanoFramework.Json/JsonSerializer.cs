@@ -105,29 +105,7 @@ namespace nanoFramework.Json
 
                 foreach (MethodInfo method in methods)
                 {
-                    // We care only about property getters when serializing
-                    if (!method.Name.StartsWith("get_"))
-                    {
-                        continue;
-                    }
-
-                    // Ignore abstract and virtual objects
-                    if (method.IsAbstract)
-                    {
-                        continue;
-                    }
-
-                    // Ignore delegates and MethodInfos
-                    if ((method.ReturnType == typeof(Delegate)) ||
-                        (method.ReturnType == typeof(MulticastDelegate)) ||
-                        (method.ReturnType == typeof(MethodInfo)))
-                    {
-                        continue;
-                    }
-
-                    // Ditto for DeclaringType
-                    if ((method.DeclaringType == typeof(Delegate)) ||
-                        (method.DeclaringType == typeof(MulticastDelegate)))
+                    if (!ShouldSerializeMethod(method))
                     {
                         continue;
                     }
@@ -140,6 +118,38 @@ namespace nanoFramework.Json
             }
 
             return null;
+        }
+
+        private static bool ShouldSerializeMethod(MethodInfo method)
+        {
+                    // We care only about property getters when serializing
+                    if (!method.Name.StartsWith("get_"))
+                    {
+                return false;
+                    }
+
+                    // Ignore abstract and virtual objects
+                    if (method.IsAbstract)
+                    {
+                return false;
+                    }
+
+                    // Ignore delegates and MethodInfos
+                    if ((method.ReturnType == typeof(Delegate)) ||
+                        (method.ReturnType == typeof(MulticastDelegate)) ||
+                        (method.ReturnType == typeof(MethodInfo)))
+                    {
+                return false;
+                    }
+
+                    // Ditto for DeclaringType
+                    if ((method.DeclaringType == typeof(Delegate)) ||
+                        (method.DeclaringType == typeof(MulticastDelegate)))
+                    {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
