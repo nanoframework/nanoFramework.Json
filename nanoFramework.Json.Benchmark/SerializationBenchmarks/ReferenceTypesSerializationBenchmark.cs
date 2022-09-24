@@ -50,7 +50,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
 
             complexClass = JsonTestClassComplex.CreateTestClass();
 
-            myTown = JsonTestTown.CreateTestClass()
+            myTown = JsonTestTown.CreateTestClass();
 
             arrayList = new ArrayList()
             {
