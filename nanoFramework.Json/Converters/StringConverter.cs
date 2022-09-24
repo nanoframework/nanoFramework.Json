@@ -12,6 +12,9 @@ namespace nanoFramework.Json.Converters
             {'\"', '"' }
         };
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public string ToJson(object value)
         {
             return "\"" + SerializeString((string)value) + "\"";
@@ -72,6 +75,9 @@ namespace nanoFramework.Json.Converters
             return false;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public object ToType(object value)
         {
             return value.ToString();

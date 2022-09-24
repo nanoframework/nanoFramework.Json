@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Text;
 
 namespace nanoFramework.Json.Converters
 {
-    internal sealed class UShortConverter : IConverter
+    internal sealed class GuidConverter : IConverter
     {
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public string ToJson(object value)
         {
-            return value.ToString();
+            return "\"" + value.ToString() + "\"";
         }
 
         /// <summary>
@@ -17,7 +18,7 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
-            return Convert.ToUInt16(value.ToString());
+            return new Guid(value.ToString());
         }
     }
 }

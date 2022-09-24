@@ -255,10 +255,6 @@ namespace nanoFramework.Json
                     return rootArrayList;
                 }
 
-                // This is the object that gets populated and returned
-                // Create rootInstance from the rootType's constructor
-                object rootInstance = null;
-
                 // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
                 Type[] types = { };
 
@@ -270,7 +266,9 @@ namespace nanoFramework.Json
                     throw new DeserializationException();
                 }
 
-                rootInstance = ci.Invoke(null);
+                // This is the object that gets populated and returned
+                // Create rootInstance from the rootType's constructor
+                var rootInstance = ci.Invoke(null);
 
                 // If we haven't successfully created rootInstance, bail out
                 if (rootInstance == null)

@@ -5,6 +5,9 @@ namespace nanoFramework.Json.Converters
 {
     internal sealed class DoubleConverter : IConverter
     {
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public string ToJson(object value)
         {
             if (double.IsNaN((double)value))
@@ -15,6 +18,9 @@ namespace nanoFramework.Json.Converters
             return value.ToString();
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public object ToType(object value)
         {
             return Convert.ToDouble(value.ToString());

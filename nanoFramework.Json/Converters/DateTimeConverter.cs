@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Text;
 
 namespace nanoFramework.Json.Converters
 {
-    internal sealed class UShortConverter : IConverter
+    internal sealed class DateTimeConverter : IConverter
     {
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
         public string ToJson(object value)
         {
-            return value.ToString();
+            return "\"" + DateTimeExtensions.ToIso8601((DateTime)value) + "\"";
         }
 
         /// <summary>
@@ -17,7 +18,8 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
-            return Convert.ToUInt16(value.ToString());
+            // Not sure hwo this one should work
+            throw new NotImplementedException();
         }
     }
 }

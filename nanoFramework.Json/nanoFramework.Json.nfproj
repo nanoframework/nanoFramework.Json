@@ -33,9 +33,12 @@
   <ItemGroup>
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\ByteConverter.cs" />
+    <Compile Include="Converters\CharConverter.cs" />
     <Compile Include="Converters\ConvertersMapping.cs" />
+    <Compile Include="Converters\DateTimeConverter.cs" />
     <Compile Include="Converters\DoubleConverter.cs" />
     <Compile Include="Converters\FloatConverter.cs" />
+    <Compile Include="Converters\GuidConverter.cs" />
     <Compile Include="Converters\IConverter.cs" />
     <Compile Include="Converters\IntConverter.cs" />
     <Compile Include="Converters\LongConverter.cs" />

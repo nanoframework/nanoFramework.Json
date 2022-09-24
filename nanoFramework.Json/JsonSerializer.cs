@@ -45,26 +45,6 @@ namespace nanoFramework.Json
                 return converter.ToJson(o);
             }
 
-            if (type == typeof(char)) //TODO: move to converters
-            {
-                return "\"" + o.ToString() + "\"";
-            }
-
-            if (type == typeof(Guid)) //TODO: move to converters
-            {
-                return "\"" + o.ToString() + "\"";
-            }
-
-            if (type.Name == "Decimal") //TODO: move to converters
-            {
-                return o.ToString();
-            }
-
-            if (type == typeof(DateTime)) //TODO: move to converters
-            {
-                return "\"" + DateTimeExtensions.ToIso8601((DateTime)o) + "\"";
-            }
-
             if (type.IsEnum)
             {
                 return o.ToString();
