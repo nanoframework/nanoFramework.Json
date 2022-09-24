@@ -27,7 +27,8 @@ namespace nanoFramework.Json.Test
             }
         }
 
-        public JsonCustomTypeTests()
+        [Setup]
+        public void Setup()
         {
             ConvertersMapping.Add(typeof(TestObject), new CustomConverter());
         }
