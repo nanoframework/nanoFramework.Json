@@ -86,7 +86,7 @@ namespace nanoFramework.Json.Converters
             var resultString = sourceString.Substring(1, sourceString.Length - 2);
             if (StringContainsCharactersToEscape(resultString, true))
             {
-                var newString = string.Empty;
+                var newString = new StringBuilder();
                 //Last character can not be escaped, because it's last one
                 for (int i = 0; i < resultString.Length - 1; i++)
                 {
@@ -96,14 +96,14 @@ namespace nanoFramework.Json.Converters
                     if (curChar == '\\')
                     {
                         var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
-                        newString += charToAppend;
+                        newString.Append(charToAppend);
                         i++;
                         continue;
                     }
-                    newString += curChar;
+                    newString.Append(curChar);
                 }
                 //Append last character skkiped by loop
-                newString += resultString[resultString.Length - 1];
+                newString.Append(resultString[resultString.Length - 1]);
                 return newString.ToString();
             }
             return resultString;
