@@ -76,7 +76,7 @@ namespace nanoFramework.Json.Converters
             var hours = ParseValueFromString(hasHours, timeSpanBits, ref processIndex);
             var minutes = ParseValueFromString(hasMinutes, timeSpanBits, ref processIndex);
             var seconds = ParseValueFromString(hasSeconds, timeSpanBits, ref processIndex);
-            var ticks = HandleTicks(timeSpanBits, hasTicks, processIndex, ticks);
+            var ticks = HandleTicks(timeSpanBits, hasTicks, processIndex);
 
             // sanity check for valid ranges
             if (IsInvalidTimeSpan(hours, minutes, seconds))
