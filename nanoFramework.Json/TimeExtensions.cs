@@ -127,16 +127,14 @@ namespace nanoFramework.Json
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private static bool IsNumeric(string str) //TODO: convert to int in try catch? Benchmark that!
+        public static bool IsNumeric(string str)
         {
-            foreach (char c in str)
+            if (int.TryParse(str, out int _))
             {
-                if (!((c >= '0') && (c <= '9')))
-                {
-                    return false;
-                }
+                return true;
             }
-            return true;
+
+            return false;
         }
 
         /// <summary>
