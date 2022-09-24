@@ -44,11 +44,7 @@ namespace nanoFramework.Json.Converters
             int indexOfSecondColon = indexOfFirstColon > -1 ? value.IndexOf(':', indexOfFirstColon + 1) : -1;
 
             // sanity check for separators: all have to be ahead of string start
-            if (timeSpanBits.Length > 1
-                && indexOfFirstDot <= 0
-                && indexOfSecondDot <= 0
-                && indexOfFirstColon <= 0
-                && indexOfSecondColon <= 0)
+            if (SeparatorCheck(timeSpanBits, indexOfFirstDot, indexOfSecondDot, indexOfFirstColon, indexOfSecondColon))
             {
                 throw new InvalidCastException();
             }
@@ -80,21 +76,7 @@ namespace nanoFramework.Json.Converters
             var hours = ParseValueFromString(hasHours, timeSpanBits, ref processIndex);
             var minutes = ParseValueFromString(hasMinutes, timeSpanBits, ref processIndex);
             var seconds = ParseValueFromString(hasSeconds, timeSpanBits, ref processIndex);
-
-            int ticks = 0;
-            if (hasTicks && processIndex <= timeSpanBits.Length)
-            {
-                if (!int.TryParse(timeSpanBits[processIndex], out ticks))
-                {
-                    throw new InvalidCastException();
-                }
-
-                // if ticks are under 999, that's milliseconds
-                if (ticks < 1_000)
-                {
-                    ticks *= 10_000;
-                }
-            }
+            var ticks = HandleTicks(timeSpanBits, hasTicks, processIndex, ticks);
 
             // sanity check for valid ranges
             if (IsInvalidTimeSpan(hours, minutes, seconds))
@@ -104,6 +86,36 @@ namespace nanoFramework.Json.Converters
 
             // we should have everything now
             return new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
+        }
+
+        private static int HandleTicks(string[] timeSpanBits, bool hasTicks, int processIndex)
+        {
+            if (!hasTicks || processIndex > timeSpanBits.Length)
+            {
+                return 0;
+            }
+
+            if (!int.TryParse(timeSpanBits[processIndex], out var ticks))
+            {
+                throw new InvalidCastException();
+            }
+
+            // if ticks are under 999, that's milliseconds
+            if (ticks < 1_000)
+            {
+                ticks *= 10_000;
+            }
+
+            return ticks;
+        }
+
+        private static bool SeparatorCheck(string[] timeSpanBits, int indexOfFirstDot, int indexOfSecondDot, int indexOfFirstColon, int indexOfSecondColon)
+        {
+            return timeSpanBits.Length > 1
+                            && indexOfFirstDot <= 0
+                            && indexOfSecondDot <= 0
+                            && indexOfFirstColon <= 0
+                            && indexOfSecondColon <= 0;
         }
 
         private static int ParseValueFromString(bool hasValue,string[] timeSpanBits, ref int processIndex)
