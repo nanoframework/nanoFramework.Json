@@ -58,9 +58,9 @@ namespace nanoFramework.Json.Test.Converters
             foreach (var item in converterKeys)
             {
                 var type = (Type)item;
-                if (type == typeof(IConverter))
+                if (type == typeof(TestConverter))
                 {
-                    throw new InvalidOperationException("After removing short type, it should not be in collection.");
+                    throw new InvalidOperationException($"After removing {nameof(TestConverter)} type, it should not be in collection.");
                 }
             }
         }
