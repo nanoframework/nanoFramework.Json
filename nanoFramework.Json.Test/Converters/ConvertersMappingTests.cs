@@ -51,8 +51,8 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         public void Remove_Should_RemoveTypeMapping()
         {
-            ConvertersMapping.Add(typeof(IConverter), new TestConverter());
-            ConvertersMapping.Remove(typeof(IConverter));
+            ConvertersMapping.Add(typeof(TestConverter), new TestConverter());
+            ConvertersMapping.Remove(typeof(TestConverter));
 
             var converterKeys = ConvertersMapping.ConversionTable.Keys;
             foreach (var item in converterKeys)
@@ -68,16 +68,23 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         public void Replace_ShouldReplaceMapping()
         {
-            ConvertersMapping.Add(typeof(IConverter), new TestConverter());
-            ConvertersMapping.Replace(typeof(IConverter), new TestConverter2());
+            ConvertersMapping.Add(typeof(TestConverter2), new TestConverter());
+            ConvertersMapping.Replace(typeof(TestConverter2), new TestConverter2());
 
-            var converter = ConvertersMapping.ConversionTable[typeof(short)];
+            var converter = ConvertersMapping.ConversionTable[typeof(TestConverter2)];
             Assert.NotNull(converter);
 
             if (converter.GetType() != typeof(TestConverter2))
             {
                 throw new InvalidOperationException("Invalid type returned.");
             }
+        }
+
+        [Cleanup]
+        public void Cleanup()
+        {
+            ConvertersMapping.Remove(typeof(IConverter));
+            ConvertersMapping.Remove(typeof(TestConverter2));
         }
     }
 }
