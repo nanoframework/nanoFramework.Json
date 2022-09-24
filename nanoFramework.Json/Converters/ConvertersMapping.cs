@@ -22,7 +22,10 @@ namespace nanoFramework.Json.Converters
             { typeof(double), new DoubleConverter() },
             { typeof(bool), new BoolConverter() },
             { typeof(string), new StringConverter() },
-            { typeof(TimeSpan), new TimeSpanConverter() }
+            { typeof(TimeSpan), new TimeSpanConverter() },
+            { typeof(DateTime), new DateTimeConverter() },
+            { typeof(char), new CharConverter() },
+            { typeof(Guid), new GuidConverter() }
         };
 
         /// <summary>
