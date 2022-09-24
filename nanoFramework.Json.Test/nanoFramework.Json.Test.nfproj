@@ -35,6 +35,7 @@
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\nano.runsettings</RunSettingsFilePath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Converters\ConvertersMappingTests.cs" />
     <Compile Include="Converters\SByteConverterTests.cs" />
     <Compile Include="Converters\ByteConverterTests.cs" />
     <Compile Include="Converters\BoolConverterTests.cs" />
