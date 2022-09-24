@@ -21,6 +21,19 @@ namespace nanoFramework.Json.Test.Converters
             }
         }
 
+        class TestConverter2 : IConverter
+        {
+            public string ToJson(object value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public object ToType(object value)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         [TestMethod]
         public void Add_Should_AddTypeMapping()
         {
@@ -38,13 +51,14 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         public void Remove_Should_RemoveTypeMapping()
         {
-            ConvertersMapping.Remove(typeof(short));
+            ConvertersMapping.Add(typeof(IConverter), new TestConverter());
+            ConvertersMapping.Remove(typeof(IConverter));
 
             var converterKeys = ConvertersMapping.ConversionTable.Keys;
             foreach (var item in converterKeys)
             {
                 var type = (Type)item;
-                if (type == typeof(short))
+                if (type == typeof(IConverter))
                 {
                     throw new InvalidOperationException("After removing short type, it should not be in collection.");
                 }
@@ -54,12 +68,13 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         public void Replace_ShouldReplaceMapping()
         {
-            ConvertersMapping.Add(typeof(short), new TestConverter());
+            ConvertersMapping.Add(typeof(IConverter), new TestConverter());
+            ConvertersMapping.Replace(typeof(IConverter), new TestConverter2());
 
             var converter = ConvertersMapping.ConversionTable[typeof(short)];
             Assert.NotNull(converter);
 
-            if (converter.GetType() != typeof(TestConverter))
+            if (converter.GetType() != typeof(TestConverter2))
             {
                 throw new InvalidOperationException("Invalid type returned.");
             }
