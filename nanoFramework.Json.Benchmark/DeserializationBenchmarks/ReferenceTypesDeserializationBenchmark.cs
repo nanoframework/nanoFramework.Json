@@ -116,11 +116,11 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
             JsonConvert.DeserializeObject(NestedClassJson, typeof(Person));
         }
 
-        // Sometime it may throw ++++ Exception System.InvalidCastException - CLR_E_INVALID_CAST (1) ++++
-        // After re run it should work
         [Benchmark]
         public void ComplexArrayObject()
         {
+            // Sometime it may throw ++++ Exception System.InvalidCastException - CLR_E_INVALID_CAST (1) ++++
+            // After re run it should work
             JsonConvert.DeserializeObject(ComplexArrayJson, typeof(JsonTestTown));
         }
     }

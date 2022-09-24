@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace nanoFramework.Json.Converters
 {
+    /// <summary>
+    /// Contains all converters for JSON.
+    /// </summary>
     public static class ConvertersMapping
     {
         internal static readonly Hashtable ConversionTable = new Hashtable()
@@ -22,16 +25,30 @@ namespace nanoFramework.Json.Converters
             { typeof(TimeSpan), new TimeSpanConverter() }
         };
 
+        /// <summary>
+        /// Adds new converter to collection to support more types.
+        /// </summary>
+        /// <param name="type">Type of object.</param>
+        /// <param name="converter">Converter instance which will be used to convert <paramref name="type"/></param>
         public static void Add(Type type, IConverter converter)
         {
             ConversionTable.Add(type, converter);
         }
 
+        /// <summary>
+        /// Remove existing type converter.
+        /// </summary>
+        /// <param name="type">Type of object.</param>
         public static void Remove(Type type)
         {
             ConversionTable.Remove(type);
         }
 
+        /// <summary>
+        /// Remove and then adds converter for given type.
+        /// </summary>
+        /// <param name="type">Type of object.</param>
+        /// <param name="converter">Converter instance which will be used to convert <paramref name="type"/></param>
         public static void Replace(Type type, IConverter converter)
         {
             ConversionTable.Remove(type);

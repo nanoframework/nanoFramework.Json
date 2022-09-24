@@ -76,28 +76,22 @@ namespace nanoFramework.Json.Converters
             // bump the index if days component is present
             int processIndex = hasDays ? 1 : 0;
 
-            if (hasHours && processIndex <= timeSpanBits.Length)
+            if (hasHours && processIndex <= timeSpanBits.Length && 
+                !int.TryParse(timeSpanBits[processIndex++], out hours))
             {
-                if (!int.TryParse(timeSpanBits[processIndex++], out hours))
-                {
-                    throw new InvalidCastException();
-                }
+                throw new InvalidCastException();
             }
 
-            if (hasMinutes && processIndex <= timeSpanBits.Length)
+            if (hasMinutes && processIndex <= timeSpanBits.Length &&
+                !int.TryParse(timeSpanBits[processIndex++], out minutes))
             {
-                if (!int.TryParse(timeSpanBits[processIndex++], out minutes))
-                {
-                    throw new InvalidCastException();
-                }
+                throw new InvalidCastException();
             }
 
-            if (hasSeconds && processIndex <= timeSpanBits.Length)
+            if (hasSeconds && processIndex <= timeSpanBits.Length &&
+                !int.TryParse(timeSpanBits[processIndex++], out seconds))
             {
-                if (!int.TryParse(timeSpanBits[processIndex++], out seconds))
-                {
-                    throw new InvalidCastException();
-                }
+                throw new InvalidCastException();
             }
 
             if (hasTicks && processIndex <= timeSpanBits.Length)
