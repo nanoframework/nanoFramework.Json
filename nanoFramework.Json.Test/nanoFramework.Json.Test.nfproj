@@ -49,6 +49,7 @@
     <Compile Include="Converters\IntConverterTests.cs" />
     <Compile Include="Converters\FloatConverterTests.cs" />
     <Compile Include="Converters\DoubleConverterTests.cs" />
+    <Compile Include="JsonCustomTypeTests.cs" />
     <Compile Include="JsonUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

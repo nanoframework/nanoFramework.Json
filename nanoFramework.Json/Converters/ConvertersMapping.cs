@@ -58,7 +58,5 @@ namespace nanoFramework.Json.Converters
             ConversionTable.Remove(type);
             ConversionTable.Add(type, converter);
         }
-
-        // TODO: Tests if inject new type (class), we will be able to serizalize from other type
     }
 }
