@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class FloatConverterTests
     {
         [TestMethod]
-        [DataRow("120.0", 120.0f, typeof(float))]
-        [DataRow("42.5", 42.5f, typeof(float))]
-        public void ToType_ShouldReturnValidData(string value, float expectedValue, Type expectedType)
+        [DataRow("120.0", 120.0f)]
+        [DataRow("42.5", 42.5f)]
+        public void ToType_ShouldReturnValidData(string value, float expectedValue)
         {
             var converter = new Json.Converters.FloatConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (float)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -27,7 +26,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.FloatConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

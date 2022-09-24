@@ -7,14 +7,13 @@ namespace nanoFramework.Json.Test.Converters
     public class StringConverterTests
     {
         [TestMethod]
-        [DataRow("\"TestJson\"", "TestJson", typeof(string))]
+        [DataRow("\"TestJson\"", "TestJson")]
         public void ToType_ShouldReturnValidData(string value, string expectedValue, Type expectedType)
         {
             var converter = new Json.Converters.StringConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (string)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -24,7 +23,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.StringConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

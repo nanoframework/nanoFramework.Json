@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class SByteConverterTests
     {
         [TestMethod]
-        [DataRow("120", (byte)120, typeof(sbyte))]
-        [DataRow("42", (byte)42, typeof(sbyte))]
-        public void ToType_ShouldReturnValidData(string value, sbyte expectedValue, Type expectedType)
+        [DataRow("120", (sbyte)120)]
+        [DataRow("42", (sbyte)42)]
+        public void ToType_ShouldReturnValidData(string value, sbyte expectedValue)
         {
             var converter = new Json.Converters.SByteConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (sbyte)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -26,7 +25,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.SByteConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

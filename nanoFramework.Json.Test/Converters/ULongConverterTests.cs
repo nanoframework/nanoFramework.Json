@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class ULongConverterTests
     {
         [TestMethod]
-        [DataRow("120", 120, typeof(ulong))]
-        [DataRow("45", 45, typeof(ulong))]
-        public void ToType_ShouldReturnValidData(string value, ulong expectedValue, Type expectedType)
+        [DataRow("120", 120)]
+        [DataRow("45", 45)]
+        public void ToType_ShouldReturnValidData(string value, ulong expectedValue)
         {
             var converter = new Json.Converters.ULongConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (ulong)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]

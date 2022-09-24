@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class TimeSpanConverterTests
     {
         [TestMethod]
-        [DataRow("10.00:00:00.0000000", 10, typeof(TimeSpan))]
-        public void ToType_ShouldReturnValidData(string value, int expectedValueHours, Type expectedType)
+        [DataRow("10.00:00:00.0000000", 10)]
+        public void ToType_ShouldReturnValidData(string value, int expectedValueHours)
         {
             var converter = new Json.Converters.TimeSpanConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (TimeSpan)converter.ToType(value);
 
             var expectedTimeSpanValue = TimeSpan.FromHours(expectedValueHours);
-            Assert.Equals(expectedTimeSpanValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedTimeSpanValue.Ticks, convertedValue.Ticks);
         }
 
         [TestMethod]
@@ -25,7 +24,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.TimeSpanConverter();
             var convertedValue = converter.ToJson(TimeSpan.FromHours(valueHours));
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class DoubleConverterTests
     {
         [TestMethod]
-        [DataRow("120.0", 120.0, typeof(double))]
-        [DataRow("42.5", 42.5, typeof(double))]
-        public void ToType_ShouldReturnValidData(string value, double expectedValue, Type expectedType)
+        [DataRow("120.0", 120.0)]
+        [DataRow("42.5", 42.5)]
+        public void ToType_ShouldReturnValidData(string value, double expectedValue)
         {
             var converter = new Json.Converters.DoubleConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (double)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -27,7 +26,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.DoubleConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class LongConverterTests
     {
         [TestMethod]
-        [DataRow("120", (long)120, typeof(long))]
-        [DataRow("45", (long)45, typeof(long))]
-        public void ToType_ShouldReturnValidData(string value, long expectedValue, Type expectedType)
+        [DataRow("120", (long)120)]
+        [DataRow("45", (long)45)]
+        public void ToType_ShouldReturnValidData(string value, long expectedValue)
         {
             var converter = new Json.Converters.LongConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (long)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -26,7 +25,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.LongConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }

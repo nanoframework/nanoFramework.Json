@@ -7,15 +7,14 @@ namespace nanoFramework.Json.Test.Converters
     public class UShortConverterTests
     {
         [TestMethod]
-        [DataRow("120", (ushort)120, typeof(ushort))]
-        [DataRow("45", (ushort)45, typeof(ushort))]
-        public void ToType_ShouldReturnValidData(string value, ushort expectedValue, Type expectedType)
+        [DataRow("120", (ushort)120)]
+        [DataRow("45", (ushort)45)]
+        public void ToType_ShouldReturnValidData(string value, ushort expectedValue)
         {
             var converter = new Json.Converters.UShortConverter();
-            var convertedValue = converter.ToType(value);
+            var convertedValue = (ushort)converter.ToType(value);
 
-            Assert.Equals(expectedValue, convertedValue);
-            Assert.Equals(convertedValue.GetType(), expectedType);
+            Assert.Equal(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -26,7 +25,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.UShortConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }
