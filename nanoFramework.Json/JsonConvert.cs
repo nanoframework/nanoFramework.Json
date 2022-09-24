@@ -191,8 +191,6 @@ namespace nanoFramework.Json
                 if (rootElementType == null
                     && rootType.FullName == "System.Collections.Hashtable")
                 {
-                    rootElementType = rootType;
-
                     Hashtable rootInstanceHashtable = new Hashtable();
 
                     foreach (var m in rootObject.Members)
