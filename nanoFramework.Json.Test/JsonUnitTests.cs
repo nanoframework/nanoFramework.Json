@@ -1143,10 +1143,6 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void SerializeCosmosDbObject_01()
         {
-            // TODO need to fix ToString() from string with " inside
-            Assert.SkipTest("Skipping this test for now");
-
-
             var valueAsJsonString = @"{""_count"":1,""Databases"":[{""_users"":""users/"",""_ts"":1644173816,""id"":""HomeAutomation"",""_rid"":""MfAzAA=="",""_colls"":""colls/"",""_etag"":""\""000020002-0000-0a00-0000-620019f80000\"""",""_self"":""dbs/MFzAA==/""}],""_rid"":null}";
 
             CosmosDbDatabaseList dbObject = new CosmosDbDatabaseList();
