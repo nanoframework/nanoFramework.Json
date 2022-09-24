@@ -335,14 +335,14 @@ namespace nanoFramework.Json.Test
                 try
                 {
                     // The method should throw InvalidCaseException as each strArr has at least one invalid value for TimeSpan
-                    var _ = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
+                    JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
 
                     // If the method above haven't throw InvalidCastException then the test should fail
-                    throw new Exception($"Should throw exception {nameof(InvalidCastException)}.");
+                    throw new InvalidOperationException($"Should throw exception {nameof(InvalidCastException)}.");
                 }
                 catch (InvalidCastException)
                 {
-
+                    // Deserialization should throw exception and test should not fail.
                 }
             }
 
@@ -505,7 +505,7 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Starting float Object Test...");
             var test = new JsonTestClassFloat()
             {
-                aFloat = 2567.454f, //TODO Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
+                aFloat = 2567.454f, //BUG: Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
             };
 
             var result = JsonConvert.SerializeObject(test);
@@ -513,7 +513,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal"); //TODO: better str handling!
+            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal");
             Assert.Equal(test.aFloat, dserResult.aFloat, "Deserialized float Result is Equal");
 
             OutputHelper.WriteLine("float Object Test Test succeeded");
@@ -555,7 +555,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double"); //TODO: possible conversion issue (but can happen with conversions)
+            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double");
 
             OutputHelper.WriteLine("double Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -1120,9 +1120,9 @@ namespace nanoFramework.Json.Test
             var serInt32 = JsonConvert.SerializeObject(singleInt32);
 
             var deserUInt64 = JsonConvert.DeserializeObject(serUInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserInt64 = JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserUInt32 = JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserInt32 = JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization));
+            JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization));
+            JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization));
 
             Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
             Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
