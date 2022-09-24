@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace nanoFramework.Json.Converters
 {
-    internal sealed class BoolConverter : IConverter
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public sealed class BoolConverter : IConverter
     {
         public string ToJson(object value)
         {
