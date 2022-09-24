@@ -31,12 +31,6 @@ namespace nanoFramework.Json.Converters
                 return TimeSpan.Zero;
             }
 
-            int days = 0;
-            int ticks = 0;
-            int hours = 0;
-            int minutes = 0;
-            int seconds = 0;
-
             // figure out where the separators are
             int indexOfFirstDot = value.IndexOf('.');
             int indexOfSecondDot = indexOfFirstDot > -1 ? value.IndexOf('.', indexOfFirstDot + 1) : -1;
@@ -67,6 +61,7 @@ namespace nanoFramework.Json.Converters
             }
 
             // let the parsing start!
+            int days = 0;
             if (hasDays
                 && !int.TryParse(timeSpanBits[0], out days))
             {
@@ -76,24 +71,11 @@ namespace nanoFramework.Json.Converters
             // bump the index if days component is present
             int processIndex = hasDays ? 1 : 0;
 
-            if (hasHours && processIndex <= timeSpanBits.Length && 
-                !int.TryParse(timeSpanBits[processIndex++], out hours))
-            {
-                throw new InvalidCastException();
-            }
+            var hours = ParseValueFromString(hasHours, timeSpanBits, ref processIndex);
+            var minutes = ParseValueFromString(hasMinutes, timeSpanBits, ref processIndex);
+            var seconds = ParseValueFromString(hasSeconds, timeSpanBits, ref processIndex);
 
-            if (hasMinutes && processIndex <= timeSpanBits.Length &&
-                !int.TryParse(timeSpanBits[processIndex++], out minutes))
-            {
-                throw new InvalidCastException();
-            }
-
-            if (hasSeconds && processIndex <= timeSpanBits.Length &&
-                !int.TryParse(timeSpanBits[processIndex++], out seconds))
-            {
-                throw new InvalidCastException();
-            }
-
+            int ticks = 0;
             if (hasTicks && processIndex <= timeSpanBits.Length)
             {
                 if (!int.TryParse(timeSpanBits[processIndex], out ticks))
@@ -109,15 +91,53 @@ namespace nanoFramework.Json.Converters
             }
 
             // sanity check for valid ranges
-            if ((hours >= 0 && hours < 24)
-                && (minutes >= 0 && minutes < 60)
-                && (seconds >= 0 && seconds < 60))
+            if (IsInvalidTimeSpan(hours, minutes, seconds))
             {
-                // we should have everything now
-                return new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
+                throw new InvalidCastException();
             }
 
-            throw new InvalidCastException();
+            // we should have everything now
+            return new TimeSpan(ticks).Add(new TimeSpan(days, hours, minutes, seconds, 0));
+        }
+
+        private static int ParseValueFromString(bool hasValue,string[] timeSpanBits, ref int processIndex)
+        {
+            if (!hasValue)
+            {
+                return 0;
+            }
+
+            if (processIndex > timeSpanBits.Length)
+            {
+                return 0;
+            }
+
+            if (!int.TryParse(timeSpanBits[processIndex++], out var value))
+            {
+                throw new InvalidCastException();
+            }
+
+            return value;
+        }
+
+        private static bool IsInvalidTimeSpan(int hour, int minutes, int seconds)
+        {
+            if (hour < 0 || hour >= 24)
+            {
+                return true;
+            }
+
+            if (minutes < 0 || minutes >= 60)
+            {
+                return true;
+            }
+
+            if (seconds < 0 || seconds >= 60)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
