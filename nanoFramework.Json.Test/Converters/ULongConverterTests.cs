@@ -25,7 +25,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.ULongConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equals(expectedValue, convertedValue);
+            Assert.Equal(expectedValue, convertedValue);
         }
     }
 }
