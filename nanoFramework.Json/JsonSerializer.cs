@@ -8,7 +8,6 @@ using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.Reflection;
-using System.Text;
 
 namespace nanoFramework.Json
 {
@@ -51,13 +50,13 @@ namespace nanoFramework.Json
                 return o.ToString();
             }
 
-            if (o is IDictionary && !type.IsArray) //TODO: move to converters?
+            if (o is IDictionary && !type.IsArray)
             {
                 IDictionary dictionary = o as IDictionary;
                 return SerializeIDictionary(dictionary);
             }
 
-            if (o is IEnumerable) //TODO: move to converters?
+            if (o is IEnumerable)
             {
                 IEnumerable enumerable = o as IEnumerable;
                 return SerializeIEnumerable(enumerable);
@@ -79,26 +78,31 @@ namespace nanoFramework.Json
 
             if (type.IsClass)
             {
-                Hashtable hashtable = new Hashtable();
-
-                // Iterate through all of the methods, looking for internal GET properties
-                MethodInfo[] methods = type.GetMethods();
-
-                foreach (MethodInfo method in methods)
-                {
-                    if (!ShouldSerializeMethod(method))
-                    {
-                        continue;
-                    }
-
-                    object returnObject = method.Invoke(o, null);
-                    hashtable.Add(method.Name.Substring(4), returnObject);
-                }
-
-                return SerializeIDictionary(hashtable);
+                return SerializeClass(o, type);
             }
 
             return null;
+        }
+
+        private static string SerializeClass(object o, Type type)
+        {
+            Hashtable hashtable = new Hashtable();
+
+            // Iterate through all of the methods, looking for internal GET properties
+            MethodInfo[] methods = type.GetMethods();
+
+            foreach (MethodInfo method in methods)
+            {
+                if (!ShouldSerializeMethod(method))
+                {
+                    continue;
+                }
+
+                object returnObject = method.Invoke(o, null);
+                hashtable.Add(method.Name.Substring(4), returnObject);
+            }
+
+            return SerializeIDictionary(hashtable);
         }
 
         private static bool ShouldSerializeMethod(MethodInfo method)
