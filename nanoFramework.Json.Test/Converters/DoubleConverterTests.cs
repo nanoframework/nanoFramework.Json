@@ -1,6 +1,5 @@
 ﻿using nanoFramework.TestFramework;
 using System;
-using System.Text;
 
 namespace nanoFramework.Json.Test.Converters
 {
@@ -10,7 +9,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow("120.0", 120.0, typeof(double))]
         [DataRow("42.5", 42.5, typeof(double))]
-        public void ToType_ShouldReturnValidData(string value, bool expectedValue, Type expectedType)
+        public void ToType_ShouldReturnValidData(string value, double expectedValue, Type expectedType)
         {
             var converter = new Json.Converters.DoubleConverter();
             var convertedValue = converter.ToType(value);
@@ -20,10 +19,10 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        [DataRow(120.0, "12050")]
+        [DataRow(120.0, "120.0")]
         [DataRow(42.5, "42.5")]
         [DataRow(double.NaN, "null")]
-        public void ToJson_Should_ReturnValidData(bool value, string expectedValue)
+        public void ToJson_Should_ReturnValidData(double value, string expectedValue)
         {
             var converter = new Json.Converters.DoubleConverter();
             var convertedValue = converter.ToJson(value);

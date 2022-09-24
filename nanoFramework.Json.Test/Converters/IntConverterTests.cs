@@ -4,14 +4,14 @@ using System;
 namespace nanoFramework.Json.Test.Converters
 {
     [TestClass]
-    public class BoolConverterTests
+    public class IntConverterTests
     {
         [TestMethod]
-        [DataRow("true", true, typeof(bool))]
-        [DataRow("false", false, typeof(bool))]
-        public void ToType_ShouldReturnValidData(string value, bool expectedValue, Type expectedType)
+        [DataRow("120", 120, typeof(int))]
+        [DataRow("45", 45, typeof(int))]
+        public void ToType_ShouldReturnValidData(string value, int expectedValue, Type expectedType)
         {
-            var converter = new Json.Converters.BoolConverter();
+            var converter = new Json.Converters.IntConverter();
             var convertedValue = converter.ToType(value);
 
             Assert.Equals(expectedValue, convertedValue);
@@ -19,11 +19,11 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        [DataRow(true, "true")]
-        [DataRow(false, "false")]
-        public void ToJson_Should_ReturnValidData(bool value, string expectedValue)
+        [DataRow(120, "120")]
+        [DataRow(45, "45")]
+        public void ToJson_Should_ReturnValidData(int value, string expectedValue)
         {
-            var converter = new Json.Converters.BoolConverter();
+            var converter = new Json.Converters.IntConverter();
             var convertedValue = converter.ToJson(value);
 
             Assert.Equals(expectedValue, convertedValue);

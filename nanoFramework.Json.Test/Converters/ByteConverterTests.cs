@@ -1,6 +1,5 @@
 ﻿using nanoFramework.TestFramework;
 using System;
-using System.Text;
 
 namespace nanoFramework.Json.Test.Converters
 {
