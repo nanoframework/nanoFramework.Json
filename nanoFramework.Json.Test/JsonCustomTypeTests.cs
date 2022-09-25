@@ -54,7 +54,7 @@ namespace nanoFramework.Json.Test
         {
             var obj = (TestObject)JsonConvert.DeserializeObject("{\"TestObject\" : \"whatever\"}", typeof(TestObject));
 
-            Assert.Equal(obj.Value, 312);
+            Assert.Equal(obj.Value, 321);
         }
     }
 }
