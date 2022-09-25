@@ -207,6 +207,12 @@ namespace nanoFramework.Json
                     return rootArrayList;
                 }
 
+                if (ConvertersMapping.ConversionTable.Contains(rootType))
+                {
+                    var converter = (IConverter)ConvertersMapping.ConversionTable[rootType];
+                    return converter.ToType(rootObject);
+                }
+
                 // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
                 Type[] types = { };
 
