@@ -7,8 +7,8 @@ namespace nanoFramework.Json.Test.Converters
     public class ULongConverterTests
     {
         [TestMethod]
-        [DataRow("120", 120)]
-        [DataRow("45", 45)]
+        [DataRow("120", (ulong)120)]
+        [DataRow("45", (ulong)45)]
         public void ToType_ShouldReturnValidData(string value, ulong expectedValue)
         {
             var converter = new Json.Converters.ULongConverter();

@@ -6,7 +6,7 @@ namespace nanoFramework.Json.Test.Converters
     [TestClass]
     public class BoolConverterTests
     {
-        [TestMethod]
+        /*[TestMethod]
         [DataRow("true", true)]
         [DataRow("false", false)]
         public void ToType_ShouldReturnValidData(string value, bool expectedValue)
@@ -15,7 +15,7 @@ namespace nanoFramework.Json.Test.Converters
             var convertedValue = (bool)converter.ToType(value);
 
             Assert.Equal(expectedValue, convertedValue);
-        }
+        }*/
 
         [TestMethod]
         [DataRow(true, "true")]

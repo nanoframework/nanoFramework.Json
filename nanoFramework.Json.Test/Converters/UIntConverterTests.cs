@@ -7,8 +7,8 @@ namespace nanoFramework.Json.Test.Converters
     public class UIntConverterTests
     {
         [TestMethod]
-        [DataRow("120", 120)]
-        [DataRow("45", 45)]
+        [DataRow("120", (uint)120)]
+        [DataRow("45", (uint)45)]
         public void ToType_ShouldReturnValidData(string value, uint expectedValue)
         {
             var converter = new Json.Converters.UIntConverter();

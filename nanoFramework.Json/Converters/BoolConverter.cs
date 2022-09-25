@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
-            return Convert.ToBoolean(Convert.ToByte(value.ToString()));
+            throw new NotImplementedException();
         }
     }
 }
