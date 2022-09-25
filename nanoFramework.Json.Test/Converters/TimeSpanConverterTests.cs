@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        [DataRow(10, "10:00:00")]
+        [DataRow(10, "\"10:00:00\"")]
         public void ToJson_Should_ReturnValidData(int valueHours, string expectedValue)
         {
             var converter = new Json.Converters.TimeSpanConverter();
