@@ -9,7 +9,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow("120", (long)120)]
         [DataRow("45", (long)45)]
-        public void ToType_ShouldReturnValidData(string value, long expectedValue)
+        public void LongConverter_ToType_ShouldReturnValidData(string value, long expectedValue)
         {
             var converter = new Json.Converters.LongConverter();
             var convertedValue = (long)converter.ToType(value);
@@ -20,7 +20,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow((long)120, "120")]
         [DataRow((long)45, "45")]
-        public void ToJson_Should_ReturnValidData(long value, string expectedValue)
+        public void LongConverter_ToJson_Should_ReturnValidData(long value, string expectedValue)
         {
             var converter = new Json.Converters.LongConverter();
             var convertedValue = converter.ToJson(value);

@@ -8,7 +8,7 @@ namespace nanoFramework.Json.Test.Converters
     {
         [TestMethod]
         [DataRow("\"TestJson\"", "TestJson")]
-        public void ToType_ShouldReturnValidData(string value, string expectedValue)
+        public void StringConverter_ToType_ShouldReturnValidData(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
             var convertedValue = (string)converter.ToType(value);
@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Test.Converters
 
         [TestMethod]
         [DataRow("TestJson", "\"TestJson\"")]
-        public void ToJson_Should_ReturnValidData(string value, string expectedValue)
+        public void StringConverter_ToJson_Should_ReturnValidData(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
             var convertedValue = converter.ToJson(value);

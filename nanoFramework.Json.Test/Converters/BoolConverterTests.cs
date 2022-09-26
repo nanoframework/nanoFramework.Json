@@ -20,7 +20,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow(true, "true")]
         [DataRow(false, "false")]
-        public void ToJson_Should_ReturnValidData(bool value, string expectedValue)
+        public void BoolConverter_ToJson_Should_ReturnValidData(bool value, string expectedValue)
         {
             var converter = new Json.Converters.BoolConverter();
             var convertedValue = converter.ToJson(value);

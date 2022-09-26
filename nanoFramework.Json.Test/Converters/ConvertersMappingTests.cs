@@ -35,7 +35,7 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        public void Add_Should_AddTypeMapping()
+        public void ConvertersMappingT_Add_Should_AddTypeMapping()
         {
             ConvertersMapping.Add(typeof(IConverter), new TestConverter());
 
@@ -49,7 +49,7 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        public void Remove_Should_RemoveTypeMapping()
+        public void ConvertersMappingT_Remove_Should_RemoveTypeMapping()
         {
             ConvertersMapping.Add(typeof(TestConverter), new TestConverter());
             ConvertersMapping.Remove(typeof(TestConverter));
@@ -66,7 +66,7 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
-        public void Replace_ShouldReplaceMapping()
+        public void ConvertersMappingT_Replace_ShouldReplaceMapping()
         {
             ConvertersMapping.Add(typeof(TestConverter2), new TestConverter());
             ConvertersMapping.Replace(typeof(TestConverter2), new TestConverter2());

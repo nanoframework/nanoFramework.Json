@@ -9,7 +9,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow("120", (uint)120)]
         [DataRow("45", (uint)45)]
-        public void ToType_ShouldReturnValidData(string value, uint expectedValue)
+        public void UIntConverter_ToType_ShouldReturnValidData(string value, uint expectedValue)
         {
             var converter = new Json.Converters.UIntConverter();
             var convertedValue = (uint)converter.ToType(value);
@@ -20,7 +20,7 @@ namespace nanoFramework.Json.Test.Converters
         [TestMethod]
         [DataRow((uint)120, "120")]
         [DataRow((uint)45, "45")]
-        public void ToJson_Should_ReturnValidData(uint value, string expectedValue)
+        public void UIntConverter_ToJson_Should_ReturnValidData(uint value, string expectedValue)
         {
             var converter = new Json.Converters.UIntConverter();
             var convertedValue = converter.ToJson(value);

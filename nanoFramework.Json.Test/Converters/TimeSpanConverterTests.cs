@@ -8,7 +8,7 @@ namespace nanoFramework.Json.Test.Converters
     {
         [TestMethod]
         [DataRow("10:00:00", 10)]
-        public void ToType_ShouldReturnValidData(string value, int expectedValueHours)
+        public void TimeSpanConverter_ToType_ShouldReturnValidData(string value, int expectedValueHours)
         {
             var converter = new Json.Converters.TimeSpanConverter();
             var convertedValue = (TimeSpan)converter.ToType(value);
@@ -19,7 +19,7 @@ namespace nanoFramework.Json.Test.Converters
 
         [TestMethod]
         [DataRow(10, "\"10:00:00\"")]
-        public void ToJson_Should_ReturnValidData(int valueHours, string expectedValue)
+        public void TimeSpanConverter_ToJson_Should_ReturnValidData(int valueHours, string expectedValue)
         {
             var converter = new Json.Converters.TimeSpanConverter();
             var convertedValue = converter.ToJson(TimeSpan.FromHours(valueHours));
