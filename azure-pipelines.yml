@@ -50,7 +50,7 @@ steps:
   parameters:
     sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
     runUnitTests: true
-    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\nanoFramework.Json.Test\nano.runsettings'
+    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\.runsettings'
 
 # step from template @ nf-tools repo
 # report error
