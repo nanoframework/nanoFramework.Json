@@ -31,48 +31,7 @@ namespace nanoFramework.Json.Test
         {
             OutputHelper.WriteLine("Can_serialize_and_deserialize_arrays_of_class_objects() - Starting test...");
 
-            JsonTestTown myTown = new JsonTestTown
-            {
-                TownID = 1,
-                TownName = "myTown",
-                CompaniesInThisTown = new JsonTestCompany[]
-                {
-                    new JsonTestCompany { CompanyID = 1, CompanyName = "AAA Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 2, CompanyName = "BBB Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 3, CompanyName = "CCC Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 4, CompanyName = "DDD Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 5, CompanyName = "EEE Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 6, CompanyName = "FFF Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 7, CompanyName = "GGG Amalgamated Industries" },
-                    new JsonTestCompany { CompanyID = 8, CompanyName = "HHH Amalgamated Industries" }
-                },
-                EmployeesInThisTown = new JsonTestEmployee[]
-                {
-                    new JsonTestEmployee
-                    {
-                        EmployeeID = 1,
-                        EmployeeName = "John Smith",
-                        CurrentEmployer = new JsonTestCompany { CompanyID = 3, CompanyName = "CCC Amalgamated Industries" },
-                        FormerEmployers = new JsonTestCompany[]
-                        {
-                            new JsonTestCompany { CompanyID = 2, CompanyName = "BBB Amalgamated Industries" },
-                            new JsonTestCompany { CompanyID = 5, CompanyName = "EEE Amalgamated Industries" },
-                        }
-                    },
-                    new JsonTestEmployee
-                    {
-                        EmployeeID = 1,
-                        EmployeeName = "Jim Smith",
-                        CurrentEmployer = new JsonTestCompany { CompanyID = 7, CompanyName = "GGG Amalgamated Industries" },
-                        FormerEmployers = new JsonTestCompany[]
-                        {
-                            new JsonTestCompany { CompanyID = 4, CompanyName = "DDD Amalgamated Industries" },
-                            new JsonTestCompany { CompanyID = 1, CompanyName = "AAA Amalgamated Industries" },
-                            new JsonTestCompany { CompanyID = 6, CompanyName = "FFF Amalgamated Industries" },
-                        }
-                    }
-                }
-            };
+            JsonTestTown myTown = JsonTestTown.CreateTestClass();
 
             var result = JsonConvert.SerializeObject(myTown);
             JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
@@ -376,14 +335,14 @@ namespace nanoFramework.Json.Test
                 try
                 {
                     // The method should throw InvalidCaseException as each strArr has at least one invalid value for TimeSpan
-                    var _ = (JsonTestClassTimeSpan)JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
+                    JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
 
                     // If the method above haven't throw InvalidCastException then the test should fail
-                    throw new Exception($"Should throw exception {nameof(InvalidCastException)}.");
+                    throw new InvalidOperationException($"Should throw exception {nameof(InvalidCastException)}.");
                 }
                 catch (InvalidCastException)
                 {
-
+                    // Deserialization should throw exception and test should not fail.
                 }
             }
 
@@ -451,29 +410,7 @@ namespace nanoFramework.Json.Test
         public void Can_serialize_and_deserialize_complex_object()
         {
             OutputHelper.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");
-            var test = new JsonTestClassComplex()
-            {
-                aInteger = 10,
-                aShort = 254,
-                aByte = 0x05,
-                aString = "A string",
-                aFloat = 1.2345f,
-                aDouble = 1.2345,
-                aBoolean = true,
-                Timestamp = DateTime.UtcNow,
-                FixedTimestamp = new DateTime(2020, 05, 01, 09, 30, 00),
-                intArray = new[] { 1, 3, 5, 7, 9 },
-                shortArray = new[] { (short)1, (short)3, (short)5, (short)7, (short)9 },
-                byteArray = new[] { (byte)0x22, (byte)0x23, (byte)0x24, (byte)0x25, (byte)0x26 },
-                stringArray = new[] { "two", "four", "six", "eight" },
-                floatArray = new[] { 1.1f, 3.3f, 5.5f, 7.7f, 9.9f },
-                doubleArray = new[] { 1.12345, 3.3456, 5.56789, 7.78910, 9.910111213 },
-                child1 = new JsonTestClassChild() { one = 1, two = 2, three = 3 },
-                Child = new JsonTestClassChild() { one = 100, two = 200, three = 300 },
-                nullObject = null,
-                nanFloat = float.NaN,
-                nanDouble = double.NaN,
-            };
+            var test = JsonTestClassComplex.CreateTestClass();
 
             var result = JsonConvert.SerializeObject(test);
             var dserResult = (JsonTestClassComplex)JsonConvert.DeserializeObject(result, typeof(JsonTestClassComplex));
@@ -568,7 +505,7 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Starting float Object Test...");
             var test = new JsonTestClassFloat()
             {
-                aFloat = 2567.454f, //TODO Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
+                aFloat = 2567.454f, //BUG: Deserialized float fails when number is greater than 3-4 DP with an extra `.` at the end.
             };
 
             var result = JsonConvert.SerializeObject(test);
@@ -576,7 +513,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal"); //TODO: better str handling!
+            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal");
             Assert.Equal(test.aFloat, dserResult.aFloat, "Deserialized float Result is Equal");
 
             OutputHelper.WriteLine("float Object Test Test succeeded");
@@ -618,7 +555,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double"); //TODO: possible conversion issue (but can happen with conversions)
+            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double");
 
             OutputHelper.WriteLine("double Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -839,7 +776,6 @@ namespace nanoFramework.Json.Test
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.Equal((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
-            //Assert.Equal(((DateTime)twinPayload["statusUpdateTime"]).Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
             Assert.Equal((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
             Assert.Equal(((Hashtable)twinPayload["x509Thumbprint"]).Count, 2, "x509Thumbprint collection count doesn't match");
             Assert.Equal((int)twinPayload["version"], 381, "version doesn't match");
@@ -1139,11 +1075,11 @@ namespace nanoFramework.Json.Test
             Assert.Equal((short)1234, deser.OneInt16, "Int16");
             Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
             Assert.Equal(-789012, deser.OneInt32, "Int32");
-            Assert.Equal((uint)78912, deser.OneUInt32, "UInt32");
-            Assert.Equal((long)-1234567, deser.OneInt64, "Int64");
-            Assert.Equal((ulong)1234567, deser.OneUInt64, "UInt64");
+            Assert.Equal(78912, deser.OneUInt32, "UInt32");
+            Assert.Equal(-1234567, deser.OneInt64, "Int64");
+            Assert.Equal(1234567, deser.OneUInt64, "UInt64");
             Assert.Equal((float)34.45, deser.OneSingle, "Single");
-            Assert.Equal((double)45678.23, deser.OneDouble, "Double");
+            Assert.Equal(45678.23, deser.OneDouble, "Double");
             Assert.True(deser.OneBoolean, "Boolean true");
             Assert.False(deser.TwoBoolean, "Boolean false");
         }
@@ -1183,9 +1119,9 @@ namespace nanoFramework.Json.Test
             var serInt32 = JsonConvert.SerializeObject(singleInt32);
 
             var deserUInt64 = JsonConvert.DeserializeObject(serUInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserInt64 = JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserUInt32 = JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
-            var deserInt32 = JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
+            JsonConvert.DeserializeObject(serInt64, typeof(SingleTypesClassDeserialization));
+            JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization));
+            JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization));
 
             Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
             Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
@@ -1206,10 +1142,6 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void SerializeCosmosDbObject_01()
         {
-            // TODO need to fix ToString() from string with " inside
-            Assert.SkipTest("Skipping this test for now");
-
-
             var valueAsJsonString = @"{""_count"":1,""Databases"":[{""_users"":""users/"",""_ts"":1644173816,""id"":""HomeAutomation"",""_rid"":""MfAzAA=="",""_colls"":""colls/"",""_etag"":""\""000020002-0000-0a00-0000-620019f80000\"""",""_self"":""dbs/MFzAA==/""}],""_rid"":null}";
 
             CosmosDbDatabaseList dbObject = new CosmosDbDatabaseList();

@@ -1,95 +1,74 @@
 ﻿using nanoFramework.Benchmark;
-using System;
-using System.Collections;
 using nanoFramework.Benchmark.Attributes;
 using nanoFramework.Json.Benchmark.Base;
 using nanoFramework.Json.Test.Shared;
+using System;
+using System.Collections;
 
 namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
 {
     [IterationCount(5)]
     public class ReferenceTypesSerializationBenchmark : BaseIterationBenchmark
     {
-        const string IntArrayJson = "[405421362,1082483948,1131707654,345242860,1111968802]";
-        const string ShortArrayJson = "[12345,25463,22546,18879,12453]";
-        const string StringJson = "some string";
-        const string ArrayListJson = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[-1,null,24.565657576,\"blah\",false]}]";
-        const string s_AzureTwinsJsonTestPayload = @"{
-            ""deviceId"": ""nanoDeepSleep"",
-            ""etag"": ""AAAAAAAAAAc="",
-            ""deviceEtag"": ""Njc2MzYzMTQ5"",
-            ""status"": ""enabled"",
-            ""statusUpdateTime"": ""0001-01-01T00:00:00Z"",
-            ""connectionState"": ""Disconnected"",
-            ""lastActivityTime"": ""2021-06-03T05:52:41.4683112Z"",
-            ""cloudToDeviceMessageCount"": 0,
-            ""authenticationType"": ""sas"",
-            ""x509Thumbprint"": {
-                        ""primaryThumbprint"": null,
-                ""secondaryThumbprint"": null
-            },
-            ""modelId"": """",
-            ""version"": 381,
-            ""properties"": {
-                        ""desired"": {
-                            ""TimeToSleep"": 30,
-                    ""$metadata"": {
-                                ""$lastUpdated"": ""2021-06-03T05:37:11.8120413Z"",
-                        ""$lastUpdatedVersion"": 7,
-                        ""TimeToSleep"": {
-                                    ""$lastUpdated"": ""2021-06-03T05:37:11.8120413Z"",
-                            ""$lastUpdatedVersion"": 7
-                        }
-                            },
-                    ""$version"": 7
-                        },
-                ""reported"": {
-                            ""Firmware"": ""nanoFramework"",
-                    ""TimeToSleep"": 30,
-                    ""$metadata"": {
-                                ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z"",
-                        ""Firmware"": {
-                                    ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z""
-                        },
-                        ""TimeToSleep"": {
-                                    ""$lastUpdated"": ""2021-06-03T05:52:41.1232797Z""
-                        }
-                            },
-                    ""$version"": 374
-                }
-                    },
-            ""capabilities"": {
-                        ""iotEdge"": false
+        const string testString = "TestStringToSerialize";
+        const short arrayElementCount = 5;
+        readonly int[] intArray = new int[arrayElementCount];
+        readonly short[] shortArray = new short[arrayElementCount];
+        private Person nestedTestClass;
+        private JsonTestClassComplex complexClass;
+        private JsonTestTown myTown;
+        private ArrayList arrayList;
+
+        [Setup]
+        public void Setup()
+        {
+            var random = new Random();
+            for (int i = 0; i < arrayElementCount; i++)
+            {
+                intArray[i] = random.Next();
+                shortArray[i] = (short)random.Next(short.MaxValue);
             }
-        }";
 
-        const string NestedClassJson = "{\"FirstName\":\"John\",\"LastName\":\"Doe\",\"ArrayProperty\":[\"hello\",\"world\"],\"Address\":null,\"Birthday\":\"1988-04-23T00:00:00.0000000Z\",\"ID\":27,\"Friend\":{\"FirstName\":\"Bob\",\"LastName\":\"Smith\",\"ArrayProperty\":[\"hi\",\"planet\"],\"Address\":\"123 Some St\",\"Birthday\":\"1983-07-03T00:00:00.0000000Z\",\"ID\":2,\"Friend\":null}}";
-        const string ComplexArrayJson = "{\"TownID\":1,\"EmployeesInThisTown\":[{\"CurrentEmployer\":{\"CompanyID\":3,\"CompanyName\":\"CCC Amalgamated Industries\"},\"EmployeeID\":1,\"FormerEmployers\":[{\"CompanyID\":2,\"CompanyName\":\"BBB Amalgamated Industries\"},{\"CompanyID\":5,\"CompanyName\":\"EEE Amalgamated Industries\"}],\"EmployeeName\":\"John Smith\"},{\"CurrentEmployer\":{\"CompanyID\":7,\"CompanyName\":\"GGG Amalgamated Industries\"},\"EmployeeID\":1,\"FormerEmployers\":[{\"CompanyID\":4,\"CompanyName\":\"DDD Amalgamated Industries\"},{\"CompanyID\":1,\"CompanyName\":\"AAA Amalgamated Industries\"},{\"CompanyID\":6,\"CompanyName\":\"FFF Amalgamated Industries\"}],\"EmployeeName\":\"Jim Smith\"}],\"TownName\":\"myTown\",\"CompaniesInThisTown\":[{\"CompanyID\":1,\"CompanyName\":\"AAA Amalgamated Industries\"},{\"CompanyID\":2,\"CompanyName\":\"BBB Amalgamated Industries\"},{\"CompanyID\":3,\"CompanyName\":\"CCC Amalgamated Industries\"},{\"CompanyID\":4,\"CompanyName\":\"DDD Amalgamated Industries\"},{\"CompanyID\":5,\"CompanyName\":\"EEE Amalgamated Industries\"},{\"CompanyID\":6,\"CompanyName\":\"FFF Amalgamated Industries\"},{\"CompanyID\":7,\"CompanyName\":\"GGG Amalgamated Industries\"},{\"CompanyID\":8,\"CompanyName\":\"HHH Amalgamated Industries\"}]}";
+            nestedTestClass = new Person()
+            {
+                FirstName = "John",
+                LastName = "Doe",
+                Birthday = new DateTime(1988, 4, 23),
+                ID = 27,
+                Address = null,
+                ArrayProperty = new string[] { "hello", "world" },
+                Friend = new Person()
+                {
+                    FirstName = "Bob",
+                    LastName = "Smith",
+                    Birthday = new DateTime(1983, 7, 3),
+                    ID = 2,
+                    Address = "123 Some St",
+                    ArrayProperty = new string[] { "hi", "planet" },
+                }
+            };
 
-        protected override int IterationCount => 20;
+            complexClass = JsonTestClassComplex.CreateTestClass();
+
+            myTown = JsonTestTown.CreateTestClass();
+
+            arrayList = new ArrayList()
+            {
+                { "testString" },
+                { 42 },
+                { null },
+                { DateTime.UtcNow },
+                { TimeSpan.FromSeconds(100) }
+            };
+        }
 
         [Benchmark]
         public void IntArray()
         {
             RunInIteration(() =>
             {
-                var dserResult = (int[])JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
+                JsonConvert.SerializeObject(intArray);
             });
-        }
-
-        [Benchmark]
-        public void ArrayList()
-        {
-            RunInIteration(() =>
-            {
-                var arrayList = (ArrayList)JsonConvert.DeserializeObject(ArrayListJson, typeof(ArrayList));
-            });
-        }
-
-        [Benchmark]
-        public void ComplexObjectAzureTwinPayload()
-        {
-            var twinPayload = (TwinPayload)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
         }
 
         [Benchmark]
@@ -97,7 +76,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var dserResult = (short[])JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
+                JsonConvert.SerializeObject(shortArray);
             });
         }
 
@@ -106,22 +85,35 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var dserResult = (string)JsonConvert.DeserializeObject(StringJson, typeof(string));
+                JsonConvert.SerializeObject(testString);
             });
         }
 
         [Benchmark]
         public void NestedClass()
         {
-            var desrResult = (Person)JsonConvert.DeserializeObject(NestedClassJson, typeof(Person));
+            JsonConvert.SerializeObject(nestedTestClass);
         }
 
-        // Sometime it may throw ++++ Exception System.InvalidCastException - CLR_E_INVALID_CAST (1) ++++
-        // After re run it should work
+        [Benchmark]
+        public void ComplexObject()
+        {
+            JsonConvert.SerializeObject(complexClass);
+        }
+
         [Benchmark]
         public void ComplexArrayObject()
         {
-            var desrResult = (JsonTestTown)JsonConvert.DeserializeObject(ComplexArrayJson, typeof(JsonTestTown));
+            JsonConvert.SerializeObject(myTown);
+        }
+
+        [Benchmark]
+        public void ArrayList()
+        {
+            RunInIteration(() =>
+            {
+                JsonConvert.SerializeObject(arrayList);
+            });
         }
     }
 }

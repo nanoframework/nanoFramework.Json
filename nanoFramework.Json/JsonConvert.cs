@@ -5,6 +5,7 @@
 //
 
 using nanoFramework.Json;
+using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.IO;
@@ -51,60 +52,12 @@ namespace nanoFramework.Json
         {
             if (type == typeof(string))
             {
-                return DeserializeStringObject(sourceString);
+                var stringConverter = (IConverter)ConvertersMapping.ConversionTable[typeof(string)];
+                return stringConverter.ToType(sourceString);
             }
 
             var dserResult = Deserialize(sourceString);
             return PopulateObject((JsonToken)dserResult, type, "/");
-        }
-
-        private static char GetEscapableCharKeyBasedOnValue(char inputChar)
-        {
-            foreach (var item in JsonSerializer.EscapableCharactersMapping.Keys)
-            {
-                var value = (char)JsonSerializer.EscapableCharactersMapping[item];
-                if (value == inputChar)
-                {
-                    return (char)item;
-                }
-            }
-
-            // in case inputChar is not supported
-            throw new InvalidOperationException();
-        }
-
-        private static string DeserializeStringObject(string sourceString)
-        {
-            //String by default has escaped \" at beggining and end, just remove them
-            var resultString = sourceString.Substring(1, sourceString.Length - 2);
-
-            if (JsonSerializer.StringContainsCharactersToEscape(resultString, true))
-            {
-                var newString = string.Empty;
-
-                //Last character can not be escaped, because it's last one
-                for (int i = 0; i < resultString.Length - 1; i++)
-                {
-                    var curChar = resultString[i];
-                    var nextChar = resultString[i + 1];
-                    
-                    if (curChar == '\\')
-                    {
-                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
-                        newString += charToAppend;
-                        i++;
-                        continue;
-                    }
-
-                    newString += curChar;
-                }
-
-                //Append last character skkiped by loop
-                newString += resultString[resultString.Length - 1];
-                return newString.ToString();
-            }
-
-            return resultString;
         }
 
 #if NANOFRAMEWORK_1_0
@@ -151,11 +104,10 @@ namespace nanoFramework.Json
         }
 
 #endif
-
-        private static object ConvertToType(Type sourceType, Type targetType, object value)
+        internal static object ConvertToType(Type sourceType, Type targetType, object value)
         {
             // No need to convert if values matches
-            if (sourceType.Name == targetType.Name)
+            if (sourceType == targetType)
             {
                 return value;
             }
@@ -165,50 +117,12 @@ namespace nanoFramework.Json
                 return ConvertToType(sourceType, targetType.GetElementType(), value);
             }
 
-            switch (targetType.Name)
+            if (ConvertersMapping.ConversionTable.Contains(targetType))
             {
-                case nameof(Int16):
-                    return Convert.ToInt16(value.ToString());
-
-                case nameof(UInt16):
-                    return Convert.ToUInt16(value.ToString());
-
-                case nameof(Int32):
-                    return Convert.ToInt32(value.ToString());
-
-                case nameof(UInt32):
-                    return Convert.ToUInt32(value.ToString());
-
-                case nameof(Int64):
-                    return Convert.ToInt64(value.ToString());
-
-                case nameof(UInt64):
-                    return Convert.ToUInt64(value.ToString());
-
-                case nameof(Byte):
-                    return Convert.ToByte(value.ToString());
-
-                case nameof(SByte):
-                    return Convert.ToSByte(value.ToString());
-
-                case nameof(Single):
-                    return Convert.ToSingle(value.ToString());
-
-                case nameof(Double):
-                    return Convert.ToDouble(value.ToString());
-
-                case nameof(Boolean):
-                    return Convert.ToBoolean(Convert.ToByte(value.ToString()));
-
-                case nameof(String):
-                    return value.ToString();
-
-                case nameof(TimeSpan):
-                    return TimeSpanExtensions.TryConvertFromString(value.ToString());
-
-                default:
-                    return value;
+                return ((IConverter)ConvertersMapping.ConversionTable[targetType]).ToType(value);
             }
+
+            return value;
         }
 
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
@@ -229,8 +143,6 @@ namespace nanoFramework.Json
                 if (rootElementType == null
                     && rootType.FullName == "System.Collections.Hashtable")
                 {
-                    rootElementType = rootType;
-
                     Hashtable rootInstanceHashtable = new Hashtable();
 
                     foreach (var m in rootObject.Members)
@@ -295,9 +207,11 @@ namespace nanoFramework.Json
                     return rootArrayList;
                 }
 
-                // This is the object that gets populated and returned
-                // Create rootInstance from the rootType's constructor
-                object rootInstance = null;
+                if (ConvertersMapping.ConversionTable.Contains(rootType))
+                {
+                    var converter = (IConverter)ConvertersMapping.ConversionTable[rootType];
+                    return converter.ToType(rootObject);
+                }
 
                 // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
                 Type[] types = { };
@@ -310,7 +224,9 @@ namespace nanoFramework.Json
                     throw new DeserializationException();
                 }
 
-                rootInstance = ci.Invoke(null);
+                // This is the object that gets populated and returned
+                // Create rootInstance from the rootType's constructor
+                var rootInstance = ci.Invoke(null);
 
                 // If we haven't successfully created rootInstance, bail out
                 if (rootInstance == null)
