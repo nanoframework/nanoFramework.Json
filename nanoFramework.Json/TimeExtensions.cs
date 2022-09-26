@@ -127,14 +127,9 @@ namespace nanoFramework.Json
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static bool IsNumeric(string str)
+        private static bool IsNumeric(string str)
         {
-            if (int.TryParse(str, out int _))
-            {
-                return true;
-            }
-
-            return false;
+            return int.TryParse(str, out int _);
         }
 
         /// <summary>
