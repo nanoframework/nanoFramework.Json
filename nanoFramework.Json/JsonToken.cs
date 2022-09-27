@@ -12,13 +12,6 @@ namespace nanoFramework.Json
 {
     internal abstract class JsonToken
     {
-        internal class SerializationCtx
-        {
-            public int Indent;
-        }
-
-        internal static SerializationCtx SerializationContext = null;
-
         public static string ConvertToString(byte[] byteArray, int start, int count)
         {
             var _chars = new char[byteArray.Length];
