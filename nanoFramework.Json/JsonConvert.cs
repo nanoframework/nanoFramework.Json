@@ -1033,9 +1033,7 @@ namespace nanoFramework.Json
                 throw new DeserializationException();
             }
 
-            var result = new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
-
-            return result;
+            return new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
         }
 
         private static JsonToken ParseValue(ref LexToken token)
