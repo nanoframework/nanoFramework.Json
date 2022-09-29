@@ -6,6 +6,7 @@
 
 using nanoFramework.Json;
 using nanoFramework.Json.Converters;
+using nanoFramework.Json.Resolvers;
 using System;
 using System.Collections;
 using System.IO;
@@ -123,6 +124,28 @@ namespace nanoFramework.Json
             }
 
             return value;
+        }
+
+        private static IMemberResolver GetMemberResolver(Type type, string memberPropertyName)
+        {
+            // return from static methods (singletons)
+            var memberFieldInfo = type.GetField(memberPropertyName);
+
+            if (memberFieldInfo != null)
+            {
+                return new FieldResolver(memberFieldInfo);
+            }
+
+            var memberPropGetMethod = type.GetMethod("get_" + memberPropertyName);
+            var memberPropSetMethod = type.GetMethod("set_" + memberPropertyName);
+
+            if (memberPropSetMethod == null || memberPropGetMethod == null)
+            {
+                // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
+                throw new DeserializationException();
+            }
+
+            return new PropertyResolver(memberPropGetMethod, memberPropSetMethod);
         }
 
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
@@ -255,41 +278,8 @@ namespace nanoFramework.Json
                     }
 
                     // Figure out if we're dealing with a Field or a Property and handle accordingly
-                    Type memberType = null;
-                    FieldInfo memberFieldInfo = null;
-                    MethodInfo memberPropSetMethod = null;
-                    MethodInfo memberPropGetMethod = null;
-                    bool memberIsProperty = false;
-
-                    memberFieldInfo = rootType.GetField(memberPropertyName);
-
-                    if (memberFieldInfo != null)
-                    {
-                        memberType = memberFieldInfo.FieldType;
-                        memberIsProperty = false;
-                    }
-                    else
-                    {
-                        memberPropGetMethod = rootType.GetMethod("get_" + memberPropertyName);
-
-                        if (memberPropGetMethod == null)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            memberType = memberPropGetMethod.ReturnType;
-                            memberPropSetMethod = rootType.GetMethod("set_" + memberPropertyName);
-
-                            if (memberType == null)
-                            {
-                                // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
-                                throw new DeserializationException();
-                            }
-
-                            memberIsProperty = true;
-                        }
-                    }
+                    var memberResolver = GetMemberResolver(rootType, memberPropertyName);
+                    var memberType = memberResolver.GetMemberType();
 
                     // Process the member based on JObject, JValue, or JArray
                     if (memberProperty.Value is JsonObject @object)
@@ -338,14 +328,7 @@ namespace nanoFramework.Json
                             memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
                         }
 
-                        if (memberIsProperty)
-                        {
-                            memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
-                        }
-                        else
-                        {
-                            memberFieldInfo.SetValue(rootInstance, memberObject);
-                        }
+                        memberResolver.SetValue(rootInstance, memberObject);
                     }
                     else if (memberProperty.Value is JsonValue memberPropertyValue)
                     {
@@ -353,57 +336,18 @@ namespace nanoFramework.Json
                         {
                             if (memberPropertyValue.Value == null)
                             {
-                                if (memberIsProperty)
-                                {
-                                    if (!memberPropGetMethod.ReturnType.IsValueType)
-                                    {
-                                        memberPropSetMethod.Invoke(rootInstance, new object[] { null });
-                                    }
-                                    else
-                                    {
-                                        switch (memberPropGetMethod.ReturnType.Name)
-                                        {
-                                            case "Single":
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { float.NaN });
-                                                break;
-
-                                            case "Double":
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { double.NaN });
-                                                break;
-                                        }
-
-                                    }
-                                }
-                                else
-                                {
-                                    object obj = null;
-                                    memberFieldInfo.SetValue(rootInstance, obj);
-                                }
+                                memberResolver.SetValue(rootInstance, null);
                             }
                             else
                             {
-                                if (memberIsProperty)
-                                {
-                                    var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(),
-                                        memberType, memberPropertyValue.Value);
-                                    memberPropSetMethod.Invoke(rootInstance, new object[] { convertedValueAsObject });
-                                }
-                                else
-                                {
-                                    memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
-                                }
+                                var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(),
+                                    memberType, memberPropertyValue.Value);
+                                memberResolver.SetValue(rootInstance, convertedValueAsObject);
                             }
                         }
                         else
                         {
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
-                            }
+                            memberResolver.SetValue(rootInstance, memberPropertyValue.Value);
                         }
                     }
                     else if (memberProperty.Value is JsonArray array)
@@ -432,14 +376,7 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                if (memberPropGetMethod == null)
-                                {
-                                    // {rootType.Name} must have a valid Property Get Method
-                                    throw new DeserializationException();
-                                }
-
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType(),
-                                    memberPropGetMethod.ReturnType, value.Value);
+                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberType, value.Value);
                                 memberValueArrayList.Add(valueToAddAsObject);
                             }
                             else if (item != null)
@@ -485,14 +422,7 @@ namespace nanoFramework.Json
                             }
 
                             // Populate rootInstance
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, targetArray);
-                            }
+                            memberResolver.SetValue(rootInstance, targetArray);
                         }
                         else
                         {
@@ -509,14 +439,7 @@ namespace nanoFramework.Json
                             memberValueArrayList.CopyTo(targetArray);
 
                             // Populate rootInstance
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, targetArray);
-                            }
+                            memberResolver.SetValue(rootInstance, targetArray);
                         }
                     }
                 }
@@ -1392,3 +1315,4 @@ namespace nanoFramework.Json
         private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
     }
 }
+

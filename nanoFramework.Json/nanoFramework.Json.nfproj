@@ -51,6 +51,9 @@
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="Resolvers\FieldResolver.cs" />
+    <Compile Include="Resolvers\IMemberResolver.cs" />
+    <Compile Include="Resolvers\PropertyResolver.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />
     <Compile Include="JsonArray.cs" />
