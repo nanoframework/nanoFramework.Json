@@ -32,6 +32,8 @@ namespace nanoFramework.Json
             public string TValue;
         }
 
+        public static IMemberResolver Resolver = new GenericResolver();
+
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
@@ -124,28 +126,6 @@ namespace nanoFramework.Json
             }
 
             return value;
-        }
-
-        private static IMemberResolver GetMemberResolver(Type type, string memberPropertyName)
-        {
-            // return from static methods (singletons)
-            var memberFieldInfo = type.GetField(memberPropertyName);
-
-            if (memberFieldInfo != null)
-            {
-                return new FieldResolver(memberFieldInfo);
-            }
-
-            var memberPropGetMethod = type.GetMethod("get_" + memberPropertyName);
-            var memberPropSetMethod = type.GetMethod("set_" + memberPropertyName);
-
-            if (memberPropSetMethod == null || memberPropGetMethod == null)
-            {
-                // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
-                throw new DeserializationException();
-            }
-
-            return new PropertyResolver(memberPropGetMethod, memberPropSetMethod);
         }
 
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
@@ -277,9 +257,8 @@ namespace nanoFramework.Json
                         memberPropertyName = "_" + memberProperty.Name.Substring(1);
                     }
 
-                    // Figure out if we're dealing with a Field or a Property and handle accordingly
-                    var memberResolver = GetMemberResolver(rootType, memberPropertyName);
-                    var memberType = memberResolver.GetMemberType();
+                    // Call current resolver to get info how to deal with data
+                    var memberResolver = Resolver.GetResolver(memberPropertyName, rootType);
 
                     // Process the member based on JObject, JValue, or JArray
                     if (memberProperty.Value is JsonObject @object)
@@ -301,7 +280,8 @@ namespace nanoFramework.Json
                         object memberObject = null;
 
                         // check if property type it's HashTable
-                        if (memberType.FullName == "System.Collections.Hashtable")
+                        // whole if can be replaced with memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);??
+                        if (memberResolver.ObjectType.FullName == "System.Collections.Hashtable")
                         {
                             Hashtable table = new();
 
@@ -325,14 +305,14 @@ namespace nanoFramework.Json
                         }
                         else
                         {
-                            memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
+                            memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, memberPath);
                         }
 
                         memberResolver.SetValue(rootInstance, memberObject);
                     }
                     else if (memberProperty.Value is JsonValue memberPropertyValue)
                     {
-                        if (memberType != typeof(DateTime))
+                        if (memberResolver.ObjectType != typeof(DateTime))
                         {
                             if (memberPropertyValue.Value == null)
                             {
@@ -341,7 +321,7 @@ namespace nanoFramework.Json
                             else
                             {
                                 var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(),
-                                    memberType, memberPropertyValue.Value);
+                                    memberResolver.ObjectType, memberPropertyValue.Value);
                                 memberResolver.SetValue(rootInstance, convertedValueAsObject);
                             }
                         }
@@ -353,13 +333,12 @@ namespace nanoFramework.Json
                     else if (memberProperty.Value is JsonArray array)
                     {
                         // Need this type when we try to populate the array elements
-                        Type memberElementType = memberType.GetElementType();
+                        Type memberElementType = memberResolver.ObjectType.GetElementType();
                         bool isArrayList = false;
 
-                        if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
+                        if (memberElementType == null && memberResolver.ObjectType.FullName == "System.Collections.ArrayList")
                         {
-                            memberElementType = memberType;
-
+                            memberElementType = memberResolver.ObjectType;
                             isArrayList = true;
                         }
 
@@ -376,7 +355,7 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberType, value.Value);
+                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberResolver.ObjectType, value.Value);
                                 memberValueArrayList.Add(valueToAddAsObject);
                             }
                             else if (item != null)

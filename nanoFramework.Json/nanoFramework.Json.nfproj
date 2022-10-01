@@ -51,9 +51,8 @@
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
-    <Compile Include="Resolvers\FieldResolver.cs" />
     <Compile Include="Resolvers\IMemberResolver.cs" />
-    <Compile Include="Resolvers\PropertyResolver.cs" />
+    <Compile Include="Resolvers\GenericResolver.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />
     <Compile Include="JsonArray.cs" />
@@ -86,6 +85,9 @@
       <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.15\lib\System.IO.Streams.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
   <ProjectExtensions>

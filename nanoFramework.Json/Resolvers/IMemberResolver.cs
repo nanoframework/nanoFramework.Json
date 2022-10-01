@@ -3,9 +3,22 @@ using System.Text;
 
 namespace nanoFramework.Json.Resolvers
 {
-    internal interface IMemberResolver
+    public delegate void SetValueDelegate(object objectInstance, object valueToSet);
+
+    public struct MemberSet
     {
-        Type GetMemberType();
-        void SetValue(object rootInstance, object memberObject);
+        public SetValueDelegate SetValue { get; }
+        public Type ObjectType { get; }
+
+        public MemberSet(SetValueDelegate setValue, Type objectType)
+        {
+            SetValue = setValue;
+            ObjectType = objectType;
+        }
+    }
+
+    public interface IMemberResolver
+    {
+        MemberSet GetResolver(string memberName, Type objectType);
     }
 }
