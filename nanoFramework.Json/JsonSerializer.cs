@@ -4,6 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Converters;
 using System;
 using System.Collections;

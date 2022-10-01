@@ -5,6 +5,7 @@
 //
 
 using nanoFramework.Json;
+using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Converters;
 using nanoFramework.Json.Resolvers;
 using System;
