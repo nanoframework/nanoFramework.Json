@@ -4,10 +4,8 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json;
 using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Converters;
-using nanoFramework.Json.Resolvers;
 using System;
 using System.Collections;
 using System.IO;
@@ -32,8 +30,6 @@ namespace nanoFramework.Json
             public TokenType TType;
             public string TValue;
         }
-
-        public static IMemberResolver Resolver = new GenericResolver();
 
         /// <summary>
         /// Convert an object to a JSON string.
@@ -108,17 +104,31 @@ namespace nanoFramework.Json
         }
 
 #endif
-        internal static object ConvertToType(Type sourceType, Type targetType, object value)
+        private static bool ShouldSkipConvert(Type sourceType, Type targetType, bool forceConversion)
         {
-            // No need to convert if values matches
-            if (sourceType == targetType)
+            if (forceConversion)
+            {
+                return false;
+            }
+
+            if (sourceType != targetType)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static object ConvertToType(Type sourceType, Type targetType, object value, bool forceConversion = false)
+        {
+            if (ShouldSkipConvert(sourceType, targetType, forceConversion))
             {
                 return value;
             }
 
             if (targetType.IsArray)
             {
-                return ConvertToType(sourceType, targetType.GetElementType(), value);
+                return ConvertToType(sourceType, targetType.GetElementType(), value, forceConversion);
             }
 
             if (ConvertersMapping.ConversionTable.Contains(targetType))
@@ -259,7 +269,11 @@ namespace nanoFramework.Json
                     }
 
                     // Call current resolver to get info how to deal with data
-                    var memberResolver = Resolver.GetResolver(memberPropertyName, rootType);
+                    var memberResolver = Settings.Resolver.GetResolver(memberPropertyName, rootType);
+                    if (memberResolver.Skip)
+                    {
+                        continue;
+                    }
 
                     // Process the member based on JObject, JValue, or JArray
                     if (memberProperty.Value is JsonObject @object)
@@ -313,23 +327,9 @@ namespace nanoFramework.Json
                     }
                     else if (memberProperty.Value is JsonValue memberPropertyValue)
                     {
-                        if (memberResolver.ObjectType != typeof(DateTime))
-                        {
-                            if (memberPropertyValue.Value == null)
-                            {
-                                memberResolver.SetValue(rootInstance, null);
-                            }
-                            else
-                            {
-                                var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(),
-                                    memberResolver.ObjectType, memberPropertyValue.Value);
-                                memberResolver.SetValue(rootInstance, convertedValueAsObject);
-                            }
-                        }
-                        else
-                        {
-                            memberResolver.SetValue(rootInstance, memberPropertyValue.Value);
-                        }
+                        var returnType = memberPropertyValue.Value != null ? memberPropertyValue.Value.GetType() : memberResolver.ObjectType;
+                        var convertedValueAsObject = ConvertToType(returnType, memberResolver.ObjectType, memberPropertyValue.Value, true);
+                        memberResolver.SetValue(rootInstance, convertedValueAsObject);
                     }
                     else if (memberProperty.Value is JsonArray array)
                     {

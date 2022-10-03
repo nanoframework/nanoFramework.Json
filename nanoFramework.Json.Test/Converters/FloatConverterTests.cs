@@ -18,6 +18,15 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
+        public void FloatConverter_ToType_NullShouldReturnNaN()
+        {
+            var converter = new Json.Converters.FloatConverter();
+            var convertedValue = (float)converter.ToType(null);
+
+            Assert.Equal(float.NaN.ToString(), convertedValue.ToString());
+        }
+
+        [TestMethod]
         [DataRow(120.5f, "120.5")]
         [DataRow(42.5f, "42.5")]
         [DataRow(float.NaN, "null")]

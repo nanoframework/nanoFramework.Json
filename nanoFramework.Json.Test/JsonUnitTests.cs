@@ -977,8 +977,8 @@ namespace nanoFramework.Json.Test
 
             string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
 
-            Assert.Equal(arg0, "I_am_a_string", $"arg0 has unexpected value: {arg0}");
-            Assert.Equal(arg1, "I_am_another_string", $"arg1 has unexpected value: {arg1}");
+            Assert.Equal(arg0, "\"I_am_a_string\"", $"arg0 has unexpected value: {arg0}");
+            Assert.Equal(arg1, "\"I_am_another_string\"", $"arg1 has unexpected value: {arg1}");
         }
 
         [TestMethod]

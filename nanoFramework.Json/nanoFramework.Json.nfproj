@@ -31,6 +31,7 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Converters\ByteConverter.cs" />
     <Compile Include="Converters\CharConverter.cs" />
@@ -51,8 +52,10 @@
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="Resolvers\CaseInsensitiveResolver.cs" />
     <Compile Include="Resolvers\IMemberResolver.cs" />
-    <Compile Include="Resolvers\GenericResolver.cs" />
+    <Compile Include="Resolvers\CaseSensitiveResolver.cs" />
+    <Compile Include="Resolvers\MemberSet.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />
     <Compile Include="JsonArray.cs" />

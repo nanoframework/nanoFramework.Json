@@ -33,6 +33,7 @@
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
     <Compile Include="Configuration\ConvertersMappingTests.cs" />
+    <Compile Include="Converters\DateTimeConverterTests.cs" />
     <Compile Include="Converters\SByteConverterTests.cs" />
     <Compile Include="Converters\ByteConverterTests.cs" />
     <Compile Include="Converters\BoolConverterTests.cs" />

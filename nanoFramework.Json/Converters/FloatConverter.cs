@@ -1,4 +1,10 @@
-﻿using System;
+﻿//
+// Copyright (c) .NET Foundation and Contributors
+// Portions Copyright 2007 James Newton-King, (c) Pervasive Digital LLC
+// See LICENSE file in the project root for full license information.
+//
+
+using System;
 
 namespace nanoFramework.Json.Converters
 {
@@ -22,6 +28,11 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
+            if (value == null)
+            {
+                return float.NaN;
+            }
+
             return Convert.ToSingle(value.ToString());
         }
     }

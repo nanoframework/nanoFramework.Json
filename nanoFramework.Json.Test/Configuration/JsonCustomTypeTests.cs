@@ -29,13 +29,13 @@ namespace nanoFramework.Json.Test.Configuration
         }
 
         [Setup]
-        public void Setup()
+        public void JsonCustomTypeTests_Setup()
         {
             ConvertersMapping.Add(typeof(TestObject), new CustomConverter());
         }
 
         [Cleanup]
-        public void CleanUp()
+        public void JsonCustomTypeTests_CleanUp()
         {
             ConvertersMapping.Remove(typeof(TestObject));
         }
