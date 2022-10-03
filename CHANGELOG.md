@@ -2,7 +2,16 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.27...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.29...HEAD)
+
+**Implemented enhancements:**
+
+- Clean up unused private/internal methods [\#250](https://github.com/nanoframework/nanoFramework.Json/pull/250)
+- Performance improvements [\#247](https://github.com/nanoframework/nanoFramework.Json/pull/247)
+
+## [v2.2.29](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.29) (2022-09-23)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.27...v2.2.29)
 
 **Documentation and other chores:**
 
