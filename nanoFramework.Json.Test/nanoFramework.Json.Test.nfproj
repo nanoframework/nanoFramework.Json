@@ -48,6 +48,7 @@
     <Compile Include="Converters\FloatConverterTests.cs" />
     <Compile Include="Converters\DoubleConverterTests.cs" />
     <Compile Include="Configuration\JsonCustomTypeTests.cs" />
+    <Compile Include="JsonDeserializationArraysTests.cs" />
     <Compile Include="JsonUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

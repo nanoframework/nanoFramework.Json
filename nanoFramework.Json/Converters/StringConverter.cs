@@ -81,6 +81,11 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
             var sourceString = value.ToString();
             if (!StringContainsCharactersToEscape(sourceString, true))
             {
