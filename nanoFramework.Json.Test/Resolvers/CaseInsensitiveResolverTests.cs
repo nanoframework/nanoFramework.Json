@@ -9,10 +9,10 @@ namespace nanoFramework.Json.Test.Resolvers
     {
         private class TestClass
         {
-            public int TestField;
-            public int TestProperty { get; set; }
-            public int SkipProperty { private get; set; }
-            public int ThrowProperty { get; }
+            public int TestField = 1;
+            public int TestProperty { get; set; } = 1
+            public int SkipProperty { private get; set; } = 1
+            public int ThrowProperty { get; } = 1
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace nanoFramework.Json.Test.Resolvers
 
             try
             {
-                var member = resolver.Get(nameof(TestClass.ThrowProperty), typeof(TestClass));
+                resolver.Get(nameof(TestClass.ThrowProperty), typeof(TestClass));
             }
             catch (DeserializationException)
             {
@@ -76,7 +76,7 @@ namespace nanoFramework.Json.Test.Resolvers
                 return;
             }
 
-            throw new Exception($"Should throw {nameof(DeserializationException)}.");
+            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
         }
     }
 }
