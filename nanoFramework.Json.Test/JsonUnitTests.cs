@@ -315,42 +315,6 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void DeserialzieInvalidTimeSpan_Should_ThrowInvalidCaseException()
-        {
-            OutputHelper.WriteLine("Can_serialize_deserialize_timespan_02() - Starting test...");
-
-            string[] strArr = new string[] {
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"24:0:0\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"0:0:60\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10:\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\":10\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10:20:\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\".123\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10.\"}",
-                "{\"Duration5\":\"00:00:00\",\"Duration1\":\"01:09:00\",\"DummyValue2\":777,\"Duration2\":\"00:00:00\",\"DummyValue1\":-999,\"Duration3\":\"00:00:00\",\"Duration4\":\"10.12\"}",
-            };
-
-            for (int i = 0; i < strArr.Length; i++)
-            {
-                try
-                {
-                    // The method should throw InvalidCaseException as each strArr has at least one invalid value for TimeSpan
-                    JsonConvert.DeserializeObject(strArr[i], typeof(JsonTestClassTimeSpan));
-
-                    // If the method above haven't throw InvalidCastException then the test should fail
-                    throw new InvalidOperationException($"Should throw exception {nameof(InvalidCastException)}.");
-                }
-                catch (InvalidCastException)
-                {
-                    // Deserialization should throw exception and test should not fail.
-                }
-            }
-
-            OutputHelper.WriteLine("Can_serialize_deserialize_timespan_02() - Finished - test succeeded.");
-            OutputHelper.WriteLine("");
-        }
-
-        [TestMethod]
         public void Can_serialize_short_array()
         {
             OutputHelper.WriteLine("Can_serialize_short_array() - Starting test...");
