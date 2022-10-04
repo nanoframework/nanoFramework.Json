@@ -8,10 +8,9 @@ using System;
 
 namespace nanoFramework.Json.Resolvers
 {
-    // TODO: Tests
     internal class CaseSensitiveResolver : IMemberResolver
     {
-        public MemberSet GetResolver(string memberName, Type objectType)
+        public MemberSet Get(string memberName, Type objectType)
         {
             var memberFieldInfo = objectType.GetField(memberName);
 

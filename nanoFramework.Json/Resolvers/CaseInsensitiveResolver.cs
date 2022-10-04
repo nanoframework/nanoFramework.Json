@@ -9,11 +9,9 @@ using System.Reflection;
 
 namespace nanoFramework.Json.Resolvers
 {
-    // TODO: Tests + benchmarks
-    // TODO: Benchmarks for whole project
     internal class CaseInsensitiveResolver : IMemberResolver
     {
-        public MemberSet GetResolver(string memberName, Type objectType)
+        public MemberSet Get(string memberName, Type objectType)
         {
             var memberFieldInfo = GetFieldInfoCaseInsensitive(objectType, memberName);
 

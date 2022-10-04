@@ -269,7 +269,7 @@ namespace nanoFramework.Json
                     }
 
                     // Call current resolver to get info how to deal with data
-                    var memberResolver = Settings.Resolver.GetResolver(memberPropertyName, rootType);
+                    var memberResolver = Settings.Resolver.Get(memberPropertyName, rootType);
                     if (memberResolver.Skip)
                     {
                         continue;

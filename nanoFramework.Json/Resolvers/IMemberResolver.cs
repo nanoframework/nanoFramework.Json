@@ -11,6 +11,6 @@ namespace nanoFramework.Json.Resolvers
 {
     interface IMemberResolver
     {
-        MemberSet GetResolver(string memberName, Type objectType);
+        MemberSet Get(string memberName, Type objectType);
     }
 }
