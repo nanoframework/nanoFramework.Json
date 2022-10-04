@@ -10,9 +10,9 @@ namespace nanoFramework.Json.Test.Resolvers
         private class TestClass
         {
             public int TestField = 1;
-            public int TestProperty { get; set; } = 1
-            public int SkipProperty { private get; set; } = 1
-            public int ThrowProperty { get; } = 1
+            public int TestProperty { get; set; } = 1;
+            public int SkipProperty { private get; set; } = 1;
+            public int ThrowProperty { get; } = 1;
         }
 
         [TestMethod]
