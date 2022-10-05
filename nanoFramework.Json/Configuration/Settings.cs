@@ -5,8 +5,6 @@
 //
 
 using nanoFramework.Json.Resolvers;
-using System;
-using System.Text;
 
 namespace nanoFramework.Json.Configuration
 {
@@ -15,45 +13,6 @@ namespace nanoFramework.Json.Configuration
     /// </summary>
     public static class Settings
     {
-        private static IMemberResolver resolver;
-        private static bool caseSensitive = true;
-
-        internal static IMemberResolver Resolver
-        {
-            get
-            {
-                if (resolver == null)
-                {
-                    resolver = CaseSensitive ? new CaseSensitiveResolver() : new CaseInsensitiveResolver();
-                }
-
-                return resolver;
-            }
-
-            set
-            {
-                resolver = value;
-            }
-        }
-
-        /// <summary>
-        /// Sets if the member property should be case sensitive.
-        /// </summary>
-        public static bool CaseSensitive
-        {
-            internal get
-            {
-                return caseSensitive;
-            }
-
-            set
-            {
-                if (caseSensitive != value)
-                {
-                    caseSensitive = value;
-                    Resolver = null;
-                }
-            }
-        }
+        public static IMemberResolver Resolver { get; set; } = new CaseSensitiveResolver();
     }
 }

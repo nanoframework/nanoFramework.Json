@@ -8,9 +8,9 @@ using System;
 
 namespace nanoFramework.Json.Resolvers
 {
-    delegate void SetValueDelegate(object objectInstance, object valueToSet);
+    public delegate void SetValueDelegate(object objectInstance, object valueToSet);
 
-    struct MemberSet
+    public struct MemberSet
     {
         public SetValueDelegate SetValue { get; }
         public Type ObjectType { get; }

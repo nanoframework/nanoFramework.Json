@@ -9,7 +9,7 @@ using System.Text;
 
 namespace nanoFramework.Json.Resolvers
 {
-    interface IMemberResolver
+    public interface IMemberResolver
     {
         MemberSet Get(string memberName, Type objectType);
     }

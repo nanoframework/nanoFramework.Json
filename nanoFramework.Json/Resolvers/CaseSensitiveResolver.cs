@@ -5,10 +5,11 @@
 //
 
 using System;
+using System.Reflection;
 
 namespace nanoFramework.Json.Resolvers
 {
-    internal class CaseSensitiveResolver : IMemberResolver
+    internal sealed class CaseSensitiveResolver : IMemberResolver
     {
         public MemberSet Get(string memberName, Type objectType)
         {
@@ -23,10 +24,36 @@ namespace nanoFramework.Json.Resolvers
             var memberPropGetMethod = objectType.GetMethod("get_" + memberName);
             if (memberPropGetMethod == null)
             {
-                return new MemberSet(null, null, true);
+                return GetInsensitive(memberName, objectType);
             }
 
             var memberPropSetMethod = objectType.GetMethod("set_" + memberName);
+            if (memberPropSetMethod == null)
+            {
+                // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
+                return GetInsensitive(memberName, objectType);
+            }
+
+            return new MemberSet(new SetValueDelegate((instance, value) => memberPropSetMethod.Invoke(instance, new object[] { value })), memberPropGetMethod.ReturnType, false);
+        }
+
+        internal MemberSet GetInsensitive(string memberName, Type objectType)
+        {
+            var memberFieldInfo = GetFieldInfoCaseInsensitive(objectType, memberName);
+
+            // Value will be set via field
+            if (memberFieldInfo != null)
+            {
+                return new MemberSet(new SetValueDelegate((instance, value) => memberFieldInfo.SetValue(instance, value)), memberFieldInfo.FieldType, false);
+            }
+
+            var memberPropGetMethod = GetMethodCaseInsensitive(objectType, "get_" + memberName);
+            if (memberPropGetMethod == null)
+            {
+                return new MemberSet(null, null, true);
+            }
+
+            var memberPropSetMethod = GetMethodCaseInsensitive(objectType, "set_" + memberName);
             if (memberPropSetMethod == null)
             {
                 // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
@@ -34,6 +61,32 @@ namespace nanoFramework.Json.Resolvers
             }
 
             return new MemberSet(new SetValueDelegate((instance, value) => memberPropSetMethod.Invoke(instance, new object[] { value })), memberPropGetMethod.ReturnType, false);
+        }
+
+        private static FieldInfo GetFieldInfoCaseInsensitive(Type objectType, string fieldName)
+        {
+            foreach (var field in objectType.GetFields())
+            {
+                if (field.Name.ToLower() == fieldName.ToLower())
+                {
+                    return field;
+                }
+            }
+
+            return null;
+        }
+
+        private static MethodInfo GetMethodCaseInsensitive(Type objectType, string methodName)
+        {
+            foreach (var method in objectType.GetMethods())
+            {
+                if (method.Name.ToLower() == methodName.ToLower())
+                {
+                    return method;
+                }
+            }
+
+            return null;
         }
     }
 }

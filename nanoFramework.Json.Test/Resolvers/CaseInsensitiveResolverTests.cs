@@ -4,7 +4,7 @@ using System;
 
 namespace nanoFramework.Json.Test.Resolvers
 {
-    [TestClass]
+    /*[TestClass]
     public class CaseInsensitiveResolverTests
     {
         private class TestClass
@@ -78,5 +78,5 @@ namespace nanoFramework.Json.Test.Resolvers
 
             throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
         }
-    }
+    }*/
 }
