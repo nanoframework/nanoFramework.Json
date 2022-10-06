@@ -53,7 +53,7 @@
     <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="Resolvers\IMemberResolver.cs" />
-    <Compile Include="Resolvers\CaseSensitiveResolver.cs" />
+    <Compile Include="Resolvers\MemberResolver.cs" />
     <Compile Include="Resolvers\MemberSet.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="DeserializationException.cs" />

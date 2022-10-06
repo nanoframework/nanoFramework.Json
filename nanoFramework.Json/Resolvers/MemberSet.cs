@@ -16,11 +16,18 @@ namespace nanoFramework.Json.Resolvers
         public Type ObjectType { get; }
         public bool Skip { get; }
 
-        public MemberSet(SetValueDelegate setValue, Type objectType, bool skip)
+        public MemberSet(SetValueDelegate setValue, Type objectType)
         {
             SetValue = setValue;
             ObjectType = objectType;
+            Skip = false;
+        }
+
+        public MemberSet(bool skip)
+        {
             Skip = skip;
+            ObjectType = null;
+            SetValue = null;
         }
     }
 }

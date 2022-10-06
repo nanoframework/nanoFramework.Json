@@ -6,25 +6,24 @@
 
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
-using System;
 
 namespace nanoFramework.Json.Test.Resolvers
 {
     [TestClass]
-    public class CaseSensitiveResolverTests
+    public class MemberResolverCaseSensitiveTests
     {
         private class TestClass
         {
             public int TestField = 1;
             public int TestProperty { get; set; } = 1;
-            public int SkipProperty { private get; set; } = 1;
-            public int ThrowProperty { get; } = 1;
+            public int NoGetProperty { private get; set; } = 1;
+            public int NoSetProperty { get; } = 1;
         }
 
         [TestMethod]
-        public void CaseSensitiveResolver_Get_ShouldResolveField()
+        public void MemberResolverCaseSensitive_Get_ShouldResolveField()
         {
-            var resolver = new CaseSensitiveResolver();
+            var resolver = new MemberResolver();
             var classInstance = new TestClass();
             var valueToSet = 5;
 
@@ -36,9 +35,9 @@ namespace nanoFramework.Json.Test.Resolvers
         }
 
         [TestMethod]
-        public void CaseSensitiveResolver_Get_ShouldResolveProperty()
+        public void MemberResolverCaseSensitive_Get_ShouldResolveProperty()
         {
-            var resolver = new CaseSensitiveResolver();
+            var resolver = new MemberResolver();
             var classInstance = new TestClass();
             var valueToSet = 6;
 
@@ -50,31 +49,23 @@ namespace nanoFramework.Json.Test.Resolvers
         }
 
         [TestMethod]
-        public void CaseSensitiveResolver_Get_ShouldSkipPropertyWithoutGet()
+        public void MemberResolverCaseSensitive_Get_ShouldSkipPropertyWithoutGet()
         {
-            var resolver = new CaseSensitiveResolver();
+            var resolver = new MemberResolver();
 
-            var member = resolver.Get(nameof(TestClass.SkipProperty), typeof(TestClass));
+            var member = resolver.Get(nameof(TestClass.NoGetProperty), typeof(TestClass));
 
             Assert.True(member.Skip);
         }
 
         [TestMethod]
-        public void CaseSensitiveResolver_Get_ShouldThrowForPropertyWithNoSet()
+        public void MemberResolverCaseSensitive_Get_ShouldSkipPropertyWithoutSet()
         {
-            var resolver = new CaseSensitiveResolver();
+            var resolver = new MemberResolver();
 
-            try
-            {
-                resolver.Get(nameof(TestClass.ThrowProperty), typeof(TestClass));
-            }
-            catch (DeserializationException)
-            {
-                // Intended. Method should throw this type of exception when no set method.
-                return;
-            }
+            var member = resolver.Get(nameof(TestClass.NoSetProperty), typeof(TestClass));
 
-            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
+            Assert.True(member.Skip);
         }
     }
 }

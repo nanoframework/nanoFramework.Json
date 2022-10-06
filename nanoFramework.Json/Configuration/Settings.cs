@@ -13,6 +13,9 @@ namespace nanoFramework.Json.Configuration
     /// </summary>
     public static class Settings
     {
-        public static IMemberResolver Resolver { get; set; } = new CaseSensitiveResolver();
+        public static IMemberResolver Resolver { get; set; } = new MemberResolver();
+        public static bool CaseSensitive { get; set; } = true;
+        public static bool ThrowExceptionWhenPropertyNotFound { get; set; }
     }
 }
+
