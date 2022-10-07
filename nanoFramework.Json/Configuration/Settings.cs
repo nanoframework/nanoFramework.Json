@@ -13,9 +13,20 @@ namespace nanoFramework.Json.Configuration
     /// </summary>
     public static class Settings
     {
+        /// <summary>
+        /// Gets or sets resolver which is used to find properties in target object when deserializing JSON.
+        /// </summary>
         public static IMemberResolver Resolver { get; set; } = new MemberResolver();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether property resolving should be case sensitive.
+        /// </summary>
         public static bool CaseSensitive { get; set; } = true;
-        public static bool ThrowExceptionWhenPropertyNotFound { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether deserialization should throw exception when no property found.
+        /// </summary>
+        public static bool ThrowExceptionWhenPropertyNotFound { get; set; } = false;
     }
 }
 

@@ -5,12 +5,20 @@
 //
 
 using System;
-using System.Text;
 
 namespace nanoFramework.Json.Resolvers
 {
+    /// <summary>
+    /// Interface for property resolvers. 
+    /// </summary>
     public interface IMemberResolver
     {
+        /// <summary>
+        /// Gets the data about member from object which we want to populate.
+        /// </summary>
+        /// <param name="memberName">Key from JSON property. Property name we are looking for.</param>
+        /// <param name="objectType">Type of object in which <paramref name="memberName"/> should be.</param>
+        /// <returns>Data about member which we want to populate based on passed parameters.</returns>
         MemberSet Get(string memberName, Type objectType);
     }
 }

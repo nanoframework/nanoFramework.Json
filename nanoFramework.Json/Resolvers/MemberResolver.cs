@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace nanoFramework.Json.Resolvers
 {
-    public sealed class MemberResolver : IMemberResolver
+    internal sealed class MemberResolver : IMemberResolver
     {
         public MemberSet Get(string memberName, Type objectType)
         {
