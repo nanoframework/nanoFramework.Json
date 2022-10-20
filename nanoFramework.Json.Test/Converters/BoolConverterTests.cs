@@ -6,16 +6,16 @@ namespace nanoFramework.Json.Test.Converters
     [TestClass]
     public class BoolConverterTests
     {
-        /*[TestMethod]
-        [DataRow("true", true)]
-        [DataRow("false", false)]
-        public void ToType_ShouldReturnValidData(string value, bool expectedValue)
+        [TestMethod]
+        [DataRow(true, true)]
+        [DataRow(false, false)]
+        public void BoolConverter_ToType_ShouldReturnValidData(object value, bool expectedValue)
         {
             var converter = new Json.Converters.BoolConverter();
             var convertedValue = (bool)converter.ToType(value);
 
             Assert.Equal(expectedValue, convertedValue);
-        }*/
+        }
 
         [TestMethod]
         [DataRow(true, "true")]

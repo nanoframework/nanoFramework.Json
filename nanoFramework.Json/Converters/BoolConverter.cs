@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
-            throw new NotImplementedException();
+            return (bool)value;
         }
     }
 }

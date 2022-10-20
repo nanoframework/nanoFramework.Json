@@ -81,32 +81,38 @@ namespace nanoFramework.Json.Converters
         /// </summary>
         public object ToType(object value)
         {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
             var sourceString = value.ToString();
+            if (!StringContainsCharactersToEscape(sourceString, true))
+            {
+                return value;
+            }
+
             //String by default has escaped \" at beggining and end, just remove them
             var resultString = sourceString.Substring(1, sourceString.Length - 2);
-            if (StringContainsCharactersToEscape(resultString, true))
+            var newString = new StringBuilder();
+            //Last character can not be escaped, because it's last one
+            for (int i = 0; i < resultString.Length - 1; i++)
             {
-                var newString = new StringBuilder();
-                //Last character can not be escaped, because it's last one
-                for (int i = 0; i < resultString.Length - 1; i++)
-                {
-                    var curChar = resultString[i];
-                    var nextChar = resultString[i + 1];
+                var curChar = resultString[i];
+                var nextChar = resultString[i + 1];
 
-                    if (curChar == '\\')
-                    {
-                        var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
-                        newString.Append(charToAppend);
-                        i++;
-                        continue;
-                    }
-                    newString.Append(curChar);
+                if (curChar == '\\')
+                {
+                    var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
+                    newString.Append(charToAppend);
+                    i++;
+                    continue;
                 }
-                //Append last character skkiped by loop
-                newString.Append(resultString[resultString.Length - 1]);
-                return newString.ToString();
+                newString.Append(curChar);
             }
-            return resultString;
+            //Append last character skkiped by loop
+            newString.Append(resultString[resultString.Length - 1]);
+            return newString.ToString();
         }
 
         private static char GetEscapableCharKeyBasedOnValue(char inputChar)

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using nanoFramework.Json.Converters;
+using System;
 using System.Collections;
 
-namespace nanoFramework.Json.Converters
+namespace nanoFramework.Json.Configuration
 {
     /// <summary>
     /// Contains all converters for JSON.

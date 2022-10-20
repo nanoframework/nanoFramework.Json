@@ -140,7 +140,7 @@ namespace nanoFramework.Json.Converters
 
         private static bool IsInvalidTimeSpan(int hour, int minutes, int seconds)
         {
-            if (hour < 0 || hour >= 24)
+            if (hour < 0 || hour > 24)
             {
                 return true;
             }

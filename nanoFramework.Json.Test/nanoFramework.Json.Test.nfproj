@@ -32,7 +32,9 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
-    <Compile Include="Converters\ConvertersMappingTests.cs" />
+    <Compile Include="Configuration\ConvertersMappingTests.cs" />
+    <Compile Include="Configuration\SettingsTests.cs" />
+    <Compile Include="Converters\DateTimeConverterTests.cs" />
     <Compile Include="Converters\SByteConverterTests.cs" />
     <Compile Include="Converters\ByteConverterTests.cs" />
     <Compile Include="Converters\BoolConverterTests.cs" />
@@ -46,9 +48,14 @@
     <Compile Include="Converters\IntConverterTests.cs" />
     <Compile Include="Converters\FloatConverterTests.cs" />
     <Compile Include="Converters\DoubleConverterTests.cs" />
-    <Compile Include="JsonCustomTypeTests.cs" />
+    <Compile Include="Configuration\JsonCustomTypeTests.cs" />
+    <Compile Include="JsonDeserializationArraysTests.cs" />
     <Compile Include="JsonUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resolvers\MemberResolverCaseInsensitiveExceptionTests.cs" />
+    <Compile Include="Resolvers\MemberResolverCaseInsensitiveTests.cs" />
+    <Compile Include="Resolvers\MemberResolverCaseSensitiveExceptionTests.cs" />
+    <Compile Include="Resolvers\MemberResolverCaseSensitiveTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.12.0.4, Culture=neutral, PublicKeyToken=c07d481e9758c731">

@@ -4,7 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json;
+using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
@@ -104,17 +104,31 @@ namespace nanoFramework.Json
         }
 
 #endif
-        internal static object ConvertToType(Type sourceType, Type targetType, object value)
+        private static bool ShouldSkipConvert(Type sourceType, Type targetType, bool forceConversion)
         {
-            // No need to convert if values matches
-            if (sourceType == targetType)
+            if (forceConversion)
+            {
+                return false;
+            }
+
+            if (sourceType != targetType)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        internal static object ConvertToType(Type sourceType, Type targetType, object value, bool forceConversion = false)
+        {
+            if (ShouldSkipConvert(sourceType, targetType, forceConversion))
             {
                 return value;
             }
 
             if (targetType.IsArray)
             {
-                return ConvertToType(sourceType, targetType.GetElementType(), value);
+                return ConvertToType(sourceType, targetType.GetElementType(), value, forceConversion);
             }
 
             if (ConvertersMapping.ConversionTable.Contains(targetType))
@@ -254,41 +268,11 @@ namespace nanoFramework.Json
                         memberPropertyName = "_" + memberProperty.Name.Substring(1);
                     }
 
-                    // Figure out if we're dealing with a Field or a Property and handle accordingly
-                    Type memberType = null;
-                    FieldInfo memberFieldInfo = null;
-                    MethodInfo memberPropSetMethod = null;
-                    MethodInfo memberPropGetMethod = null;
-                    bool memberIsProperty = false;
-
-                    memberFieldInfo = rootType.GetField(memberPropertyName);
-
-                    if (memberFieldInfo != null)
+                    // Call current resolver to get info how to deal with data
+                    var memberResolver = Settings.Resolver.Get(memberPropertyName, rootType);
+                    if (memberResolver.Skip)
                     {
-                        memberType = memberFieldInfo.FieldType;
-                        memberIsProperty = false;
-                    }
-                    else
-                    {
-                        memberPropGetMethod = rootType.GetMethod("get_" + memberPropertyName);
-
-                        if (memberPropGetMethod == null)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            memberType = memberPropGetMethod.ReturnType;
-                            memberPropSetMethod = rootType.GetMethod("set_" + memberPropertyName);
-
-                            if (memberType == null)
-                            {
-                                // failed to get setter of memberType {rootType.Name}. Possibly this property doesn't have a setter.
-                                throw new DeserializationException();
-                            }
-
-                            memberIsProperty = true;
-                        }
+                        continue;
                     }
 
                     // Process the member based on JObject, JValue, or JArray
@@ -311,7 +295,8 @@ namespace nanoFramework.Json
                         object memberObject = null;
 
                         // check if property type it's HashTable
-                        if (memberType.FullName == "System.Collections.Hashtable")
+                        // whole if can be replaced with memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);??
+                        if (memberResolver.ObjectType.FullName == "System.Collections.Hashtable")
                         {
                             Hashtable table = new();
 
@@ -335,87 +320,26 @@ namespace nanoFramework.Json
                         }
                         else
                         {
-                            memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);
+                            memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, memberPath);
                         }
 
-                        if (memberIsProperty)
-                        {
-                            memberPropSetMethod.Invoke(rootInstance, new object[] { memberObject });
-                        }
-                        else
-                        {
-                            memberFieldInfo.SetValue(rootInstance, memberObject);
-                        }
+                        memberResolver.SetValue(rootInstance, memberObject);
                     }
                     else if (memberProperty.Value is JsonValue memberPropertyValue)
                     {
-                        if (memberType != typeof(DateTime))
-                        {
-                            if (memberPropertyValue.Value == null)
-                            {
-                                if (memberIsProperty)
-                                {
-                                    if (!memberPropGetMethod.ReturnType.IsValueType)
-                                    {
-                                        memberPropSetMethod.Invoke(rootInstance, new object[] { null });
-                                    }
-                                    else
-                                    {
-                                        switch (memberPropGetMethod.ReturnType.Name)
-                                        {
-                                            case "Single":
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { float.NaN });
-                                                break;
-
-                                            case "Double":
-                                                memberPropSetMethod.Invoke(rootInstance, new object[] { double.NaN });
-                                                break;
-                                        }
-
-                                    }
-                                }
-                                else
-                                {
-                                    object obj = null;
-                                    memberFieldInfo.SetValue(rootInstance, obj);
-                                }
-                            }
-                            else
-                            {
-                                if (memberIsProperty)
-                                {
-                                    var convertedValueAsObject = ConvertToType(memberPropertyValue.Value.GetType(),
-                                        memberType, memberPropertyValue.Value);
-                                    memberPropSetMethod.Invoke(rootInstance, new object[] { convertedValueAsObject });
-                                }
-                                else
-                                {
-                                    memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { memberPropertyValue.Value });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, memberPropertyValue.Value);
-                            }
-                        }
+                        var returnType = memberPropertyValue.Value != null ? memberPropertyValue.Value.GetType() : memberResolver.ObjectType;
+                        var convertedValueAsObject = ConvertToType(returnType, memberResolver.ObjectType, memberPropertyValue.Value, true);
+                        memberResolver.SetValue(rootInstance, convertedValueAsObject);
                     }
                     else if (memberProperty.Value is JsonArray array)
                     {
                         // Need this type when we try to populate the array elements
-                        Type memberElementType = memberType.GetElementType();
+                        Type memberElementType = memberResolver.ObjectType.GetElementType();
                         bool isArrayList = false;
 
-                        if (memberElementType == null && memberType.FullName == "System.Collections.ArrayList")
+                        if (memberElementType == null && memberResolver.ObjectType.FullName == "System.Collections.ArrayList")
                         {
-                            memberElementType = memberType;
-
+                            memberElementType = memberResolver.ObjectType;
                             isArrayList = true;
                         }
 
@@ -432,14 +356,7 @@ namespace nanoFramework.Json
                         {
                             if (item is JsonValue value)
                             {
-                                if (memberPropGetMethod == null)
-                                {
-                                    // {rootType.Name} must have a valid Property Get Method
-                                    throw new DeserializationException();
-                                }
-
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType(),
-                                    memberPropGetMethod.ReturnType, value.Value);
+                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberResolver.ObjectType, value.Value);
                                 memberValueArrayList.Add(valueToAddAsObject);
                             }
                             else if (item != null)
@@ -485,14 +402,7 @@ namespace nanoFramework.Json
                             }
 
                             // Populate rootInstance
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, targetArray);
-                            }
+                            memberResolver.SetValue(rootInstance, targetArray);
                         }
                         else
                         {
@@ -509,14 +419,7 @@ namespace nanoFramework.Json
                             memberValueArrayList.CopyTo(targetArray);
 
                             // Populate rootInstance
-                            if (memberIsProperty)
-                            {
-                                memberPropSetMethod.Invoke(rootInstance, new object[] { targetArray });
-                            }
-                            else
-                            {
-                                memberFieldInfo.SetValue(rootInstance, targetArray);
-                            }
+                            memberResolver.SetValue(rootInstance, targetArray);
                         }
                     }
                 }
@@ -1033,9 +936,7 @@ namespace nanoFramework.Json
                 throw new DeserializationException();
             }
 
-            var result = new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
-
-            return result;
+            return new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
         }
 
         private static JsonToken ParseValue(ref LexToken token)
@@ -1394,3 +1295,4 @@ namespace nanoFramework.Json
         private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
     }
 }
+
