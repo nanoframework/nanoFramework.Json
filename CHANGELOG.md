@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.34...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.37...HEAD)
+
+**Implemented enhancements:**
+
+- Allow deserialization when properties case doesn't match [\#251](https://github.com/nanoframework/nanoFramework.Json/pull/251)
+
+## [v2.2.37](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.37) (2022-10-11)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.34...v2.2.37)
 
 **Documentation and other chores:**
 
