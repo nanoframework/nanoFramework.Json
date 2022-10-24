@@ -37,6 +37,9 @@
       <HintPath>..\packages\nanoFramework.Benchmark.1.0.29\lib\nanoFramework.Benchmark.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="nanoFramework.Logging">
+      <HintPath>..\packages\nanoFramework.Logging.1.1.37\lib\nanoFramework.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="nanoFramework.Logging, Version=1.1.33.47538, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Logging.1.1.33\lib\nanoFramework.Logging.dll</HintPath>
       <Private>True</Private>
@@ -65,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nanoFramework.Json\nanoFramework.Json.nfproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.lock.json" />
   </ItemGroup>
   <Import Project="..\nanoFramework.Json.Test.Shared\nanoFramework.Json.Test.Shared.projitems" Label="Shared" />
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
