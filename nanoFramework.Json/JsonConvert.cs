@@ -1050,9 +1050,7 @@ namespace nanoFramework.Json
                 }
 
                 ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                    : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                    : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                    : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+                    : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0];
 
                 // Handle json escapes
                 bool escaped = false;
@@ -1062,9 +1060,7 @@ namespace nanoFramework.Json
                 {
                     escaped = true;
                     ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                        : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                        : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                        : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+                        : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0];
 
                     if (ch == (char)0xffff)
                     {
@@ -1275,9 +1271,7 @@ namespace nanoFramework.Json
         private static void Expect(char expected)
         {
             char ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+                : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0];
 
             if (ch.ToLower() != expected)
             {
