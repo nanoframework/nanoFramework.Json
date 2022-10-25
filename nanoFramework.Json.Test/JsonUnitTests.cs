@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
@@ -1294,7 +1294,7 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void DeserializationWithNonAscii()
         {
-            var input = new ThingWithString { Value = "zaz�lc gesla jazn \0165 \0f65 \ff11" };
+            var input = new ThingWithString { Value = "zażółć gęślą jaźń \0165 \0f65 \ff11" };
             var str = JsonConvert.SerializeObject(input);
             var result = (ThingWithString)JsonConvert.DeserializeObject(str, typeof(ThingWithString));
             Assert.Equal(input.Value, result.Value);
