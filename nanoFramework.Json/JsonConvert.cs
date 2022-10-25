@@ -1036,6 +1036,22 @@ namespace nanoFramework.Json
             return result;
         }
 
+        private static char GetNextChar()
+        {
+            //https://en.wikipedia.org/wiki/UTF-8#Encoding
+
+            if ((jsonBytes[jsonPos] & 0x80) == 0)
+                return (char)jsonBytes[jsonPos++];
+
+            if ((jsonBytes[jsonPos] & 0x20) == 0)
+                return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0];
+
+            if ((jsonBytes[jsonPos] & 0x10) == 0)
+                return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0];
+
+            return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+        }
+
         private static LexToken GetNextTokenInternal()
         {
             StringBuilder sb = null;
@@ -1050,7 +1066,7 @@ namespace nanoFramework.Json
                     return EndToken(sb);
                 }
 
-                ch = (char)jsonBytes[jsonPos++];
+                ch = GetNextChar();
 
                 // Handle json escapes
                 bool escaped = false;
@@ -1059,7 +1075,7 @@ namespace nanoFramework.Json
                 if (ch == '\\')
                 {
                     escaped = true;
-                    ch = (char)jsonBytes[jsonPos++];
+                    ch = GetNextChar();
 
                     if (ch == (char)0xffff)
                     {
@@ -1269,7 +1285,7 @@ namespace nanoFramework.Json
 
         private static void Expect(char expected)
         {
-            char ch = (char)jsonBytes[jsonPos++];
+            char ch = GetNextChar();
 
             if (ch.ToLower() != expected)
             {

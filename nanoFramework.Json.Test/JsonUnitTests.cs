@@ -1291,6 +1291,15 @@ namespace nanoFramework.Json.Test
     }
         }";
 
+        [TestMethod]
+        public void DeserializationWithNonAscii()
+        {
+            var input = new ThingWithString { Value = "zazólc gesla jazn \0165 \0f65 \ff11" };
+            var str = JsonConvert.SerializeObject(input);
+            var result = (ThingWithString)JsonConvert.DeserializeObject(str, typeof(ThingWithString));
+            Assert.Equal(input.Value, result.Value);
+        }
+
     }
 
     #region Test classes
