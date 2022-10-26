@@ -1028,32 +1028,6 @@ namespace nanoFramework.Json
         {
             return GetNextTokenInternal(ref jsonPos, ref jsonBytes);
         }
-
-        private static char GetNextChar(ref int jsonPos, ref byte[] jsonBytes)
-        {
-            //https://en.wikipedia.org/wiki/UTF-8#Encoding
-
-            if ((jsonBytes[jsonPos] & 0x80) == 0)
-            {
-                return (char)jsonBytes[jsonPos++];
-            }
-
-            if ((jsonBytes[jsonPos] & 0x20) == 0)
-            {
-                jsonPos += 2;
-                return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 2, 2)[0];
-            }
-
-            if ((jsonBytes[jsonPos] & 0x10) == 0)
-            {
-                jsonPos += 3;
-                return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 3, 3)[0];
-            }
-
-            jsonPos += 4;
-            return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 4, 4)[0];
-        }
-
         private static LexToken GetNextTokenInternal(ref int jsonPos, ref byte[] jsonBytes)
         {
             StringBuilder sb = null;
@@ -1068,7 +1042,10 @@ namespace nanoFramework.Json
                     return EndToken(sb);
                 }
 
-                ch = GetNextChar(ref jsonPos, ref jsonBytes);
+                ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                    : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                    : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                    : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
 
                 // Handle json escapes
                 bool escaped = false;
@@ -1077,7 +1054,10 @@ namespace nanoFramework.Json
                 if (ch == '\\')
                 {
                     escaped = true;
-                    ch = GetNextChar(ref jsonPos, ref jsonBytes);
+                    ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                        : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                        : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                        : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
 
                     if (ch == (char)0xffff)
                     {
@@ -1287,7 +1267,10 @@ namespace nanoFramework.Json
 
         private static void Expect(char expected, ref int jsonPos, ref byte[] jsonBytes)
         {
-            char ch = GetNextChar(ref jsonPos, ref jsonBytes);
+            char ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
 
             if (ch.ToLower() != expected)
             {
