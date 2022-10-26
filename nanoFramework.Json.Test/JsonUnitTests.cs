@@ -1292,9 +1292,9 @@ namespace nanoFramework.Json.Test
         }";
 
         [TestMethod]
-        public void DeserializationWithNonAscii()
+        public void DeserializeObjectWithStringContainingNonAsciiChars()
         {
-            var input = new ThingWithString { Value = "zażółć gęślą jaźń \0165 \0f65 \ff11" };
+            var input = new ThingWithString { Value = "zażółć gęślą jaźń \u0165 \u0f65 \uff11" };
             var str = JsonConvert.SerializeObject(input);
             var result = (ThingWithString)JsonConvert.DeserializeObject(str, typeof(ThingWithString));
             Assert.Equal(input.Value, result.Value);
