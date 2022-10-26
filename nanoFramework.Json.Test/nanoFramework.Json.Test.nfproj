@@ -50,6 +50,7 @@
     <Compile Include="Converters\DoubleConverterTests.cs" />
     <Compile Include="Configuration\JsonCustomTypeTests.cs" />
     <Compile Include="JsonDeserializationArraysTests.cs" />
+    <Compile Include="JsonThreadSafeTests.cs" />
     <Compile Include="JsonUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolvers\MemberResolverCaseInsensitiveExceptionTests.cs" />
@@ -66,8 +67,8 @@
       <HintPath>..\packages\nanoFramework.System.Collections.1.4.0\lib\nanoFramework.System.Collections.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="nanoFramework.System.Text, Version=1.2.17.16468, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Text.1.2.17\lib\nanoFramework.System.Text.dll</HintPath>
+    <Reference Include="nanoFramework.System.Text, Version=1.2.22.3995, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.Text.1.2.22\lib\nanoFramework.System.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nanoFramework.TestFramework, Version=2.0.43.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
@@ -78,8 +79,8 @@
       <HintPath>..\packages\nanoFramework.TestFramework.2.0.43\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Streams, Version=1.1.22.58270, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.22\lib\System.IO.Streams.dll</HintPath>
+    <Reference Include="System.IO.Streams, Version=1.1.27.27650, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.27\lib\System.IO.Streams.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
