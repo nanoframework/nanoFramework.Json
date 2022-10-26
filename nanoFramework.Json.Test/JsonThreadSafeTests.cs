@@ -56,14 +56,16 @@ namespace nanoFramework.Json.Test
 
         private static void ThreadMethod(ThreadLogger threadLogger)
         {
-            var json = "{\"TestString\":\"towel\"}";
+            var testStringValue = "towel";
+            var json = $"{{\"TestString\":\"{testStringValue}\"}}";
             int count = 0;
             while (true)
             {
                 try
                 {
-                    JsonConvert.DeserializeObject(json, typeof(TestObject));
+                    var result = (TestObject)JsonConvert.DeserializeObject(json, typeof(TestObject));
                     Debug.Write($"{count++}; ");
+                    Assert.Equal(result.TestString, testStringValue);
                 }
                 catch (ThreadAbortException)
                 {
