@@ -1041,15 +1041,24 @@ namespace nanoFramework.Json
             //https://en.wikipedia.org/wiki/UTF-8#Encoding
 
             if ((jsonBytes[jsonPos] & 0x80) == 0)
+            {
                 return (char)jsonBytes[jsonPos++];
+            }
 
             if ((jsonBytes[jsonPos] & 0x20) == 0)
-                return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0];
+            {
+                jsonPos += 2;
+                return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 2, 2)[0];
+            }
 
             if ((jsonBytes[jsonPos] & 0x10) == 0)
-                return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0];
+            {
+                jsonPos += 3;
+                return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 3, 3)[0];
+            }
 
-            return Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+            jsonPos += 4;
+            return Encoding.UTF8.GetChars(jsonBytes, jsonPos - 4, 4)[0];
         }
 
         private static LexToken GetNextTokenInternal()
