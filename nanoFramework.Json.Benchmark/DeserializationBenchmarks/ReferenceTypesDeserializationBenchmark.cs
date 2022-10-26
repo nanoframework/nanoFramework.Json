@@ -68,14 +68,14 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
 
         protected override int IterationCount => 20;
 
-        [Benchmark]
-        public void IntArray()
-        {
-            RunInIteration(() =>
-            {
-                JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
-            });
-        }
+        // [Benchmark]
+        // public void IntArray()
+        // {
+        //     RunInIteration(() =>
+        //     {
+        //         JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
+        //     });
+        // }
 
         [Benchmark]
         public void ArrayList()
@@ -92,14 +92,14 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
             JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayload));
         }
 
-        [Benchmark]
-        public void ShortArray()
-        {
-            RunInIteration(() =>
-            {
-                JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
-            });
-        }
+        // [Benchmark]
+        // public void ShortArray()
+        // {
+        //     RunInIteration(() =>
+        //     {
+        //         JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
+        //     });
+        // }
 
         [Benchmark]
         public void String()
