@@ -41,7 +41,7 @@ namespace nanoFramework.Json.Test
             // Let's wait a little bit so threads can do their job
             Thread.Sleep(TimeSpan.FromSeconds(30));
 
-            // Abrot all threads
+            // Abort all threads
             for (int i = 0; i < threadCount; i++)
             {
                 ((Thread)threads[i]).Abort();
