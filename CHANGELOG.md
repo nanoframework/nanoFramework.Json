@@ -2,7 +2,20 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.57...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.59...HEAD)
+
+**Implemented enhancements:**
+
+- Support for unicode characters in JsonConvert deserialization [\#268](https://github.com/nanoframework/nanoFramework.Json/pull/268)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#271](https://github.com/nanoframework/nanoFramework.Json/pull/271)
+- Deserialization is now thread-safe  [\#255](https://github.com/nanoframework/nanoFramework.Json/pull/255)
+
+## [v2.2.59](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.59) (2022-10-26)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.57...v2.2.59)
 
 **Documentation and other chores:**
 
