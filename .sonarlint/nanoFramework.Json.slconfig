@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "nanoframework",
+    "Name": "nanoFramework"
+  },
+  "ProjectKey": "nanoframework_lib-nanoFramework.Json",
+  "ProjectName": "nanoFramework.Json",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AXhEbe274ytnW2SlpNou",
+      "ProfileTimestamp": "2021-03-18T08:53:00Z"
+    }
+  }
+}
