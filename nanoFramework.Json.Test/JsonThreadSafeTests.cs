@@ -1,8 +1,12 @@
-﻿using nanoFramework.TestFramework;
+﻿//
+// Copyright (c) .NET Foundation and Contributors
+// See LICENSE file in the project root for full license information.
+//
+
+using nanoFramework.TestFramework;
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 
 namespace nanoFramework.Json.Test

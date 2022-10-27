@@ -1,9 +1,13 @@
-﻿using nanoFramework.Benchmark;
-using System;
-using System.Collections;
+﻿//
+// Copyright (c) .NET Foundation and Contributors
+// See LICENSE file in the project root for full license information.
+//
+
+using nanoFramework.Benchmark;
 using nanoFramework.Benchmark.Attributes;
 using nanoFramework.Json.Benchmark.Base;
 using nanoFramework.Json.Test.Shared;
+using System.Collections;
 
 namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
 {

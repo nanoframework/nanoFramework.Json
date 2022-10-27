@@ -154,8 +154,6 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Finished test...");
         }
 
-
-
         [TestMethod]
         public void Can_serialize_int_array()
         {
@@ -1171,7 +1169,7 @@ namespace nanoFramework.Json.Test
             var expectedJson = "\"multiline\\nstring\"";
 
             var json = JsonConvert.SerializeObject(inputData);
-            
+
             Assert.Equal(expectedJson, json);
         }
 
@@ -1207,7 +1205,7 @@ namespace nanoFramework.Json.Test
 
             Assert.Equal(expectedValue, result);
         }
-        
+
         [TestMethod]
         public void CanSerializeBoxedEnum()
         {
