@@ -1306,4 +1306,3 @@ namespace nanoFramework.Json
         private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
     }
 }
-

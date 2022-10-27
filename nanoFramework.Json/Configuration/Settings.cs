@@ -29,4 +29,3 @@ namespace nanoFramework.Json.Configuration
         public static bool ThrowExceptionWhenPropertyNotFound { get; set; } = false;
     }
 }
-

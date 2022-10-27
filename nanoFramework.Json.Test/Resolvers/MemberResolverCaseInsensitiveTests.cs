@@ -7,7 +7,6 @@
 using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
-using System;
 
 namespace nanoFramework.Json.Test.Resolvers
 {

@@ -1,4 +1,9 @@
-﻿using nanoFramework.Json.Configuration;
+﻿//
+// Copyright (c) .NET Foundation and Contributors
+// See LICENSE file in the project root for full license information.
+//
+
+using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
 using System;
