@@ -29,8 +29,10 @@ namespace nanoFramework.Json.Test.Shared
         public object nullObject { get; set; }
         public float nanFloat { get; set; }
         public double nanDouble { get; set; }
-#pragma warning disable 0414 //there is no need to set this in the function as it is a test, as such, warning has been disabled!
-        private string dontSerializeStr = "dontPublish";
+#pragma warning disable 0414 // there is no need to set this in the function as it is a test, as such, warning has been disabled!
+#pragma warning disable S1144 // there is no need to set this in the function as it is a test, as such, warning has been disabled!
+        private readonly string dontSerializeStr = "dontPublish";
+#pragma warning restore S1144 // Unused private types or members should be removed
 #pragma warning restore 0414
         private string dontSerialize { get; set; } = "dontPublish";
 

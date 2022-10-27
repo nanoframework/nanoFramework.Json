@@ -14,16 +14,17 @@ namespace nanoFramework.Json.Test
     [TestClass]
     public class JsonThreadSafeTests
     {
-        private class TestObject
+        private sealed class TestObject
         {
+#pragma warning disable S3459 // required for running "ThreadMethod" test
             public string TestString { get; set; }
+#pragma warning restore S3459 // Unassigned members should be removed
         }
 
-        private class ThreadLogger
+        private sealed class ThreadLogger
         {
             public int ErrorCount { get; set; }
         }
-
 
         [TestMethod]
         public void Deserialize_Should_BeThreadSafe()

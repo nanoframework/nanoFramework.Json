@@ -87,22 +87,6 @@ namespace nanoFramework.Json
             return PopulateObject((JsonToken)dserResult, type, "/");
         }
 
-        private static object Deserialize(StreamReader dr)
-        {
-            // Read the DataReader into jsonBytes[]
-            var jsonBytes = new byte[dr.BaseStream.Length];
-            var jsonPos = 0;
-
-            while (!dr.EndOfStream)
-            {
-                jsonBytes[jsonPos++] = (byte)dr.Read();
-            }
-
-            jsonPos = 0;
-
-            return Deserialize(ref jsonPos, ref jsonBytes);
-        }
-
 #endif
         private static bool ShouldSkipConvert(Type sourceType, Type targetType, bool forceConversion)
         {
@@ -157,7 +141,7 @@ namespace nanoFramework.Json
                 if (rootElementType == null
                     && rootType.FullName == "System.Collections.Hashtable")
                 {
-                    Hashtable rootInstanceHashtable = new Hashtable();
+                    Hashtable rootInstanceHashtable = new();
 
                     foreach (var m in rootObject.Members)
                     {
@@ -538,7 +522,7 @@ namespace nanoFramework.Json
                 return targetArray;
             }
 
-            return null; // TODO: Not sure about this one, should be replaced with exception?
+            return null;
         }
 
         private static object PopulateObject(JsonToken rootToken)
@@ -839,6 +823,22 @@ namespace nanoFramework.Json
             }
 
             return result;
+        }
+
+        private static object Deserialize(StreamReader dr)
+        {
+            // Read the DataReader into jsonBytes[]
+            var jsonBytes = new byte[dr.BaseStream.Length];
+            var jsonPos = 0;
+
+            while (!dr.EndOfStream)
+            {
+                jsonBytes[jsonPos++] = (byte)dr.Read();
+            }
+
+            jsonPos = 0;
+
+            return Deserialize(ref jsonPos, ref jsonBytes);
         }
 
         private static JsonObject ParseObject(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)

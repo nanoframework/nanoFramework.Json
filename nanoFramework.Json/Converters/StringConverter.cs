@@ -11,7 +11,7 @@ namespace nanoFramework.Json.Converters
 {
     internal sealed class StringConverter : IConverter
     {
-        internal static readonly Hashtable EscapableCharactersMapping = new Hashtable()
+        internal static readonly Hashtable EscapableCharactersMapping = new()
         {
             {'\n', 'n'},
             {'\r', 'r'},
