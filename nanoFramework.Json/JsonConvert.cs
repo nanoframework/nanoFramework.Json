@@ -1028,7 +1028,6 @@ namespace nanoFramework.Json
         {
             return GetNextTokenInternal(ref jsonPos, ref jsonBytes);
         }
-
         private static LexToken GetNextTokenInternal(ref int jsonPos, ref byte[] jsonBytes)
         {
             StringBuilder sb = null;
@@ -1043,7 +1042,14 @@ namespace nanoFramework.Json
                     return EndToken(sb);
                 }
 
-                ch = (char)jsonBytes[jsonPos++];
+#pragma warning disable S1121
+#pragma warning disable S3358
+                ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                    : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                    : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                    : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+#pragma warning restore S1121
+#pragma warning restore S3358
 
                 // Handle json escapes
                 bool escaped = false;
@@ -1052,8 +1058,14 @@ namespace nanoFramework.Json
                 if (ch == '\\')
                 {
                     escaped = true;
-                    ch = (char)jsonBytes[jsonPos++];
-
+#pragma warning disable S1121
+#pragma warning disable S3358
+                    ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                        : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                        : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                        : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+#pragma warning restore S1121
+#pragma warning restore S3358
                     if (ch == (char)0xffff)
                     {
                         return EndToken(sb);
@@ -1262,8 +1274,14 @@ namespace nanoFramework.Json
 
         private static void Expect(char expected, ref int jsonPos, ref byte[] jsonBytes)
         {
-            char ch = (char)jsonBytes[jsonPos++];
-
+#pragma warning disable S1121
+#pragma warning disable S3358
+            char ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
+                : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
+                : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
+                : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
+#pragma warning restore S1121
+#pragma warning restore S3358
             if (ch.ToLower() != expected)
             {
                 // unexpected character during json lexical parse

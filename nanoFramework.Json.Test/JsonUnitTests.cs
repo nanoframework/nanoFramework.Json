@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
@@ -1290,6 +1290,15 @@ namespace nanoFramework.Json.Test
                 ""iotEdge"": false
     }
         }";
+
+        [TestMethod]
+        public void DeserializeObjectWithStringContainingNonAsciiChars()
+        {
+            var input = new ThingWithString { Value = "zażółć gęślą jaźń \u0165 \u0f65 \uff11" };
+            var str = JsonConvert.SerializeObject(input);
+            var result = (ThingWithString)JsonConvert.DeserializeObject(str, typeof(ThingWithString));
+            Assert.Equal(input.Value, result.Value);
+        }
 
     }
 
