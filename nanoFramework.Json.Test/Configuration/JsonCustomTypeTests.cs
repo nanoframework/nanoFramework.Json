@@ -12,13 +12,13 @@ namespace nanoFramework.Json.Test.Configuration
     [TestClass]
     public class JsonCustomTypeTests
     {
-        private class TestObject
+        private sealed class TestObject
         {
             public int Value { get; set; }
         }
 
 
-        private class CustomConverter : IConverter
+        private sealed class CustomConverter : IConverter
         {
             public string ToJson(object value)
             {

@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace nanoFramework.Json.Benchmark
 {
-    public class Program
+    public static class Program
     {
         public static void Main()
         {

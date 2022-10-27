@@ -223,7 +223,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1.ToString()}");
+            Assert.Equal(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1}");
             Assert.Equal(timeSpanTests.Duration2.Ticks.ToString(), dserResult.Duration2.Ticks.ToString(), $"wrong value for Duration2, expected {timeSpanTests.Duration2}, got {dserResult.Duration2}");
             Assert.Equal(timeSpanTests.Duration3.Ticks.ToString(), dserResult.Duration3.Ticks.ToString(), $"wrong value for Duration3, expected {timeSpanTests.Duration3}, got {dserResult.Duration3}");
             Assert.Equal(timeSpanTests.Duration4.Ticks.ToString(), dserResult.Duration4.Ticks.ToString(), $"wrong value for Duration4, expected {timeSpanTests.Duration4}, got {dserResult.Duration4}");
@@ -549,10 +549,12 @@ namespace nanoFramework.Json.Test
         {
             ICollection collection = new ArrayList() { 1, null, 2, "blah", false };
 
-            Hashtable hashtable = new();
-            hashtable.Add("collection", collection);
-            hashtable.Add("nulltest", null);
-            hashtable.Add("stringtest", "hello world");
+            Hashtable hashtable = new()
+            {
+                { "collection", collection },
+                { "nulltest", null },
+                { "stringtest", "hello world" }
+            };
 
             object[] array = new object[] { hashtable };
 
@@ -1017,8 +1019,10 @@ namespace nanoFramework.Json.Test
             var correctValue = "{\"Led\":{\"value\":\"On\",\"nodeID\":\"14\"}}";
             JsonSerializeObjectAsProperty ledProp = new() { value = "On", nodeID = "14" };
 
-            Hashtable twin = new();
-            twin.Add("Led", ledProp);
+            Hashtable twin = new()
+            {
+                { "Led", ledProp }
+            };
 
             string json = JsonConvert.SerializeObject(twin);
 
@@ -1106,10 +1110,13 @@ namespace nanoFramework.Json.Test
         {
             var valueAsJsonString = @"{""_count"":1,""Databases"":[{""_users"":""users/"",""_ts"":1644173816,""id"":""HomeAutomation"",""_rid"":""MfAzAA=="",""_colls"":""colls/"",""_etag"":""\""000020002-0000-0a00-0000-620019f80000\"""",""_self"":""dbs/MFzAA==/""}],""_rid"":null}";
 
-            CosmosDbDatabaseList dbObject = new CosmosDbDatabaseList();
-            dbObject._count = 1;
+            CosmosDbDatabaseList dbObject = new CosmosDbDatabaseList
+            {
+                _count = 1,
 
-            dbObject.Databases = new CosmosDbDatabaseList.Database[1];
+                Databases = new CosmosDbDatabaseList.Database[1]
+            };
+
             dbObject.Databases[0] = new CosmosDbDatabaseList.Database
             {
                 id = "HomeAutomation",
@@ -1209,13 +1216,15 @@ namespace nanoFramework.Json.Test
         [TestMethod]
         public void CanSerializeBoxedEnum()
         {
-            Hashtable values = new Hashtable();
-            values.Add("gender", Gender.Male);
+            Hashtable values = new Hashtable
+            {
+                { "gender", Gender.Male }
+            };
 
             Assert.Equal(JsonConvert.SerializeObject(values), "{\"gender\":0}");
         }
 
-        private static string testInvocationReceiveMessage = @"{
+        private static readonly string testInvocationReceiveMessage = @"{
         ""type"":1,
         ""target"":""ReceiveAdvancedMessage"",
         ""arguments"": [
@@ -1240,7 +1249,7 @@ namespace nanoFramework.Json.Test
             3
         ]}";
 
-        private static string s_AzureTwinsJsonTestPayload = @"{
+        private static readonly string s_AzureTwinsJsonTestPayload = @"{
     ""deviceId"": ""nanoDeepSleep"",
     ""etag"": ""AAAAAAAAAAc="",
     ""deviceEtag"": ""Njc2MzYzMTQ5"",

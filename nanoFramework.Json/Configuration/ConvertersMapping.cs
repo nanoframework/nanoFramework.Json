@@ -14,7 +14,7 @@ namespace nanoFramework.Json.Configuration
     /// </summary>
     public static class ConvertersMapping
     {
-        internal static readonly Hashtable ConversionTable = new Hashtable()
+        internal static readonly Hashtable ConversionTable = new()
         {
             { typeof(short), new ShortConverter() },
             { typeof(ushort), new UShortConverter() },

@@ -17,6 +17,10 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
+        JsonSerializer()
+        {
+        }
+
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
@@ -73,7 +77,7 @@ namespace nanoFramework.Json
 
         private static string SerializeClass(object o, Type type)
         {
-            Hashtable hashtable = new Hashtable();
+            Hashtable hashtable = new();
 
             // Iterate through all of the methods, looking for internal GET properties
             MethodInfo[] methods = type.GetMethods();

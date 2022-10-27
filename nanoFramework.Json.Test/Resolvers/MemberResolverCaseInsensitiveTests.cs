@@ -13,7 +13,7 @@ namespace nanoFramework.Json.Test.Resolvers
     [TestClass]
     public class MemberResolverCaseInsensitiveTests
     {
-        private class TestClass
+        private sealed class TestClass
         {
             public int TestField = 1;
             public int TestProperty { get; set; } = 1;
