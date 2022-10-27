@@ -17,6 +17,7 @@
     <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RestoreLockedMode Condition="'$(TF_BUILD)' == 'True' or '$(ContinuousIntegrationBuild)' == 'True'">true</RestoreLockedMode>
+    <CodeAnalysisRuleSet>..\.sonarlint\nanoframework_lib-nanoframework.jsoncsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
@@ -64,6 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nanoFramework.Json\nanoFramework.Json.nfproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\nanoframework_lib-nanoframework.json\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    <Content Include="packages.lock.json" />
   </ItemGroup>
   <Import Project="..\nanoFramework.Json.Test.Shared\nanoFramework.Json.Test.Shared.projitems" Label="Shared" />
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />
