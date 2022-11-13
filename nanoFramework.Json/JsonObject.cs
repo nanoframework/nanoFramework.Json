@@ -8,15 +8,36 @@ using System.Collections;
 
 namespace nanoFramework.Json
 {
-    internal class JsonObject : JsonToken
+    /// <summary>
+    /// Represents single JSON object that contains multiple JSON properties.
+    /// </summary>
+    public sealed class JsonObject : JsonToken
     {
         private readonly Hashtable _members = new();
 
+        /// <summary>
+        /// Gets the collection of values from <see cref="_members"/>.
+        /// </summary>
         public ICollection Members => _members.Values;
 
+        /// <summary>
+        /// Adds new key value pair to collection.
+        /// </summary>
+        /// <param name="name">JSON property key.</param>
+        /// <param name="value">JSON property value.</param>
         public void Add(string name, JsonToken value)
         {
             _members.Add(name.ToLower(), new JsonProperty(name, value));
+        }
+
+        /// <summary>
+        /// Gets the value of property for given key.
+        /// </summary>
+        /// <param name="name">JSON property key.</param>
+        /// <returns>JSON value.</returns>
+        public JsonProperty Get(string name)
+        {
+            return (JsonProperty)_members[name.ToLower()];
         }
     }
 }

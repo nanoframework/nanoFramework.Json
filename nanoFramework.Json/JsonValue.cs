@@ -8,12 +8,23 @@ using System;
 
 namespace nanoFramework.Json
 {
-    internal class JsonValue : JsonToken
+    /// <summary>
+    /// Represents single object from JSON string.
+    /// </summary>
+    public sealed class JsonValue : JsonToken
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonValue" /> class.
+        /// </summary>
         public JsonValue()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonValue" /> class.
+        /// </summary>
+        /// <param name="value">Value of current JSON object.</param>
+        /// <param name="isDateTime">Is the type of value DateTime.</param>
         public JsonValue(object value, bool isDateTime = false)
         {
             if (isDateTime)
@@ -29,6 +40,9 @@ namespace nanoFramework.Json
             }
         }
 
+        /// <summary>
+        /// Gets or sets object value.
+        /// </summary>
         public object Value { get; set; }
     }
 }
