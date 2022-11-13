@@ -34,7 +34,7 @@ namespace nanoFramework.Json
         /// Gets the value of property for given key.
         /// </summary>
         /// <param name="name">JSON property key.</param>
-        /// <returns>JSON value.</returns>
+        /// <returns>JsonProperty object which contains key and value of object.</returns>
         public JsonProperty Get(string name)
         {
             return (JsonProperty)_members[name.ToLower()];
