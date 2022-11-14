@@ -6,19 +6,28 @@
 
 namespace nanoFramework.Json
 {
-    internal class JsonArray : JsonToken
+    /// <summary>
+    /// Represents array of objects from JSON string.
+    /// </summary>
+    public sealed class JsonArray : JsonToken
     {
-        public JsonArray()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonArray" /> class.
+        /// </summary>
+        /// <param name="values">Initial <see cref="JsonToken"/> array.</param>
         public JsonArray(JsonToken[] values)
         {
             Items = values;
         }
-
+        
+        /// <summary>
+        /// Gets the lenght of <see cref="Items"/> array.
+        /// </summary>
         public int Length => Items.Length;
 
+        /// <summary>
+        /// Gets collection of <see cref="JsonToken"/>.
+        /// </summary>
         public JsonToken[] Items { get; }
     }
 }

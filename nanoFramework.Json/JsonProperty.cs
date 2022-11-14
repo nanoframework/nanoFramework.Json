@@ -6,19 +6,30 @@
 
 namespace nanoFramework.Json
 {
-    internal class JsonProperty : JsonToken
+    /// <summary>
+    /// Represents single JSON key value pair.
+    /// </summary>
+    public sealed class JsonProperty : JsonToken
     {
-        public JsonProperty()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonProperty" /> class.
+        /// </summary>
+        /// <param name="name">JSON property key.</param>
+        /// <param name="value">JSON property value.</param>
         public JsonProperty(string name, JsonToken value)
         {
             Name = name;
             Value = value;
         }
 
-        public string Name { get; set; }
-        public JsonToken Value { get; set; }
+        /// <summary>
+        /// Gets key of JSON property.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Gets value of Json property.
+        /// </summary>
+        public JsonToken Value { get; }
     }
 }
