@@ -13,12 +13,6 @@ namespace nanoFramework.Json
     /// </summary>
     public sealed class JsonValue : JsonToken
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonValue" /> class.
-        /// </summary>
-        public JsonValue()
-        {
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonValue" /> class.
@@ -43,6 +37,6 @@ namespace nanoFramework.Json
         /// <summary>
         /// Gets or sets object value.
         /// </summary>
-        public object Value { get; set; }
+        public object Value { get; }
     }
 }

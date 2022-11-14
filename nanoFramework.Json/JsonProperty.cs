@@ -14,13 +14,6 @@ namespace nanoFramework.Json
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonProperty" /> class.
         /// </summary>
-        public JsonProperty()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonProperty" /> class.
-        /// </summary>
         /// <param name="name">JSON property key.</param>
         /// <param name="value">JSON property value.</param>
         public JsonProperty(string name, JsonToken value)
@@ -30,14 +23,14 @@ namespace nanoFramework.Json
         }
 
         /// <summary>
-        /// Gets or sets key of JSON property.
+        /// Gets key of JSON property.
         /// </summary>
 
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
-        /// Gets or sets value of Json property.
+        /// Gets value of Json property.
         /// </summary>
-        public JsonToken Value { get; set; }
+        public JsonToken Value { get; }
     }
 }
