@@ -25,7 +25,6 @@ namespace nanoFramework.Json
         /// <summary>
         /// Gets key of JSON property.
         /// </summary>
-
         public string Name { get; }
 
         /// <summary>
