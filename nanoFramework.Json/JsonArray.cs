@@ -11,14 +11,6 @@ namespace nanoFramework.Json
     /// </summary>
     public sealed class JsonArray : JsonToken
     {
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="JsonArray" /> class.
-        /// </summary>
-        public JsonArray()
-        {
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonArray" /> class.
         /// </summary>
