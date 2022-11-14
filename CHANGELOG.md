@@ -2,7 +2,22 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.59...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.63...HEAD)
+
+**Implemented enhancements:**
+
+- Adjust DTO accessors to make them public [\#277](https://github.com/nanoframework/nanoFramework.Json/pull/277)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#279](https://github.com/nanoframework/nanoFramework.Json/pull/279)
+- Update 3 NuGet dependencies [\#276](https://github.com/nanoframework/nanoFramework.Json/pull/276)
+- Fix Sonarcloud issues [\#274](https://github.com/nanoframework/nanoFramework.Json/pull/274)
+- Miscellaneous fixes [\#273](https://github.com/nanoframework/nanoFramework.Json/pull/273)
+
+## [v2.2.63](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.63) (2022-10-27)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.59...v2.2.63)
 
 **Implemented enhancements:**
 
