@@ -27,7 +27,7 @@ namespace nanoFramework.Json
         /// <param name="value">JSON property value.</param>
         public void Add(string name, JsonToken value)
         {
-            _members.Add(name.ToLower(), new JsonProperty(name, value));
+            _members.Add(name, new JsonProperty(name, value));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace nanoFramework.Json
         /// <returns>JsonProperty object which contains key and value of object.</returns>
         public JsonProperty Get(string name)
         {
-            return (JsonProperty)_members[name.ToLower()];
+            return (JsonProperty)_members[name];
         }
     }
 }
