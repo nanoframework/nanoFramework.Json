@@ -57,7 +57,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(timeSpanTestValue);
+                _ = JsonConvert.SerializeObject(timeSpanTestValue);
             });
         }
 
@@ -66,7 +66,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(floatTestValue);
+                _ = JsonConvert.SerializeObject(floatTestValue);
             });
         }
 
@@ -75,7 +75,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(doubleTestValue);
+                _ = JsonConvert.SerializeObject(doubleTestValue);
             });
         }
 
@@ -84,7 +84,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(dateTimeTestValue);
+                _ = JsonConvert.SerializeObject(dateTimeTestValue);
             });
         }
 
@@ -93,7 +93,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(longTestValue);
+                _ = JsonConvert.SerializeObject(longTestValue);
             });
         }
 
@@ -102,7 +102,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(enumValue);
+                _ = JsonConvert.SerializeObject(enumValue);
             });
         }
 
@@ -111,7 +111,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                var value = JsonConvert.SerializeObject(boxedEnum);
+                _ = JsonConvert.SerializeObject(boxedEnum);
             });
         }
     }

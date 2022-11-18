@@ -24,17 +24,23 @@ namespace nanoFramework.Json.Test.Shared
         public string[] stringArray { get; set; }
         public float[] floatArray { get; set; }
         public double[] doubleArray { get; set; }
+#pragma warning disable S1104 // need this as it is for testing
         public JsonTestClassChild child1;
+#pragma warning restore S1104 // Fields should not have public accessibility
         public JsonTestClassChild Child { get; set; }
         public object nullObject { get; set; }
         public float nanFloat { get; set; }
         public double nanDouble { get; set; }
 #pragma warning disable 0414 // there is no need to set this in the function as it is a test, as such, warning has been disabled!
 #pragma warning disable S1144 // there is no need to set this in the function as it is a test, as such, warning has been disabled!
+#pragma warning disable IDE0051 // need this here for testing
         private readonly string dontSerializeStr = "dontPublish";
+#pragma warning restore IDE0051 // Remove unused private members
 #pragma warning restore S1144 // Unused private types or members should be removed
 #pragma warning restore 0414
+#pragma warning disable IDE0051 // need this here for testing
         private string dontSerialize { get; set; } = "dontPublish";
+#pragma warning restore IDE0051 // Remove unused private members
 
         internal static JsonTestClassComplex CreateTestClass()
         {
