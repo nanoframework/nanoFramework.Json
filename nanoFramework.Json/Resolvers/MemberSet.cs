@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Resolvers
     /// <summary>
     /// Data about member which we want to populate.
     /// </summary>
-    public struct MemberSet
+    public readonly struct MemberSet
     {
         /// <summary>
         /// Gets a delegate which tells how to set a value on object.

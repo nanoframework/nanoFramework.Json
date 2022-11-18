@@ -20,7 +20,6 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         const string DoubleJson = "[0.82747237]";
         const string DateTimeJson = "[\"2059-11-01T00:00:00.0000000Z\"]";
         const string LongJson = "[284268484]";
-        const string EnumJson = "0";
         const string BoxedEnumJson = "{\"gender\":0}";
 
         [Benchmark]
@@ -28,7 +27,6 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // TODO: Return value should be of type short
                 JsonConvert.DeserializeObject(ShortJson, typeof(short));
             });
         }
@@ -38,7 +36,6 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // TODO: Return value should be of type timespan
                 JsonConvert.DeserializeObject(TimeSpanJson, typeof(TimeSpan));
             });
         }
@@ -48,7 +45,6 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // TODO: Return value should be of type float
                 JsonConvert.DeserializeObject(FloatJson, typeof(float));
             });
         }
@@ -76,17 +72,9 @@ namespace nanoFramework.Json.Benchmark.DeserializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // TODO: Return value should be of type long
                 JsonConvert.DeserializeObject(LongJson, typeof(long));
             });
         }
-
-        //[Benchmark]
-        //public void Enum()
-        //{
-            // TODO: Throws exception
-            //var value = (Gender)JsonConvert.DeserializeObject(EnumJson, typeof(Gender));
-        //}
 
         [Benchmark]
         public void EnumBoxed()
