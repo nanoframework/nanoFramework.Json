@@ -607,6 +607,83 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("");
         }
 
+        private class TestStringNumbers
+        {
+            public string SmallStringNumber { get; set; }
+            public string BigStringNumber { get; set; }
+            public string BiggerStringNumber { get; set; }
+        }
+
+        [TestMethod]
+        public void BasicDeserializationTestWithStringNumbers()
+        {
+            string json = "{\"SmallStringNumber\":\"1234567890\",\"BigStringNumber\":\"63805508613140626\",\"BiggerStringNumber\":\"638055086131406269\"}";
+
+            TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
+
+            Assert.Equal(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+
+            OutputHelper.WriteLine("");
+        }
+
+        [TestMethod]
+        public void BasicDeserializationTestWithStringNumbersSmall()
+        {
+            string json = "{\"SmallStringNumber\":\"1234567890\",\"BigStringNumber\":\"\",\"BiggerStringNumber\":\"\"}";
+
+            TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
+
+            Assert.Equal(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
+
+            OutputHelper.WriteLine("");
+        }
+
+        [TestMethod]
+        public void BasicDeserializationTestWithStringNumbersBig()
+        {
+            string json = "{\"SmallStringNumber\":\"\",\"BigStringNumber\":\"63805508613140626\",\"BiggerStringNumber\":\"\"}";
+
+            TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
+
+            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
+
+            OutputHelper.WriteLine("");
+        }
+
+        [TestMethod]
+        public void BasicDeserializationTestWithStringNumbersBigger()
+        {
+            string json = "{\"SmallStringNumber\":\"\",\"BigStringNumber\":\"\",\"BiggerStringNumber\":\"638055086131406269\"}";
+
+            TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
+
+            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+
+            OutputHelper.WriteLine("");
+        }
+
+        [TestMethod]
+        public void BasicDeserializationTestWithStringNumbersBiggerExtra()
+        {
+            string json = "{\"SmallStringNumber\":\"\",\"BigStringNumber\":\"\",\"BiggerStringNumber\":\"T638055086131406269\"}";
+
+            TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
+
+            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "T638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+
+            OutputHelper.WriteLine("");
+        }
+
         [TestMethod]
         public void SerializeDeserializeDateTest()
         {
