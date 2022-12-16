@@ -165,7 +165,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(intArray, dserResult);
+            CollectionAssert.AreEqual(intArray, dserResult);
 
             OutputHelper.WriteLine("Can_serialize_int_array() - Finished - test succeeded.");
             OutputHelper.WriteLine("");
@@ -323,7 +323,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(shortArray, dserResult);
+            CollectionAssert.AreEqual(shortArray, dserResult);
 
             OutputHelper.WriteLine("Can_serialize_short_array() - Finished - test succeeded.");
             OutputHelper.WriteLine("");
