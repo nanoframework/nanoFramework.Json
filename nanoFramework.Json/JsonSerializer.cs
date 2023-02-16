@@ -125,7 +125,52 @@ namespace nanoFramework.Json
                 return false;
             }
 
-            return true;
+            //Ignore property getters with at least one parameter (this[index] operator overloads)
+            ParameterInfo[] parameters = method.GetParameters();
+            if (parameters.Length > 0)
+            {
+                return false;
+            }
+            parameters = null;
+
+            // Ignore properties listed in [JsonIgnore()] attribute
+            if (ShouldIgnorePropertyFromClassAttribute(method))
+                return false;
+
+                // per property [JsonIgnore()] attribute - not working due to method.GetCustomAttributes returning empty
+                //var attributes = method.GetCustomAttributes(false);
+                //foreach (var attributeInfo in attributes)
+                //{
+                //    if(typeof(JsonIgnoreAttribute).IsInstanceOfType(attributeInfo))
+                //    {
+                //        return false;
+                //    }
+                //}
+
+                return true;
+        }
+
+        //split out method to check for ignore attribute
+        private static bool ShouldIgnorePropertyFromClassAttribute(MethodInfo method)
+        {
+            string[] gettersToIgnore = null;
+            object[] classAttributes = method.DeclaringType.GetCustomAttributes(true);
+            foreach (object attribute in classAttributes)
+            {
+                if (attribute is JsonIgnoreAttribute ignoreAttribute)
+                {
+                    gettersToIgnore = ignoreAttribute.PropertyNames;
+                    break;
+                }
+            }
+            classAttributes = null;
+            if (gettersToIgnore == null) return false;
+            foreach (string propertyName in gettersToIgnore)
+            {
+                if(propertyName.Equals(method.Name.Substring(4)))
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
