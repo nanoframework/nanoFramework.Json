@@ -32,9 +32,10 @@ namespace nanoFramework.Json
         /// <summary>
         /// Hides properties from the json serializer
         /// </summary>
-        /// <param name="getterNamesToIgnore"></param>
+        /// <param name="getterNamesToIgnore">a comma separated list of property names to ignore in json</param>
         public JsonIgnoreAttribute(string getterNamesToIgnore)
         {
+            //split by commas, then load array
             PropertyNames = getterNamesToIgnore.Split(',');
             for(int i = 0; i < PropertyNames.Length; i++)
             {
