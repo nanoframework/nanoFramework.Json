@@ -17,16 +17,6 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
-        private static bool _useIgnoreAttribute = false;
-        /// <summary>
-        /// If true, will check for JsonIgnoreAttribute upon serialization. Has a performance cost.
-        /// </summary>
-        public static bool UseIgnoreAttribute
-        {
-            get => _useIgnoreAttribute;
-            set => _useIgnoreAttribute = value;
-        }
-
         JsonSerializer()
         {
         }
@@ -89,7 +79,7 @@ namespace nanoFramework.Json
         {
             // Cache the type's class-level attributes only if UseIgnoreAttribute setting is enabled.
             object[] classAttributes = null;
-            if (UseIgnoreAttribute)
+            if (Settings.UseIgnoreAttribute)
             {
                 classAttributes = type.GetCustomAttributes(false);
             }
@@ -155,7 +145,7 @@ namespace nanoFramework.Json
             }
 
             // Only check for attribute if the setting is on
-            if (UseIgnoreAttribute)
+            if (Settings.UseIgnoreAttribute)
             {
                 // Ignore properties listed in [JsonIgnore()] attribute
                 if (ShouldIgnorePropertyFromClassAttribute(method, classAttributes))

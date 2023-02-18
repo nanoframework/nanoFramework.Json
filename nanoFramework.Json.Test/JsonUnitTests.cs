@@ -1388,7 +1388,7 @@ namespace nanoFramework.Json.Test
         public void DeserializeObjectWithJsonIgnoreAttribute()
         {
             OutputHelper.WriteLine("Starting JsonIgnore Test...");
-            JsonSerializer.UseIgnoreAttribute = true;
+            Json.Configuration.Settings.UseIgnoreAttribute = true;
             OutputHelper.WriteLine("UseIgnoreAttribute enabled.");
 
             var testObject = JsonIgnoreTestClass.CreateTestClass();
@@ -1408,7 +1408,7 @@ namespace nanoFramework.Json.Test
             Assert.IsFalse(areIgnoredPropsPresent);
             OutputHelper.WriteLine("Ignore was " + (areIgnoredPropsPresent ? "NOT " : "") + "successful.");
 
-            JsonSerializer.UseIgnoreAttribute = false;
+            Json.Configuration.Settings.UseIgnoreAttribute = false;
             OutputHelper.WriteLine("UseIgnoreAttribute set back to false.");
             OutputHelper.WriteLine("Finished JsonIgnore Test.");
         }
