@@ -23,7 +23,6 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static bool CaseSensitive { get; set; } = true;
 
-
         /// <summary>
         /// If true, will check for JsonIgnoreAttribute upon serialization. Has a performance cost. Defaults to false.
         /// </summary>

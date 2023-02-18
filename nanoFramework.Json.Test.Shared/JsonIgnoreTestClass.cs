@@ -37,27 +37,27 @@ namespace nanoFramework.Json.Test.Shared
         }
     }
 
-    ///// <summary>
-    ///// Used to 1-to-1 compare with JsonIgnoreTestClass.
-    ///// </summary>
-    //public class JsonIgnoreTestClassNoIgnore
-    //{
-    //    public int TestProperty { get; set; }
-    //    public int OtherTestProperty { get; set; }
-    //    public int AThirdTestProperty { get; set; }
-    //    public int MyIgnoredProperty => TestProperty + 1;
-    //    public int AnotherIgnoredProperty => OtherTestProperty + 1;
+    /// <summary>
+    /// Used to 1-to-1 compare with JsonIgnoreTestClass.
+    /// </summary>
+    public class JsonIgnoreTestClassNoAttr
+    {
+        public int TestProperty { get; set; }
+        public int OtherTestProperty { get; set; }
+        public int AThirdTestProperty { get; set; }
+        public int MyIgnoredProperty => TestProperty + 1;
+        public int AnotherIgnoredProperty => OtherTestProperty + 1;
 
-    //    public int this[int index] => TestProperty + index;
+        public int this[int index] => TestProperty + index;
 
-    //    public static JsonIgnoreTestClassNoIgnore CreateTestClass()
-    //    {
-    //        return new JsonIgnoreTestClassNoIgnore()
-    //        {
-    //            TestProperty = 1,
-    //            OtherTestProperty = 2,
-    //            AThirdTestProperty = 3
-    //        };
-    //    }
-    //}
+        public static JsonIgnoreTestClassNoAttr CreateTestClass()
+        {
+            return new JsonIgnoreTestClassNoAttr()
+            {
+                TestProperty = 1,
+                OtherTestProperty = 2,
+                AThirdTestProperty = 3
+            };
+        }
+    }
 }

@@ -137,21 +137,19 @@ namespace nanoFramework.Json
                 return false;
             }
 
-            // Ignore property getters with at least one parameter (index properties / this[index] operator overloads)
-            ParameterInfo[] parameters = method.GetParameters();
-            if (parameters.Length > 0)
+            // Ignore indexer properties
+            // (string comparison is MUCH faster than method.GetParameters)
+            if (method.Name == "get_Item")
             {
                 return false;
             }
 
+            // Ignore properties listed in [JsonIgnore()] attribute
             // Only check for attribute if the setting is on
-            if (Settings.UseIgnoreAttribute)
+            if (Settings.UseIgnoreAttribute &&
+                ShouldIgnorePropertyFromClassAttribute(method, classAttributes))
             {
-                // Ignore properties listed in [JsonIgnore()] attribute
-                if (ShouldIgnorePropertyFromClassAttribute(method, classAttributes))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
@@ -200,7 +198,7 @@ namespace nanoFramework.Json
         /// <returns>The property name as it appears in written code.</returns>
         private static string ExtractGetterName(MethodInfo getterMethodInfo)
         {
-            // Substring(4) is to extract the "get_"
+            // Substring(4) is to extract the "get_" for property methods
             return getterMethodInfo.Name.Substring(4);
         }
 
