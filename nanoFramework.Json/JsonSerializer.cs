@@ -17,6 +17,16 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
+        private static bool _useIgnoreAttribute = false;
+        /// <summary>
+        /// If true, will check for JsonIgnoreAttribute upon serialization. Has a performance cost.
+        /// </summary>
+        public static bool UseIgnoreAttribute
+        {
+            get => _useIgnoreAttribute;
+            set => _useIgnoreAttribute = value;
+        }
+
         JsonSerializer()
         {
         }
@@ -77,6 +87,13 @@ namespace nanoFramework.Json
 
         private static string SerializeClass(object o, Type type)
         {
+            // Cache the type's class-level attributes only if UseIgnoreAttribute setting is enabled.
+            object[] classAttributes = null;
+            if (UseIgnoreAttribute)
+            {
+                classAttributes = type.GetCustomAttributes(false);
+            }
+
             Hashtable hashtable = new();
 
             // Iterate through all of the methods, looking for internal GET properties
@@ -84,19 +101,24 @@ namespace nanoFramework.Json
 
             foreach (MethodInfo method in methods)
             {
-                if (!ShouldSerializeMethod(method))
+                if (!ShouldSerializeMethod(method, classAttributes))
                 {
                     continue;
                 }
-
+                
                 object returnObject = method.Invoke(o, null);
-                hashtable.Add(method.Name.Substring(4), returnObject);
+                hashtable.Add(ExtractGetterName(method), returnObject);
             }
 
             return SerializeIDictionary(hashtable);
         }
 
-        private static bool ShouldSerializeMethod(MethodInfo method)
+        /// <summary>
+        /// Checks whether a property (MethodInfo) should be serialized.
+        /// </summary>
+        /// <param name="method">The MethodInfo to check.</param>
+        /// <param name="classAttributes">The cached class-level attributes. Only used if UseIgnoreAttribute is true.</param>
+        private static bool ShouldSerializeMethod(MethodInfo method, object[] classAttributes)
         {
             // We care only about property getters when serializing
             if (!method.Name.StartsWith("get_"))
@@ -125,38 +147,36 @@ namespace nanoFramework.Json
                 return false;
             }
 
-            //Ignore property getters with at least one parameter (this[index] operator overloads)
+            // Ignore property getters with at least one parameter (index properties / this[index] operator overloads)
             ParameterInfo[] parameters = method.GetParameters();
             if (parameters.Length > 0)
             {
                 return false;
             }
-            parameters = null;
 
-            // Ignore properties listed in [JsonIgnore()] attribute
-            if (ShouldIgnorePropertyFromClassAttribute(method))
-                return false;
-
-            // per property [JsonIgnore()] attribute - not working due to method.GetCustomAttributes returning empty
-            //var attributes = method.GetCustomAttributes(false);
-            //foreach (var attributeInfo in attributes)
-            //{
-            //    if(typeof(JsonIgnoreAttribute).IsInstanceOfType(attributeInfo))
-            //    {
-            //        return false;
-            //    }
-            //}
+            // Only check for attribute if the setting is on
+            if (UseIgnoreAttribute)
+            {
+                // Ignore properties listed in [JsonIgnore()] attribute
+                if (ShouldIgnorePropertyFromClassAttribute(method, classAttributes))
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
 
         /// <summary>
-        /// split out method to check for ignore attribute
+        /// Checks for JsonIgnore attribute on a method's declaring class. (helper method for SerializeClass)
         /// </summary>
-        private static bool ShouldIgnorePropertyFromClassAttribute(MethodInfo method)
+        /// <param name="method">The MethodInfo of a property getter to check.</param>
+        /// <param name="classAttributes">The cached class-level attributes. Only used if UseIgnoreAttribute is true.</param>
+        /// <returns></returns>
+        private static bool ShouldIgnorePropertyFromClassAttribute(MethodInfo method, object[] classAttributes)
         {
             string[] gettersToIgnore = null;
-            object[] classAttributes = method.DeclaringType.GetCustomAttributes(true);
+            
             foreach (object attribute in classAttributes)
             {
                 if (attribute is JsonIgnoreAttribute ignoreAttribute)
@@ -165,14 +185,33 @@ namespace nanoFramework.Json
                     break;
                 }
             }
-            classAttributes = null;
-            if (gettersToIgnore == null) return false;
+
+            if (gettersToIgnore == null)
+            {
+                return false;
+            }
+
             foreach (string propertyName in gettersToIgnore)
             {
-                if (propertyName.Equals(method.Name.Substring(4)))
+                if (propertyName.Equals(ExtractGetterName(method)))
+                {
                     return true;
+                }
             }
+
             return false;
+        }
+
+        /// <summary>
+        /// Extracts "get_" from MethodInfo.Name to retrieve the name of a getter property.
+        /// Assumes the MethodInfo is for a getter, checked elsewhere.
+        /// </summary>
+        /// <param name="getterMethodInfo">The MethodInfo of the getter property.</param>
+        /// <returns>The property name as it appears in written code.</returns>
+        private static string ExtractGetterName(MethodInfo getterMethodInfo)
+        {
+            // Substring(4) is to extract the "get_"
+            return getterMethodInfo.Name.Substring(4);
         }
 
         /// <summary>

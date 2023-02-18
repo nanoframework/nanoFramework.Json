@@ -1384,6 +1384,34 @@ namespace nanoFramework.Json.Test
             Assert.Equal(input.Value, result.Value);
         }
 
+        [TestMethod]
+        public void DeserializeObjectWithJsonIgnoreAttribute()
+        {
+            OutputHelper.WriteLine("Starting JsonIgnore Test...");
+            JsonSerializer.UseIgnoreAttribute = true;
+            OutputHelper.WriteLine("UseIgnoreAttribute enabled.");
+
+            var testObject = JsonIgnoreTestClass.CreateTestClass();
+            var jsonString = JsonSerializer.SerializeObject(testObject);
+            OutputHelper.WriteLine("After serialize.");
+            JsonIgnoreTestClass dserResult = JsonConvert.DeserializeObject(jsonString, typeof(JsonIgnoreTestClass)) as JsonIgnoreTestClass;
+            OutputHelper.WriteLine("After deserialize.");
+
+            //test serialize and deserialize
+            bool jsonSuccess = testObject.IsEqual(dserResult);
+            Assert.IsTrue(jsonSuccess);
+            OutputHelper.WriteLine("Serialization/Deserialization was " + (jsonSuccess ? "" : "NOT ") + "successful.");
+
+            //test ignored properties are actually ignored
+            bool areIgnoredPropsPresent = jsonString.Contains("MyIgnoredProperty")
+                || jsonString.Contains("AnotherIgnoredProperty");
+            Assert.IsFalse(areIgnoredPropsPresent);
+            OutputHelper.WriteLine("Ignore was " + (areIgnoredPropsPresent ? "NOT " : "") + "successful.");
+
+            JsonSerializer.UseIgnoreAttribute = false;
+            OutputHelper.WriteLine("UseIgnoreAttribute set back to false.");
+            OutputHelper.WriteLine("Finished JsonIgnore Test.");
+        }
     }
 
     #region Test classes

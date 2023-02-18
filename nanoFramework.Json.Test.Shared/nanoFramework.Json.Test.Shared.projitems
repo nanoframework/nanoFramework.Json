@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Gender.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonIgnoreTestClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTestClassChild.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTestClassComplex.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTestCompany.cs" />
