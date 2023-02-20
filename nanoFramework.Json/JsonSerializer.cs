@@ -156,7 +156,7 @@ namespace nanoFramework.Json
         }
 
         /// <summary>
-        /// Checks for JsonIgnore attribute on a method's declaring class. (helper method for SerializeClass)
+        /// Checks for JsonIgnore attribute on a method's declaring class. Helper method for SerializeClass.
         /// </summary>
         /// <param name="method">The MethodInfo of a property getter to check.</param>
         /// <param name="classAttributes">The cached class-level attributes. Only used if UseIgnoreAttribute is true.</param>

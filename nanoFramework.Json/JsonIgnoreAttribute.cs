@@ -6,13 +6,13 @@ using System;
 namespace nanoFramework.Json
 {
     /// <summary>
-    /// Hides properties from the json serializer
+    /// Hides properties from the json serializer.
     /// </summary>
     [System.AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public sealed class JsonIgnoreAttribute : Attribute
     {
         /// <summary>
-        /// array of property names for json serializer to ignore
+        /// Array of property names for json serializer to ignore.
         /// </summary>
         public string[] PropertyNames { get; set; }
 

@@ -130,7 +130,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // Turn OFF the UseIgnore setting
+                // Turn ON the UseIgnore setting
                 Configuration.Settings.UseIgnoreAttribute = true;
                 JsonConvert.SerializeObject(ignoreTest);
                 // Turn OFF the UseIgnore setting
@@ -152,7 +152,7 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         {
             RunInIteration(() =>
             {
-                // Turn OFF the UseIgnore setting
+                // Turn ON the UseIgnore setting
                 Configuration.Settings.UseIgnoreAttribute = true;
                 JsonConvert.SerializeObject(ignoreTestNoAttr);
                 // Turn OFF the UseIgnore setting
