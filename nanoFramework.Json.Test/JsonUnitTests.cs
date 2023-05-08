@@ -136,7 +136,7 @@ namespace nanoFramework.Json.Test
 
             Console.WriteLine($"dserResult== null: {deserializedResult == null}");
 
-            Assert.NotNull(deserializedResult);
+            Assert.IsNotNull(deserializedResult);
 
             Assert.AreEqual(deserializedResult[0].CompanyID, first.CompanyID);
             Assert.AreEqual(deserializedResult[0].CompanyName, first.CompanyName);
@@ -763,7 +763,7 @@ namespace nanoFramework.Json.Test
 
             var twinPayload = (TwinProperties)JsonConvert.DeserializeObject(testString, typeof(TwinProperties));
 
-            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+            Assert.IsNotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.AreEqual(twinPayload.desired.TimeToSleep, 5, "desired.TimeToSleep doesn't match");
             Assert.Null(twinPayload.desired._metadata, "desired._metadata doesn't match");
@@ -780,7 +780,7 @@ namespace nanoFramework.Json.Test
         {
             TwinPayloadTestClass twinPayload = (TwinPayloadTestClass)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadTestClass));
 
-            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+            Assert.IsNotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.AreEqual(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
             Assert.AreEqual(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
@@ -800,7 +800,7 @@ namespace nanoFramework.Json.Test
         {
             TwinPayloadProperties twinPayload = (TwinPayloadProperties)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(TwinPayloadProperties));
 
-            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+            Assert.IsNotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.AreEqual(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
             Assert.AreEqual(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
@@ -814,7 +814,7 @@ namespace nanoFramework.Json.Test
         {
             Hashtable twinPayload = (Hashtable)JsonConvert.DeserializeObject(s_AzureTwinsJsonTestPayload, typeof(Hashtable));
 
-            Assert.NotNull(twinPayload, "Deserialization returned a null object");
+            Assert.IsNotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.AreEqual((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
             Assert.AreEqual((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
@@ -863,7 +863,7 @@ namespace nanoFramework.Json.Test
             var testString = "{\"type\":6}";
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             OutputHelper.WriteLine("");
         }
@@ -886,7 +886,7 @@ namespace nanoFramework.Json.Test
 
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testString, typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             Assert.AreEqual(dserResult.type, 1, "type value is not correct");
             Assert.AreEqual(dserResult.invocationId, "123", "invocationId value is not correct");
@@ -905,7 +905,7 @@ namespace nanoFramework.Json.Test
         {
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             Assert.AreEqual(dserResult.type, 1, "type value is not correct");
             Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
@@ -915,10 +915,10 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             Hashtable arg0 = (Hashtable)dserResult.arguments[0];
-            Assert.NotNull(arg0, "Deserializing arg 0 returned a null object");
+            Assert.IsNotNull(arg0, "Deserializing arg 0 returned a null object");
 
             Hashtable car0 = (Hashtable)arg0["car"];
-            Assert.NotNull(car0, "Deserializing car from arg 0 returned a null object");
+            Assert.IsNotNull(car0, "Deserializing car from arg 0 returned a null object");
 
             Assert.AreEqual(arg0["name"] as string, "Monica", $"arg0.name has unexpected value: {arg0["name"] as string}");
             Assert.AreEqual((int)arg0["age"], 22, $"arg0.age has unexpected value: {(int)arg0["age"]}");
@@ -928,10 +928,10 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(car0["model"] as string, "Tesla", $"car0.model has unexpected value: {car0["model"] as string}");
 
             Hashtable arg1 = (Hashtable)dserResult.arguments[1];
-            Assert.NotNull(arg1, "Deserializing arg 1 returned a null object");
+            Assert.IsNotNull(arg1, "Deserializing arg 1 returned a null object");
 
             Hashtable car1 = (Hashtable)arg1["car"];
-            Assert.NotNull(car1, "Deserializing car from arg 1 returned a null object");
+            Assert.IsNotNull(car1, "Deserializing car from arg 1 returned a null object");
 
             Assert.AreEqual(arg1["name"] as string, "Grandpa", $"arg1.name has unexpected value: {arg1["name"] as string}");
             Assert.AreEqual((int)arg1["age"], 88, $"arg1.age has unexpected value: {(int)arg1["age"]}");
@@ -946,7 +946,7 @@ namespace nanoFramework.Json.Test
         {
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(testInvocationReceiveMessage, typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             Assert.AreEqual(dserResult.type, 1, "type value is not correct");
             Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
@@ -958,12 +958,12 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Serializing dserResult.arguments[0]");
 
             Person2 person1 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[0]), typeof(Person2));
-            Assert.NotNull(person1, "Deserializing person1 returned a null object");
+            Assert.IsNotNull(person1, "Deserializing person1 returned a null object");
 
             OutputHelper.WriteLine("Serializing dserResult.arguments[1]");
 
             Person2 person2 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(Person2));
-            Assert.NotNull(person2, "Deserializing person2 returned a null object");
+            Assert.IsNotNull(person2, "Deserializing person2 returned a null object");
 
             Assert.AreEqual(person1.name, "Monica", $"person1.name has unexpected value: {person1.name}");
             Assert.AreEqual(person1.age, 22, $"person1.age has unexpected value: {person1.age}");
@@ -998,7 +998,7 @@ namespace nanoFramework.Json.Test
 
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{""type"":1,""target"":""ReceiveMessage"",""arguments"":[""I_am_a_string"",""I_am_another_string""]}", typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             Assert.AreEqual(dserResult.type, 1, "type value is not correct");
             Assert.AreEqual(dserResult.target, "ReceiveMessage", "target value is not correct");
@@ -1027,7 +1027,7 @@ namespace nanoFramework.Json.Test
         {
             var dserResult = (InvocationReceiveMessage)JsonConvert.DeserializeObject(@"{ ""type"":3,""invocationId"":""1"",""error"":""Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.""}", typeof(InvocationReceiveMessage));
 
-            Assert.NotNull(dserResult, "Deserialization returned a null object");
+            Assert.IsNotNull(dserResult, "Deserialization returned a null object");
 
             Assert.AreEqual(dserResult.type, 3, "type value is not correct");
             Assert.AreEqual(dserResult.invocationId, "1", "invocationId value is not correct");
@@ -1179,7 +1179,7 @@ namespace nanoFramework.Json.Test
 
             Hashtable deser = (Hashtable)JsonConvert.DeserializeObject(json, typeof(Hashtable));
 
-            Assert.NotNull(deser, "Deserialization returned a null object");
+            Assert.IsNotNull(deser, "Deserialization returned a null object");
         }
 
         [TestMethod]
