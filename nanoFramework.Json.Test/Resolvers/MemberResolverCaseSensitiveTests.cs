@@ -30,8 +30,8 @@ namespace nanoFramework.Json.Test.Resolvers
             var member = resolver.Get(nameof(TestClass.TestField), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);
 
-            Assert.Equal(classInstance.TestField, valueToSet);
-            Assert.Equal(member.ObjectType.FullName, typeof(int).FullName);
+            Assert.AreEqual(classInstance.TestField, valueToSet);
+            Assert.AreEqual(member.ObjectType.FullName, typeof(int).FullName);
         }
 
         [TestMethod]
@@ -44,8 +44,8 @@ namespace nanoFramework.Json.Test.Resolvers
             var member = resolver.Get(nameof(TestClass.TestProperty), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);
 
-            Assert.Equal(classInstance.TestProperty, valueToSet);
-            Assert.Equal(member.ObjectType.FullName, typeof(int).FullName);
+            Assert.AreEqual(classInstance.TestProperty, valueToSet);
+            Assert.AreEqual(member.ObjectType.FullName, typeof(int).FullName);
         }
 
         [TestMethod]

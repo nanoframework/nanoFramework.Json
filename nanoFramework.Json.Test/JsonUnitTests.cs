@@ -37,24 +37,24 @@ namespace nanoFramework.Json.Test
             JsonTestTown dserResult = (JsonTestTown)JsonConvert.DeserializeObject(result, typeof(JsonTestTown));
             OutputHelper.WriteLine($"After deserialization - type: JsonTestTown");
 
-            Assert.Equal(
+            Assert.AreEqual(
                 myTown.TownID,
                 dserResult.TownID,
                 $"Validation: myTown.TownID: {myTown.TownID}");
 
-            Assert.Equal(
+            Assert.AreEqual(
                 myTown.TownName,
                 dserResult.TownName,
                 $"Validation: myTown.TownName: {myTown.TownName}");
 
             for (int i = 0; i < myTown.CompaniesInThisTown.Length; i++)
             {
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.CompaniesInThisTown[i].CompanyID,
                     dserResult.CompaniesInThisTown[i].CompanyID,
                     $"Validation: myTown.CompaniesInThisTown[{i}].CompanyID: {myTown.CompaniesInThisTown[i].CompanyID}");
 
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.CompaniesInThisTown[i].CompanyName,
                     dserResult.CompaniesInThisTown[i].CompanyName,
                     $"Validation: myTown.CompaniesInThisTown[{i}].CompanyName: {myTown.CompaniesInThisTown[i].CompanyName}");
@@ -62,34 +62,34 @@ namespace nanoFramework.Json.Test
 
             for (int i = 0; i < myTown.EmployeesInThisTown.Length; i++)
             {
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.EmployeesInThisTown[i].EmployeeID,
                     dserResult.EmployeesInThisTown[i].EmployeeID,
                     $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeID: {myTown.EmployeesInThisTown[i].EmployeeID} ");
 
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.EmployeesInThisTown[i].EmployeeName,
                     dserResult.EmployeesInThisTown[i].EmployeeName,
                     $"Validation: myTown.EmployeesInThisTown[{i}].EmployeeName: {myTown.EmployeesInThisTown[i].EmployeeName} ");
 
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
                     dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyID,
                     $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyID: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyID} ");
 
-                Assert.Equal(
+                Assert.AreEqual(
                     myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
                     dserResult.EmployeesInThisTown[i].CurrentEmployer.CompanyName,
                     $"Validation: myTown.EmployeesInThisTown[{i}].CurrentEmployer.CompanyName: {myTown.EmployeesInThisTown[i].CurrentEmployer.CompanyName} ");
 
                 for (int j = 0; j < myTown.EmployeesInThisTown[i].FormerEmployers.Length; j++)
                 {
-                    Assert.Equal(
+                    Assert.AreEqual(
                         myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
                         dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyID,
                         $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyID: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyID} ");
 
-                    Assert.Equal(
+                    Assert.AreEqual(
                         myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
                         dserResult.EmployeesInThisTown[i].FormerEmployers[j].CompanyName,
                         $"Validation: myTown.EmployeesInThisTown[{i}].FormerEmployers[{j}].CompanyName: {myTown.EmployeesInThisTown[i].FormerEmployers[j].CompanyName} ");
@@ -138,18 +138,18 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(deserializedResult);
 
-            Assert.Equal(deserializedResult[0].CompanyID, first.CompanyID);
-            Assert.Equal(deserializedResult[0].CompanyName, first.CompanyName);
+            Assert.AreEqual(deserializedResult[0].CompanyID, first.CompanyID);
+            Assert.AreEqual(deserializedResult[0].CompanyName, first.CompanyName);
 
             Assert.Null(deserializedResult[1]);
 
-            Assert.Equal(deserializedResult[2].CompanyID, third.CompanyID);
-            Assert.Equal(deserializedResult[2].CompanyName, third.CompanyName);
+            Assert.AreEqual(deserializedResult[2].CompanyID, third.CompanyID);
+            Assert.AreEqual(deserializedResult[2].CompanyName, third.CompanyName);
 
             Assert.Null(deserializedResult[3]);
             Assert.Null(deserializedResult[4]);
 
-            Assert.Equal(deserializedResult.Length, 5);
+            Assert.AreEqual(deserializedResult.Length, 5);
 
             OutputHelper.WriteLine("Finished test...");
         }
@@ -190,8 +190,8 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
-            Assert.Equal(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
+            Assert.AreEqual(timestampTests.FixedTimestamp.ToString(), dserResult.FixedTimestamp.ToString()); //cannot handle DateTime, so use ToString()
+            Assert.AreEqual(timestampTests.Timestamp.ToString(), dserResult.Timestamp.ToString()); //cannot handle DateTime, so use ToString()
 
             OutputHelper.WriteLine("Can_serialize_deserialize_timestamp() - Finished - test succeeded.");
             OutputHelper.WriteLine("");
@@ -223,11 +223,11 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1}");
-            Assert.Equal(timeSpanTests.Duration2.Ticks.ToString(), dserResult.Duration2.Ticks.ToString(), $"wrong value for Duration2, expected {timeSpanTests.Duration2}, got {dserResult.Duration2}");
-            Assert.Equal(timeSpanTests.Duration3.Ticks.ToString(), dserResult.Duration3.Ticks.ToString(), $"wrong value for Duration3, expected {timeSpanTests.Duration3}, got {dserResult.Duration3}");
-            Assert.Equal(timeSpanTests.Duration4.Ticks.ToString(), dserResult.Duration4.Ticks.ToString(), $"wrong value for Duration4, expected {timeSpanTests.Duration4}, got {dserResult.Duration4}");
-            Assert.Equal(timeSpanTests.Duration5.Ticks.ToString(), dserResult.Duration5.Ticks.ToString(), $"wrong value for Duration5, expected {timeSpanTests.Duration5}, got {dserResult.Duration5}");
+            Assert.AreEqual(timeSpanTests.Duration1.ToString(), dserResult.Duration1.ToString(), $"wrong value for Duration1, expected 1:09:00, got {dserResult.Duration1}");
+            Assert.AreEqual(timeSpanTests.Duration2.Ticks.ToString(), dserResult.Duration2.Ticks.ToString(), $"wrong value for Duration2, expected {timeSpanTests.Duration2}, got {dserResult.Duration2}");
+            Assert.AreEqual(timeSpanTests.Duration3.Ticks.ToString(), dserResult.Duration3.Ticks.ToString(), $"wrong value for Duration3, expected {timeSpanTests.Duration3}, got {dserResult.Duration3}");
+            Assert.AreEqual(timeSpanTests.Duration4.Ticks.ToString(), dserResult.Duration4.Ticks.ToString(), $"wrong value for Duration4, expected {timeSpanTests.Duration4}, got {dserResult.Duration4}");
+            Assert.AreEqual(timeSpanTests.Duration5.Ticks.ToString(), dserResult.Duration5.Ticks.ToString(), $"wrong value for Duration5, expected {timeSpanTests.Duration5}, got {dserResult.Duration5}");
 
             OutputHelper.WriteLine("Can_serialize_deserialize_timespan_00() - Finished - test succeeded.");
             OutputHelper.WriteLine("");
@@ -305,7 +305,7 @@ namespace nanoFramework.Json.Test
                 OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
                 // can't compare TimeSpans directly, using ticks
-                Assert.Equal(_timeSpans[i].Duration2.Ticks, dserResult.Duration2.Ticks, $"wrong value, expected {_timeSpans[i].Duration2}, got {dserResult.Duration2}");
+                Assert.AreEqual(_timeSpans[i].Duration2.Ticks, dserResult.Duration2.Ticks, $"wrong value, expected {_timeSpans[i].Duration2}, got {dserResult.Duration2}");
             }
 
             OutputHelper.WriteLine("Can_serialize_deserialize_timespan_01() - Finished - test succeeded.");
@@ -365,7 +365,7 @@ namespace nanoFramework.Json.Test
 
             var serialized = JsonConvert.SerializeObject(thing);
             var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
-            Assert.Equal(thing.Value, deserialized.Value);
+            Assert.AreEqual(thing.Value, deserialized.Value);
         }
 
         [TestMethod]
@@ -475,8 +475,8 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal");
-            Assert.Equal(test.aFloat, dserResult.aFloat, "Deserialized float Result is Equal");
+            Assert.AreEqual(result, "{\"aFloat\":" + test.aFloat + "}", "Serialized float result is equal");
+            Assert.AreEqual(test.aFloat, dserResult.aFloat, "Deserialized float Result is Equal");
 
             OutputHelper.WriteLine("float Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -496,7 +496,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aFloat\":null}", "Serialized float result is null");
+            Assert.AreEqual(result, "{\"aFloat\":null}", "Serialized float result is null");
             Assert.True(float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
 
             OutputHelper.WriteLine("float Object Test Test succeeded");
@@ -517,7 +517,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double");
+            Assert.AreEqual(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double");
 
             OutputHelper.WriteLine("double Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -537,8 +537,8 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.Equal(result, "{\"aDouble\":null}", "Serialized double result is null");
-            Assert.Equal(true, double.IsNaN(dserResult.aDouble), "Deserialized double Result is NaN");
+            Assert.AreEqual(result, "{\"aDouble\":null}", "Serialized double result is null");
+            Assert.AreEqual(true, double.IsNaN(dserResult.aDouble), "Deserialized double Result is NaN");
 
             OutputHelper.WriteLine("double NaN Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -561,7 +561,7 @@ namespace nanoFramework.Json.Test
             string json = JsonConvert.SerializeObject(array);
             string expectedValue = "[{\"stringtest\":\"hello world\",\"nulltest\":null,\"collection\":[1,null,2,\"blah\",false]}]";
 
-            Assert.Equal(json, expectedValue, "Values did not match");
+            Assert.AreEqual(json, expectedValue, "Values did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -584,23 +584,23 @@ namespace nanoFramework.Json.Test
             string d = collection[3].ToString();
             bool e = (bool)collection[4];
 
-            Assert.Equal(arrayList.Count, 1, "arrayList count did not match");
+            Assert.AreEqual(arrayList.Count, 1, "arrayList count did not match");
 
-            Assert.Equal(hashtable.Count, 3, "hashtable count did not match");
+            Assert.AreEqual(hashtable.Count, 3, "hashtable count did not match");
 
-            Assert.Equal(stringtest, "hello world", "stringtest did not match");
+            Assert.AreEqual(stringtest, "hello world", "stringtest did not match");
 
             Assert.Null(nulltest, "nulltest did not match");
 
-            Assert.Equal(collection.Count, 5, "collection count did not match");
+            Assert.AreEqual(collection.Count, 5, "collection count did not match");
 
-            Assert.Equal(a, -1, "a value did not match");
+            Assert.AreEqual(a, -1, "a value did not match");
 
             Assert.Null(b, "b value did not match");
 
-            Assert.Equal(c, 24.565657576, "c value did not match");
+            Assert.AreEqual(c, 24.565657576, "c value did not match");
 
-            Assert.Equal(d, "blah", "d value did not match");
+            Assert.AreEqual(d, "blah", "d value did not match");
 
             Assert.False(e, "e value did not match");
 
@@ -621,9 +621,9 @@ namespace nanoFramework.Json.Test
 
             TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
 
-            Assert.Equal(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -635,9 +635,9 @@ namespace nanoFramework.Json.Test
 
             TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
 
-            Assert.Equal(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.SmallStringNumber, "1234567890", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -649,9 +649,9 @@ namespace nanoFramework.Json.Test
 
             TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
 
-            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BigStringNumber, "63805508613140626", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BiggerStringNumber, "", "oTestStringNumbers.BiggerStringNumber value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -663,9 +663,9 @@ namespace nanoFramework.Json.Test
 
             TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
 
-            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BiggerStringNumber, "638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -677,9 +677,9 @@ namespace nanoFramework.Json.Test
 
             TestStringNumbers oTestStringNumbers = (TestStringNumbers)JsonConvert.DeserializeObject(json, typeof(TestStringNumbers));
 
-            Assert.Equal(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
-            Assert.Equal(oTestStringNumbers.BiggerStringNumber, "T638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.SmallStringNumber, "", "oTestStringNumbers.SmallStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BigStringNumber, "", "oTestStringNumbers.BigStringNumber value did not match");
+            Assert.AreEqual(oTestStringNumbers.BiggerStringNumber, "T638055086131406269", "oTestStringNumbers.BiggerStringNumber value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -697,7 +697,7 @@ namespace nanoFramework.Json.Test
 
             ArrayList convertTime = (ArrayList)JsonConvert.DeserializeObject(jsonString, typeof(ArrayList));
 
-            Assert.Equal(testTime.Ticks, ((DateTime)convertTime[0]).Ticks, "Values did not match");
+            Assert.AreEqual(testTime.Ticks, ((DateTime)convertTime[0]).Ticks, "Values did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -729,7 +729,7 @@ namespace nanoFramework.Json.Test
             string json = JsonConvert.SerializeObject(person);
             string correctValue = "{\"FirstName\":\"John\",\"LastName\":\"Doe\",\"ArrayProperty\":[\"hello\",\"world\"],\"Address\":null,\"Birthday\":\"1988-04-23T00:00:00.0000000Z\",\"ID\":27,\"Friend\":{\"FirstName\":\"Bob\",\"LastName\":\"Smith\",\"ArrayProperty\":[\"hi\",\"planet\"],\"Address\":\"123 Some St\",\"Birthday\":\"1983-07-03T00:00:00.0000000Z\",\"ID\":2,\"Friend\":null}}";
 
-            Assert.Equal(json, correctValue, $"Values did not match. Expecting >>{json}<<");
+            Assert.AreEqual(json, correctValue, $"Values did not match. Expecting >>{json}<<");
 
             OutputHelper.WriteLine("");
         }
@@ -742,7 +742,7 @@ namespace nanoFramework.Json.Test
 
             string correctValue = "{\"Test2\":\"test2\",\"Test\":\"test\",\"ID\":12}";
 
-            Assert.Equal(json, correctValue, $"Value for AbstractClass did not match. Got >>{json}<<.");
+            Assert.AreEqual(json, correctValue, $"Value for AbstractClass did not match. Got >>{json}<<.");
 
             RealClass b = new() { ID = 12 };
 
@@ -750,7 +750,7 @@ namespace nanoFramework.Json.Test
 
             correctValue = "{\"Test2\":\"test2\",\"Test\":\"test\",\"ID\":12}";
 
-            Assert.Equal(json, correctValue, $"Values for RealClass did not match. Got >>{json}<<.");
+            Assert.AreEqual(json, correctValue, $"Values for RealClass did not match. Got >>{json}<<.");
 
             OutputHelper.WriteLine("");
         }
@@ -765,11 +765,11 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal(twinPayload.desired.TimeToSleep, 5, "desired.TimeToSleep doesn't match");
+            Assert.AreEqual(twinPayload.desired.TimeToSleep, 5, "desired.TimeToSleep doesn't match");
             Assert.Null(twinPayload.desired._metadata, "desired._metadata doesn't match");
 
-            Assert.Equal(twinPayload.reported.Firmware, "nanoFramework", "reported.Firmware doesn't match");
-            Assert.Equal(twinPayload.reported.TimeToSleep, 2, "reported.TimeToSleep doesn't match");
+            Assert.AreEqual(twinPayload.reported.Firmware, "nanoFramework", "reported.Firmware doesn't match");
+            Assert.AreEqual(twinPayload.reported.TimeToSleep, 2, "reported.TimeToSleep doesn't match");
             Assert.Null(twinPayload.reported._metadata, "reported._metadata doesn't match");
 
             OutputHelper.WriteLine("");
@@ -782,14 +782,14 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
-            Assert.Equal(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
-            Assert.Equal(twinPayload.cloudToDeviceMessageCount, 0, "cloudToDeviceMessageCount doesn't match");
-            Assert.Equal(twinPayload.x509Thumbprint.Count, 2, "x509Thumbprint collection count doesn't match");
-            Assert.Equal(twinPayload.version, 381, "version doesn't match");
-            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
-            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
-            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
+            Assert.AreEqual(twinPayload.authenticationType, "sas", "authenticationType doesn't match");
+            Assert.AreEqual(twinPayload.statusUpdateTime.Ticks, DateTime.MinValue.Ticks, "statusUpdateTime doesn't match");
+            Assert.AreEqual(twinPayload.cloudToDeviceMessageCount, 0, "cloudToDeviceMessageCount doesn't match");
+            Assert.AreEqual(twinPayload.x509Thumbprint.Count, 2, "x509Thumbprint collection count doesn't match");
+            Assert.AreEqual(twinPayload.version, 381, "version doesn't match");
+            Assert.AreEqual(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.AreEqual(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
+            Assert.AreEqual(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
 
             OutputHelper.WriteLine("");
         }
@@ -802,9 +802,9 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
-            Assert.Equal(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
-            Assert.Equal(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
+            Assert.AreEqual(twinPayload.properties.desired.TimeToSleep, 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.AreEqual(twinPayload.properties.reported._metadata.Count, 3, "properties.reported._metadata collection count doesn't match");
+            Assert.AreEqual(twinPayload.properties.desired._metadata.Count, 3, "properties.desired._metadata collection count doesn't match");
 
             OutputHelper.WriteLine("");
         }
@@ -816,10 +816,10 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(twinPayload, "Deserialization returned a null object");
 
-            Assert.Equal((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
-            Assert.Equal((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
-            Assert.Equal(((Hashtable)twinPayload["x509Thumbprint"]).Count, 2, "x509Thumbprint collection count doesn't match");
-            Assert.Equal((int)twinPayload["version"], 381, "version doesn't match");
+            Assert.AreEqual((string)twinPayload["authenticationType"], "sas", "authenticationType doesn't match");
+            Assert.AreEqual((int)twinPayload["cloudToDeviceMessageCount"], 0, "cloudToDeviceMessageCount doesn't match");
+            Assert.AreEqual(((Hashtable)twinPayload["x509Thumbprint"]).Count, 2, "x509Thumbprint collection count doesn't match");
+            Assert.AreEqual((int)twinPayload["version"], 381, "version doesn't match");
 
             // get properties
             Hashtable properties = (Hashtable)twinPayload["properties"];
@@ -828,30 +828,30 @@ namespace nanoFramework.Json.Test
             Hashtable reported = (Hashtable)properties["reported"];
             Hashtable desired = (Hashtable)properties["desired"];
 
-            Assert.Equal((int)desired["TimeToSleep"], 30, "properties.desired.TimeToSleep doesn't match");
-            Assert.Equal((int)desired["$version"], 7, "properties.desired.$version doesn't match");
-            Assert.Equal((int)reported["TimeToSleep"], 30, "properties.reported.TimeToSleep doesn't match");
-            Assert.Equal((int)reported["$version"], 374, "properties.reported.$version doesn't match");
-            Assert.Equal((string)reported["Firmware"], "nanoFramework", "properties.reported.Firmware doesn't match");
+            Assert.AreEqual((int)desired["TimeToSleep"], 30, "properties.desired.TimeToSleep doesn't match");
+            Assert.AreEqual((int)desired["$version"], 7, "properties.desired.$version doesn't match");
+            Assert.AreEqual((int)reported["TimeToSleep"], 30, "properties.reported.TimeToSleep doesn't match");
+            Assert.AreEqual((int)reported["$version"], 374, "properties.reported.$version doesn't match");
+            Assert.AreEqual((string)reported["Firmware"], "nanoFramework", "properties.reported.Firmware doesn't match");
 
             Hashtable reportedMetadata = (Hashtable)reported["$metadata"];
             Hashtable desiredMetadata = (Hashtable)desired["$metadata"];
 
-            Assert.Equal(reportedMetadata.Count, 3, "properties.reported collection count doesn't match");
-            Assert.Equal(desiredMetadata.Count, 3, "properties.desired collection count doesn't match");
+            Assert.AreEqual(reportedMetadata.Count, 3, "properties.reported collection count doesn't match");
+            Assert.AreEqual(desiredMetadata.Count, 3, "properties.desired collection count doesn't match");
 
             DateTime desiredLastUpdated = new(637582954318120413);
             DateTime reportedLastUpdated = new(637582963611232797);
 
-            Assert.Equal((DateTime)reportedMetadata["$lastUpdated"], reportedLastUpdated, $"Expecting {reportedLastUpdated.ToString("o")} for properties.reported.$metadata.$lastUpdated, got {((DateTime)reportedMetadata["$lastUpdated"]).ToString("o")}");
-            Assert.Equal((DateTime)desiredMetadata["$lastUpdated"], desiredLastUpdated, $"Expecting {desiredLastUpdated.ToString("o")} properties.desired.$metadata.$lastUpdated, got {((DateTime)desiredMetadata["$lastUpdated"]).ToString("o")}");
+            Assert.AreEqual((DateTime)reportedMetadata["$lastUpdated"], reportedLastUpdated, $"Expecting {reportedLastUpdated.ToString("o")} for properties.reported.$metadata.$lastUpdated, got {((DateTime)reportedMetadata["$lastUpdated"]).ToString("o")}");
+            Assert.AreEqual((DateTime)desiredMetadata["$lastUpdated"], desiredLastUpdated, $"Expecting {desiredLastUpdated.ToString("o")} properties.desired.$metadata.$lastUpdated, got {((DateTime)desiredMetadata["$lastUpdated"]).ToString("o")}");
 
             Hashtable desiredTimeToSleep = (Hashtable)desiredMetadata["TimeToSleep"];
 
             DateTime desiredTimeToSleepUpdated = new(637582954318120413);
 
-            Assert.Equal((DateTime)desiredTimeToSleep["$lastUpdated"], desiredTimeToSleepUpdated, $"Expecting {desiredTimeToSleepUpdated.ToString("o")} properties.reported.$metadata.TimeToSleep.$lastUpdated, got {((DateTime)desiredTimeToSleep["$lastUpdated"]).ToString("o")}");
-            Assert.Equal((int)desiredTimeToSleep["$lastUpdatedVersion"], 7, "properties.reported.$metadata.TimeToSleep.$lastUpdatedVersion doesn't match");
+            Assert.AreEqual((DateTime)desiredTimeToSleep["$lastUpdated"], desiredTimeToSleepUpdated, $"Expecting {desiredTimeToSleepUpdated.ToString("o")} properties.reported.$metadata.TimeToSleep.$lastUpdated, got {((DateTime)desiredTimeToSleep["$lastUpdated"]).ToString("o")}");
+            Assert.AreEqual((int)desiredTimeToSleep["$lastUpdatedVersion"], 7, "properties.reported.$metadata.TimeToSleep.$lastUpdatedVersion doesn't match");
 
             OutputHelper.WriteLine("");
         }
@@ -888,14 +888,14 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
-            Assert.Equal(dserResult.type, 1, "type value is not correct");
-            Assert.Equal(dserResult.invocationId, "123", "invocationId value is not correct");
-            Assert.Equal(dserResult.target, "Send", "target value is not correct");
+            Assert.AreEqual(dserResult.type, 1, "type value is not correct");
+            Assert.AreEqual(dserResult.invocationId, "123", "invocationId value is not correct");
+            Assert.AreEqual(dserResult.target, "Send", "target value is not correct");
 
-            Assert.Equal((int)dserResult.arguments[0], 42, "arguments[0] value is not correct");
-            Assert.Equal((string)dserResult.arguments[1], "Test Message", "arguments[1] value is not correct");
+            Assert.AreEqual((int)dserResult.arguments[0], 42, "arguments[0] value is not correct");
+            Assert.AreEqual((string)dserResult.arguments[1], "Test Message", "arguments[1] value is not correct");
 
-            Assert.Equal(dserResult.headers.Count, 1, "headers count is not correct");
+            Assert.AreEqual(dserResult.headers.Count, 1, "headers count is not correct");
 
             OutputHelper.WriteLine("");
         }
@@ -907,12 +907,12 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
-            Assert.Equal(dserResult.type, 1, "type value is not correct");
-            Assert.Equal(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
+            Assert.AreEqual(dserResult.type, 1, "type value is not correct");
+            Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
 
-            Assert.Equal((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
+            Assert.AreEqual((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
-            Assert.Equal(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
+            Assert.AreEqual(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             Hashtable arg0 = (Hashtable)dserResult.arguments[0];
             Assert.NotNull(arg0, "Deserializing arg 0 returned a null object");
@@ -920,12 +920,12 @@ namespace nanoFramework.Json.Test
             Hashtable car0 = (Hashtable)arg0["car"];
             Assert.NotNull(car0, "Deserializing car from arg 0 returned a null object");
 
-            Assert.Equal(arg0["name"] as string, "Monica", $"arg0.name has unexpected value: {arg0["name"] as string}");
-            Assert.Equal((int)arg0["age"], 22, $"arg0.age has unexpected value: {(int)arg0["age"]}");
-            Assert.Equal((int)arg0["gender"], 1, $"arg0.gender has unexpected value: {(int)arg0["gender"]}");
+            Assert.AreEqual(arg0["name"] as string, "Monica", $"arg0.name has unexpected value: {arg0["name"] as string}");
+            Assert.AreEqual((int)arg0["age"], 22, $"arg0.age has unexpected value: {(int)arg0["age"]}");
+            Assert.AreEqual((int)arg0["gender"], 1, $"arg0.gender has unexpected value: {(int)arg0["gender"]}");
 
-            Assert.Equal((int)car0["age"], 5, $"car0.age has unexpected value: {(int)car0["age"]}");
-            Assert.Equal(car0["model"] as string, "Tesla", $"car0.model has unexpected value: {car0["model"] as string}");
+            Assert.AreEqual((int)car0["age"], 5, $"car0.age has unexpected value: {(int)car0["age"]}");
+            Assert.AreEqual(car0["model"] as string, "Tesla", $"car0.model has unexpected value: {car0["model"] as string}");
 
             Hashtable arg1 = (Hashtable)dserResult.arguments[1];
             Assert.NotNull(arg1, "Deserializing arg 1 returned a null object");
@@ -933,12 +933,12 @@ namespace nanoFramework.Json.Test
             Hashtable car1 = (Hashtable)arg1["car"];
             Assert.NotNull(car1, "Deserializing car from arg 1 returned a null object");
 
-            Assert.Equal(arg1["name"] as string, "Grandpa", $"arg1.name has unexpected value: {arg1["name"] as string}");
-            Assert.Equal((int)arg1["age"], 88, $"arg1.age has unexpected value: {(int)arg1["age"]}");
-            Assert.Equal((int)arg1["gender"], 0, $"arg1.gender has unexpected value: {(int)arg1["gender"]}");
+            Assert.AreEqual(arg1["name"] as string, "Grandpa", $"arg1.name has unexpected value: {arg1["name"] as string}");
+            Assert.AreEqual((int)arg1["age"], 88, $"arg1.age has unexpected value: {(int)arg1["age"]}");
+            Assert.AreEqual((int)arg1["gender"], 0, $"arg1.gender has unexpected value: {(int)arg1["gender"]}");
 
-            Assert.Equal((int)car1["age"], 35, $"car1.age has unexpected value: {(int)car1["age"]}");
-            Assert.Equal(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
+            Assert.AreEqual((int)car1["age"], 35, $"car1.age has unexpected value: {(int)car1["age"]}");
+            Assert.AreEqual(car1["model"] as string, "Buick", $"car1.model has unexpected value: {car1["model"] as string}");
         }
 
         [TestMethod]
@@ -948,12 +948,12 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
-            Assert.Equal(dserResult.type, 1, "type value is not correct");
-            Assert.Equal(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
+            Assert.AreEqual(dserResult.type, 1, "type value is not correct");
+            Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
 
-            Assert.Equal((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
+            Assert.AreEqual((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
-            Assert.Equal(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
+            Assert.AreEqual(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             OutputHelper.WriteLine("Serializing dserResult.arguments[0]");
 
@@ -965,20 +965,20 @@ namespace nanoFramework.Json.Test
             Person2 person2 = (Person2)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(Person2));
             Assert.NotNull(person2, "Deserializing person2 returned a null object");
 
-            Assert.Equal(person1.name, "Monica", $"person1.name has unexpected value: {person1.name}");
-            Assert.Equal(person1.age, 22, $"person1.age has unexpected value: {person1.age}");
-            Assert.Equal((int)person1.gender, (int)Gender.Female, $"person1.gender has unexpected value: {person1.gender}");
+            Assert.AreEqual(person1.name, "Monica", $"person1.name has unexpected value: {person1.name}");
+            Assert.AreEqual(person1.age, 22, $"person1.age has unexpected value: {person1.age}");
+            Assert.AreEqual((int)person1.gender, (int)Gender.Female, $"person1.gender has unexpected value: {person1.gender}");
 
-            Assert.Equal(person1.car.age, 5, $"person1.car.age has unexpected value: {person1.car.age}");
-            Assert.Equal(person1.car.model, "Tesla", $"person1.car.model has unexpected value: {person1.car.model}");
+            Assert.AreEqual(person1.car.age, 5, $"person1.car.age has unexpected value: {person1.car.age}");
+            Assert.AreEqual(person1.car.model, "Tesla", $"person1.car.model has unexpected value: {person1.car.model}");
 
 
-            Assert.Equal(person2.name, "Grandpa", $"person2.name has unexpected value: {person2.name}");
-            Assert.Equal(person2.age, 88, $"person2.age has unexpected value: {person2.age}");
-            Assert.Equal((int)person2.gender, (int)Gender.Male, $"person2.gender has unexpected value: {person2.gender}");
+            Assert.AreEqual(person2.name, "Grandpa", $"person2.name has unexpected value: {person2.name}");
+            Assert.AreEqual(person2.age, 88, $"person2.age has unexpected value: {person2.age}");
+            Assert.AreEqual((int)person2.gender, (int)Gender.Male, $"person2.gender has unexpected value: {person2.gender}");
 
-            Assert.Equal(person2.car.age, 35, $"person2.car.age has unexpected value: {person2.car.age}");
-            Assert.Equal(person2.car.model, "Buick", $"person2.car.model has unexpected value: {person2.car.model}");
+            Assert.AreEqual(person2.car.age, 35, $"person2.car.age has unexpected value: {person2.car.age}");
+            Assert.AreEqual(person2.car.model, "Buick", $"person2.car.model has unexpected value: {person2.car.model}");
 
             OutputHelper.WriteLine($"Serializing dserResult.arguments[2]:{dserResult.arguments[2]}");
 
@@ -988,7 +988,7 @@ namespace nanoFramework.Json.Test
 
             int argsCount = (int)JsonConvert.DeserializeObject(serializedObject, typeof(int));
 
-            Assert.Equal(argsCount, 3, $"argsCount has unexpected value: {argsCount}");
+            Assert.AreEqual(argsCount, 3, $"argsCount has unexpected value: {argsCount}");
         }
 
         [TestMethod]
@@ -1000,11 +1000,11 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
-            Assert.Equal(dserResult.type, 1, "type value is not correct");
-            Assert.Equal(dserResult.target, "ReceiveMessage", "target value is not correct");
+            Assert.AreEqual(dserResult.type, 1, "type value is not correct");
+            Assert.AreEqual(dserResult.target, "ReceiveMessage", "target value is not correct");
 
             Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
-            Assert.Equal(dserResult.arguments.Count, 2, $"number of arguments is different than expected: {dserResult.arguments.Count}");
+            Assert.AreEqual(dserResult.arguments.Count, 2, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             OutputHelper.WriteLine($"SerializingdserResult.arguments[0]:{dserResult.arguments[0]}");
             var serializedObject = JsonConvert.SerializeObject(dserResult.arguments[0]);
@@ -1018,8 +1018,8 @@ namespace nanoFramework.Json.Test
 
             string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
 
-            Assert.Equal(arg0, "\"I_am_a_string\"", $"arg0 has unexpected value: {arg0}");
-            Assert.Equal(arg1, "\"I_am_another_string\"", $"arg1 has unexpected value: {arg1}");
+            Assert.AreEqual(arg0, "\"I_am_a_string\"", $"arg0 has unexpected value: {arg0}");
+            Assert.AreEqual(arg1, "\"I_am_another_string\"", $"arg1 has unexpected value: {arg1}");
         }
 
         [TestMethod]
@@ -1029,9 +1029,9 @@ namespace nanoFramework.Json.Test
 
             Assert.NotNull(dserResult, "Deserialization returned a null object");
 
-            Assert.Equal(dserResult.type, 3, "type value is not correct");
-            Assert.Equal(dserResult.invocationId, "1", "invocationId value is not correct");
-            Assert.Equal(dserResult.error, "Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.", "error value is not correct");
+            Assert.AreEqual(dserResult.type, 3, "type value is not correct");
+            Assert.AreEqual(dserResult.invocationId, "1", "invocationId value is not correct");
+            Assert.AreEqual(dserResult.error, "Failed to invoke \u0027SendMessage\u0027 due to an error on the server. HubException: Method does not exist.", "error value is not correct");
         }
 
         [TestMethod]
@@ -1047,7 +1047,7 @@ namespace nanoFramework.Json.Test
 
             var sentMessage = JsonConvert.SerializeObject(invocMessage);
 
-            Assert.Equal(@"{""type"":1,""invocationId"":""0"",""target"":""Add"",""arguments"":[1,2]}", sentMessage, $"Sent message was >>{sentMessage}<<");
+            Assert.AreEqual(@"{""type"":1,""invocationId"":""0"",""target"":""Add"",""arguments"":[1,2]}", sentMessage, $"Sent message was >>{sentMessage}<<");
         }
 
         [TestMethod]
@@ -1064,12 +1064,12 @@ namespace nanoFramework.Json.Test
 
             Assert.IsType(typeof(string), desired["Authorization"], "Authorization is not a string and it should be.");
 
-            Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)desired["Authorization"], "Authorization string doesn't match original value.");
+            Assert.AreEqual("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)desired["Authorization"], "Authorization string doesn't match original value.");
 
             ArrayList files = (ArrayList)desired["Files"];
 
             Assert.IsType(typeof(string), files[0]);
-            Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
+            Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 
         [TestMethod]
@@ -1082,12 +1082,12 @@ namespace nanoFramework.Json.Test
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
 
             Assert.IsType(typeof(string), hash["Authorization"], "Authorization is not a string and it should be.");
-            Assert.Equal("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
+            Assert.AreEqual("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
 
             ArrayList files = (ArrayList)hash["Files"];
 
             Assert.IsType(typeof(string), files[0]);
-            Assert.Equal("Iot.Device.Bmxx80.pe", (string)files[0]);
+            Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 
         [TestMethod]
@@ -1103,7 +1103,7 @@ namespace nanoFramework.Json.Test
 
             string json = JsonConvert.SerializeObject(twin);
 
-            Assert.Equal(correctValue, json, "Serialize object as property fails");
+            Assert.AreEqual(correctValue, json, "Serialize object as property fails");
         }
 
         [TestMethod]
@@ -1113,16 +1113,16 @@ namespace nanoFramework.Json.Test
 
             var deser = JsonConvert.DeserializeObject(json, typeof(SingleTypesClassDeserialization)) as SingleTypesClassDeserialization;
 
-            Assert.Equal((byte)42, deser.OneByte, "Byte");
-            Assert.Equal((sbyte)-42, deser.OneSByte, "SByte");
-            Assert.Equal((short)1234, deser.OneInt16, "Int16");
-            Assert.Equal((ushort)5678, deser.OneUInt16, "UInt16");
-            Assert.Equal(-789012, deser.OneInt32, "Int32");
-            Assert.Equal(78912, deser.OneUInt32, "UInt32");
-            Assert.Equal(-1234567, deser.OneInt64, "Int64");
-            Assert.Equal(1234567, deser.OneUInt64, "UInt64");
-            Assert.Equal((float)34.45, deser.OneSingle, "Single");
-            Assert.Equal(45678.23, deser.OneDouble, "Double");
+            Assert.AreEqual((byte)42, deser.OneByte, "Byte");
+            Assert.AreEqual((sbyte)-42, deser.OneSByte, "SByte");
+            Assert.AreEqual((short)1234, deser.OneInt16, "Int16");
+            Assert.AreEqual((ushort)5678, deser.OneUInt16, "UInt16");
+            Assert.AreEqual(-789012, deser.OneInt32, "Int32");
+            Assert.AreEqual(78912, deser.OneUInt32, "UInt32");
+            Assert.AreEqual(-1234567, deser.OneInt64, "Int64");
+            Assert.AreEqual(1234567, deser.OneUInt64, "UInt64");
+            Assert.AreEqual((float)34.45, deser.OneSingle, "Single");
+            Assert.AreEqual(45678.23, deser.OneDouble, "Double");
             Assert.True(deser.OneBoolean, "Boolean true");
             Assert.False(deser.TwoBoolean, "Boolean false");
         }
@@ -1138,15 +1138,15 @@ namespace nanoFramework.Json.Test
 
             var deser = JsonConvert.DeserializeObject(json, typeof(ArrayToDeserialize[])) as ArrayToDeserialize[];
 
-            Assert.Equal(deser.Length, array.Length, "Array length");
-            Assert.Equal(deser[0].Prop1, obj0.Prop1);
-            Assert.Equal(deser[0].Prop2, obj0.Prop2);
-            Assert.Equal(deser[0].Prop3, obj0.Prop3);
-            Assert.Equal(deser[0].Prop4, obj0.Prop4);
-            Assert.Equal(deser[1].Prop1, obj1.Prop1);
-            Assert.Equal(deser[1].Prop2, obj1.Prop2);
-            Assert.Equal(deser[1].Prop3, obj1.Prop3);
-            Assert.Equal(deser[1].Prop4, obj1.Prop4);
+            Assert.AreEqual(deser.Length, array.Length, "Array length");
+            Assert.AreEqual(deser[0].Prop1, obj0.Prop1);
+            Assert.AreEqual(deser[0].Prop2, obj0.Prop2);
+            Assert.AreEqual(deser[0].Prop3, obj0.Prop3);
+            Assert.AreEqual(deser[0].Prop4, obj0.Prop4);
+            Assert.AreEqual(deser[1].Prop1, obj1.Prop1);
+            Assert.AreEqual(deser[1].Prop2, obj1.Prop2);
+            Assert.AreEqual(deser[1].Prop3, obj1.Prop3);
+            Assert.AreEqual(deser[1].Prop4, obj1.Prop4);
         }
 
         [TestMethod]
@@ -1166,10 +1166,10 @@ namespace nanoFramework.Json.Test
             JsonConvert.DeserializeObject(serUInt32, typeof(SingleTypesClassDeserialization));
             JsonConvert.DeserializeObject(serInt32, typeof(SingleTypesClassDeserialization));
 
-            Assert.Equal(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
-            Assert.Equal(deserUInt64.OneInt64, singleUInt64.OneInt64);
-            Assert.Equal(deserUInt64.OneUInt32, singleUInt64.OneUInt32);
-            Assert.Equal(deserUInt64.OneInt32, singleUInt64.OneInt32);
+            Assert.AreEqual(deserUInt64.OneUInt64, singleUInt64.OneUInt64);
+            Assert.AreEqual(deserUInt64.OneInt64, singleUInt64.OneInt64);
+            Assert.AreEqual(deserUInt64.OneUInt32, singleUInt64.OneUInt32);
+            Assert.AreEqual(deserUInt64.OneInt32, singleUInt64.OneInt32);
         }
 
         [TestMethod]
@@ -1207,7 +1207,7 @@ namespace nanoFramework.Json.Test
 
             var serializedObject = JsonConvert.SerializeObject(dbObject);
 
-            Assert.Equal(serializedObject, valueAsJsonString, $"Got >>{serializedObject}<<");
+            Assert.AreEqual(serializedObject, valueAsJsonString, $"Got >>{serializedObject}<<");
         }
 
 
@@ -1232,18 +1232,18 @@ namespace nanoFramework.Json.Test
 
             var result = (CosmosDbDatabaseList)JsonConvert.DeserializeObject(valueAsJsonString, typeof(CosmosDbDatabaseList));
 
-            Assert.Equal(result._rid, "", "result._rid has wrong value");
-            Assert.Equal(result._count, 1, "result._count has wrong value");
+            Assert.AreEqual(result._rid, "", "result._rid has wrong value");
+            Assert.AreEqual(result._count, 1, "result._count has wrong value");
 
-            Assert.Equal(result.Databases.Length, 1, "Databases.Length count is wrong");
+            Assert.AreEqual(result.Databases.Length, 1, "Databases.Length count is wrong");
 
-            Assert.Equal(result.Databases[0].id, "HomeAutomation", $"Database.id is wrong, got {result.Databases[0].id}");
-            Assert.Equal(result.Databases[0]._rid, "MfAzAA==", $"Database._rid is wrong, got {result.Databases[0]._rid}");
-            Assert.Equal(result.Databases[0]._self, "dbs/MFzAA==/", $"Database._self is wrong, got {result.Databases[0]._self}");
-            Assert.Equal(result.Databases[0]._etag, "\"000020002-0000-0a00-0000-620019f80000\"", $"Database._etag is wrong, got {result.Databases[0]._etag}");
-            Assert.Equal(result.Databases[0]._colls, "colls/", $"Database._colls is wrong, got {result.Databases[0]._colls}");
-            Assert.Equal(result.Databases[0]._users, "users/", $"Database._colls is wrong, got {result.Databases[0]._users}");
-            Assert.Equal(result.Databases[0]._ts, 1644173816, $"Database._ts is wrong, got {result.Databases[0]._ts}");
+            Assert.AreEqual(result.Databases[0].id, "HomeAutomation", $"Database.id is wrong, got {result.Databases[0].id}");
+            Assert.AreEqual(result.Databases[0]._rid, "MfAzAA==", $"Database._rid is wrong, got {result.Databases[0]._rid}");
+            Assert.AreEqual(result.Databases[0]._self, "dbs/MFzAA==/", $"Database._self is wrong, got {result.Databases[0]._self}");
+            Assert.AreEqual(result.Databases[0]._etag, "\"000020002-0000-0a00-0000-620019f80000\"", $"Database._etag is wrong, got {result.Databases[0]._etag}");
+            Assert.AreEqual(result.Databases[0]._colls, "colls/", $"Database._colls is wrong, got {result.Databases[0]._colls}");
+            Assert.AreEqual(result.Databases[0]._users, "users/", $"Database._colls is wrong, got {result.Databases[0]._users}");
+            Assert.AreEqual(result.Databases[0]._ts, 1644173816, $"Database._ts is wrong, got {result.Databases[0]._ts}");
         }
 
         [TestMethod]
@@ -1254,7 +1254,7 @@ namespace nanoFramework.Json.Test
 
             var json = JsonConvert.SerializeObject(inputData);
 
-            Assert.Equal(expectedJson, json);
+            Assert.AreEqual(expectedJson, json);
         }
 
         [TestMethod]
@@ -1265,7 +1265,7 @@ namespace nanoFramework.Json.Test
 
             var json = JsonConvert.SerializeObject(inputData);
 
-            Assert.Equal(expectedJson, json);
+            Assert.AreEqual(expectedJson, json);
         }
 
         [TestMethod]
@@ -1276,7 +1276,7 @@ namespace nanoFramework.Json.Test
 
             var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
 
-            Assert.Equal(expectedValue, result);
+            Assert.AreEqual(expectedValue, result);
         }
 
         [TestMethod]
@@ -1287,7 +1287,7 @@ namespace nanoFramework.Json.Test
 
             var result = (string)JsonConvert.DeserializeObject(inputData, typeof(string));
 
-            Assert.Equal(expectedValue, result);
+            Assert.AreEqual(expectedValue, result);
         }
 
         [TestMethod]
@@ -1298,7 +1298,7 @@ namespace nanoFramework.Json.Test
                 { "gender", Gender.Male }
             };
 
-            Assert.Equal(JsonConvert.SerializeObject(values), "{\"gender\":0}");
+            Assert.AreEqual(JsonConvert.SerializeObject(values), "{\"gender\":0}");
         }
 
         private static readonly string testInvocationReceiveMessage = @"{
@@ -1381,7 +1381,7 @@ namespace nanoFramework.Json.Test
             var input = new ThingWithString { Value = "zażółć gęślą jaźń \u0165 \u0f65 \uff11" };
             var str = JsonConvert.SerializeObject(input);
             var result = (ThingWithString)JsonConvert.DeserializeObject(str, typeof(ThingWithString));
-            Assert.Equal(input.Value, result.Value);
+            Assert.AreEqual(input.Value, result.Value);
         }
 
     }

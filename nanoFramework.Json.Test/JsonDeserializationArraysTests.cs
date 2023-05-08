@@ -18,11 +18,11 @@ namespace nanoFramework.Json.Test
         {
             var result = (int[])JsonConvert.DeserializeObject(IntArrayJson, typeof(int[]));
 
-            Assert.Equal(result[0], 405421362);
-            Assert.Equal(result[1], 1082483948);
-            Assert.Equal(result[2], 1131707654);
-            Assert.Equal(result[3], 345242860);
-            Assert.Equal(result[4], 1111968802);
+            Assert.AreEqual(result[0], 405421362);
+            Assert.AreEqual(result[1], 1082483948);
+            Assert.AreEqual(result[2], 1131707654);
+            Assert.AreEqual(result[3], 345242860);
+            Assert.AreEqual(result[4], 1111968802);
         }
 
         [TestMethod]
@@ -30,11 +30,11 @@ namespace nanoFramework.Json.Test
         {
             var result = (short[])JsonConvert.DeserializeObject(ShortArrayJson, typeof(short[]));
 
-            Assert.Equal(result[0], (short)12345);
-            Assert.Equal(result[1], (short)25463);
-            Assert.Equal(result[2], (short)22546);
-            Assert.Equal(result[3], (short)18879);
-            Assert.Equal(result[4], (short)12453);
+            Assert.AreEqual(result[0], (short)12345);
+            Assert.AreEqual(result[1], (short)25463);
+            Assert.AreEqual(result[2], (short)22546);
+            Assert.AreEqual(result[3], (short)18879);
+            Assert.AreEqual(result[4], (short)12453);
         }
     }
 }

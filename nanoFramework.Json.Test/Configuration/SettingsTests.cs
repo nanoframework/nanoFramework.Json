@@ -14,13 +14,13 @@ namespace nanoFramework.Json.Test.Configuration
         [TestMethod]
         public void CaseSensitive_Should_BeTrueByDefault()
         {
-            Assert.Equal(Settings.CaseSensitive, true);
+            Assert.AreEqual(Settings.CaseSensitive, true);
         }
 
         [TestMethod]
         public void ThrowExceptionWhenPropertyNotFound_Should_BeFalseByDefault()
         {
-            Assert.Equal(Settings.ThrowExceptionWhenPropertyNotFound, false);
+            Assert.AreEqual(Settings.ThrowExceptionWhenPropertyNotFound, false);
         }
     }
 }
