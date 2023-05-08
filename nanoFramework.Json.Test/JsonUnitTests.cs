@@ -497,7 +497,7 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
             Assert.AreEqual(result, "{\"aFloat\":null}", "Serialized float result is null");
-            Assert.True(float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
+            Assert.IsTrue(float.IsNaN(dserResult.aFloat), "Deserialized float Result is NaN");
 
             OutputHelper.WriteLine("float Object Test Test succeeded");
             OutputHelper.WriteLine("");
@@ -1123,7 +1123,7 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(1234567, deser.OneUInt64, "UInt64");
             Assert.AreEqual((float)34.45, deser.OneSingle, "Single");
             Assert.AreEqual(45678.23, deser.OneDouble, "Double");
-            Assert.True(deser.OneBoolean, "Boolean true");
+            Assert.IsTrue(deser.OneBoolean, "Boolean true");
             Assert.False(deser.TwoBoolean, "Boolean false");
         }
 

@@ -55,7 +55,7 @@ namespace nanoFramework.Json.Test.Resolvers
 
             var member = resolver.Get(nameof(TestClass.NoGetProperty), typeof(TestClass));
 
-            Assert.True(member.Skip);
+            Assert.IsTrue(member.Skip);
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace nanoFramework.Json.Test.Resolvers
 
             var member = resolver.Get(nameof(TestClass.NoSetProperty), typeof(TestClass));
 
-            Assert.True(member.Skip);
+            Assert.IsTrue(member.Skip);
         }
     }
 }
