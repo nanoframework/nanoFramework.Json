@@ -141,13 +141,13 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(deserializedResult[0].CompanyID, first.CompanyID);
             Assert.AreEqual(deserializedResult[0].CompanyName, first.CompanyName);
 
-            Assert.Null(deserializedResult[1]);
+            Assert.IsNull(deserializedResult[1]);
 
             Assert.AreEqual(deserializedResult[2].CompanyID, third.CompanyID);
             Assert.AreEqual(deserializedResult[2].CompanyName, third.CompanyName);
 
-            Assert.Null(deserializedResult[3]);
-            Assert.Null(deserializedResult[4]);
+            Assert.IsNull(deserializedResult[3]);
+            Assert.IsNull(deserializedResult[4]);
 
             Assert.AreEqual(deserializedResult.Length, 5);
 
@@ -590,13 +590,13 @@ namespace nanoFramework.Json.Test
 
             Assert.AreEqual(stringtest, "hello world", "stringtest did not match");
 
-            Assert.Null(nulltest, "nulltest did not match");
+            Assert.IsNull(nulltest, "nulltest did not match");
 
             Assert.AreEqual(collection.Count, 5, "collection count did not match");
 
             Assert.AreEqual(a, -1, "a value did not match");
 
-            Assert.Null(b, "b value did not match");
+            Assert.IsNull(b, "b value did not match");
 
             Assert.AreEqual(c, 24.565657576, "c value did not match");
 
@@ -766,11 +766,11 @@ namespace nanoFramework.Json.Test
             Assert.IsNotNull(twinPayload, "Deserialization returned a null object");
 
             Assert.AreEqual(twinPayload.desired.TimeToSleep, 5, "desired.TimeToSleep doesn't match");
-            Assert.Null(twinPayload.desired._metadata, "desired._metadata doesn't match");
+            Assert.IsNull(twinPayload.desired._metadata, "desired._metadata doesn't match");
 
             Assert.AreEqual(twinPayload.reported.Firmware, "nanoFramework", "reported.Firmware doesn't match");
             Assert.AreEqual(twinPayload.reported.TimeToSleep, 2, "reported.TimeToSleep doesn't match");
-            Assert.Null(twinPayload.reported._metadata, "reported._metadata doesn't match");
+            Assert.IsNull(twinPayload.reported._metadata, "reported._metadata doesn't match");
 
             OutputHelper.WriteLine("");
         }
