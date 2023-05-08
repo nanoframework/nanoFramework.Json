@@ -602,7 +602,7 @@ namespace nanoFramework.Json.Test
 
             Assert.AreEqual(d, "blah", "d value did not match");
 
-            Assert.False(e, "e value did not match");
+            Assert.IsFalse(e, "e value did not match");
 
             OutputHelper.WriteLine("");
         }
@@ -1124,7 +1124,7 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual((float)34.45, deser.OneSingle, "Single");
             Assert.AreEqual(45678.23, deser.OneDouble, "Double");
             Assert.IsTrue(deser.OneBoolean, "Boolean true");
-            Assert.False(deser.TwoBoolean, "Boolean false");
+            Assert.IsFalse(deser.TwoBoolean, "Boolean false");
         }
 
         [TestMethod]
