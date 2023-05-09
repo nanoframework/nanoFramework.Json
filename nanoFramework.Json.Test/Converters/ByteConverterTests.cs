@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.ByteConverter();
             var convertedValue = (byte)converter.ToType(value);
 
-            Assert.Equal(expectedValue, convertedValue);
+            Assert.AreEqual(expectedValue, convertedValue);
         }
 
         [TestMethod]
@@ -29,7 +29,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.ByteConverter();
             var convertedValue = converter.ToJson(value);
 
-            Assert.Equal(expectedValue, convertedValue);
+            Assert.AreEqual(expectedValue, convertedValue);
         }
     }
 }

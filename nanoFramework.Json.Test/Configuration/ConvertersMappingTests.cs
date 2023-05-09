@@ -45,7 +45,7 @@ namespace nanoFramework.Json.Test.Configuration
             ConvertersMapping.Add(typeof(IConverter), new TestConverter());
 
             var converter = ConvertersMapping.ConversionTable[typeof(IConverter)];
-            Assert.NotNull(converter);
+            Assert.IsNotNull(converter);
 
             if (converter.GetType() != typeof(TestConverter))
             {
@@ -77,7 +77,7 @@ namespace nanoFramework.Json.Test.Configuration
             ConvertersMapping.Replace(typeof(TestConverter2), new TestConverter2());
 
             var converter = ConvertersMapping.ConversionTable[typeof(TestConverter2)];
-            Assert.NotNull(converter);
+            Assert.IsNotNull(converter);
 
             if (converter.GetType() != typeof(TestConverter2))
             {

@@ -18,7 +18,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.DateTimeConverter();
             var convertedValue = converter.ToJson(DateTime.FromUnixTimeSeconds(value));
 
-            Assert.Equal(expectedValue, convertedValue);
+            Assert.AreEqual(expectedValue, convertedValue);
         }
     }
 }

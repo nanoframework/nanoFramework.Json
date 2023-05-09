@@ -50,7 +50,7 @@ namespace nanoFramework.Json.Test.Configuration
 
             var value = JsonConvert.SerializeObject(obj);
 
-            Assert.Equal(value, "123");
+            Assert.AreEqual(value, "123");
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace nanoFramework.Json.Test.Configuration
         {
             var obj = (TestObject)JsonConvert.DeserializeObject("{\"TestObject\" : \"whatever\"}", typeof(TestObject));
 
-            Assert.Equal(obj.Value, 321);
+            Assert.AreEqual(obj.Value, 321);
         }
     }
 }
