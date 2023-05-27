@@ -52,8 +52,8 @@ namespace nanoFramework.Json
         {
             if (type == typeof(string))
             {
-                var stringConverter = (IConverter)ConvertersMapping.ConversionTable[typeof(string)];
-                return stringConverter.ToType(sourceString);
+                var converter = ConvertersMapping.GetConverter(type);
+                return converter.ToType(sourceString);
             }
 
             var dserResult = Deserialize(sourceString);
@@ -115,9 +115,10 @@ namespace nanoFramework.Json
                 return ConvertToType(sourceType, targetType.GetElementType(), value, forceConversion);
             }
 
-            if (ConvertersMapping.ConversionTable.Contains(targetType))
+            var converter = ConvertersMapping.GetConverter(targetType);
+            if (converter != null)
             {
-                return ((IConverter)ConvertersMapping.ConversionTable[targetType]).ToType(value);
+                return converter.ToType(value);
             }
 
             return value;
@@ -205,9 +206,9 @@ namespace nanoFramework.Json
                     return rootArrayList;
                 }
 
-                if (ConvertersMapping.ConversionTable.Contains(rootType))
+                var converter = ConvertersMapping.GetConverter(rootType);
+                if (converter != null)
                 {
-                    var converter = (IConverter)ConvertersMapping.ConversionTable[rootType];
                     return converter.ToType(rootObject);
                 }
 

@@ -517,7 +517,7 @@ namespace nanoFramework.Json.Test
 
             OutputHelper.WriteLine($"After Type deserialization: {dserResult}");
 
-            Assert.AreEqual(result, "{\"aDouble\":123.45669999}", "Serialized double result is a double");
+            Assert.AreEqual(result, "{\"aDouble\":123.4567}", "Serialized double result is a double");
 
             OutputHelper.WriteLine("double Object Test Test succeeded");
             OutputHelper.WriteLine("");
