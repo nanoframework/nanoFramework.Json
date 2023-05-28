@@ -2,7 +2,30 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.82...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.84...HEAD)
+
+**Implemented enhancements:**
+
+- Rework converter map and unit tests  [\#309](https://github.com/nanoframework/nanoFramework.Json/pull/309)
+
+**Documentation and other chores:**
+
+- Update 4 NuGet dependencies [\#310](https://github.com/nanoframework/nanoFramework.Json/pull/310)
+- Update 2 NuGet dependencies [\#307](https://github.com/nanoframework/nanoFramework.Json/pull/307)
+- Update 1 NuGet dependencies [\#306](https://github.com/nanoframework/nanoFramework.Json/pull/306)
+- Replace deprecated APIs in Unit Tests [\#305](https://github.com/nanoframework/nanoFramework.Json/pull/305)
+- Update 2 NuGet dependencies [\#304](https://github.com/nanoframework/nanoFramework.Json/pull/304)
+- Update 1 NuGet dependencies [\#302](https://github.com/nanoframework/nanoFramework.Json/pull/302)
+- Update 1 NuGet dependencies [\#301](https://github.com/nanoframework/nanoFramework.Json/pull/301)
+- Update 1 NuGet dependencies [\#300](https://github.com/nanoframework/nanoFramework.Json/pull/300)
+- Update 2 NuGet dependencies [\#298](https://github.com/nanoframework/nanoFramework.Json/pull/298)
+- Update 1 NuGet dependencies [\#297](https://github.com/nanoframework/nanoFramework.Json/pull/297)
+- Update 2 NuGet dependencies [\#296](https://github.com/nanoframework/nanoFramework.Json/pull/296)
+- Update 1 NuGet dependencies [\#295](https://github.com/nanoframework/nanoFramework.Json/pull/295)
+
+## [v2.2.84](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.84) (2022-12-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.82...v2.2.84)
 
 **Documentation and other chores:**
 
