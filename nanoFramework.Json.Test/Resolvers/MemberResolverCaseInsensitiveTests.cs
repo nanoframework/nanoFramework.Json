@@ -41,8 +41,8 @@ namespace nanoFramework.Json.Test.Resolvers
             var member = resolver.Get(nameof(TestClass.TestProperty).ToLower(), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);
 
-            Assert.Equal(classInstance.TestProperty, valueToSet);
-            Assert.Equal(member.ObjectType.FullName, typeof(int).FullName);
+            Assert.AreEqual(classInstance.TestProperty, valueToSet);
+            Assert.AreEqual(member.ObjectType.FullName, typeof(int).FullName);
         }
 
 
@@ -56,8 +56,8 @@ namespace nanoFramework.Json.Test.Resolvers
             var member = resolver.Get(nameof(TestClass.TestField).ToLower(), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);
 
-            Assert.Equal(classInstance.TestField, valueToSet);
-            Assert.Equal(member.ObjectType.FullName, typeof(int).FullName);
+            Assert.AreEqual(classInstance.TestField, valueToSet);
+            Assert.AreEqual(member.ObjectType.FullName, typeof(int).FullName);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace nanoFramework.Json.Test.Resolvers
 
             var member = resolver.Get("NotExistingProperty", typeof(TestClass));
 
-            Assert.Equal(member.Skip, true);
+            Assert.AreEqual(member.Skip, true);
         }
     }
 }

@@ -44,9 +44,9 @@ namespace nanoFramework.Json
                 return $"[{SerializeObject(o, false)}]";
             }
 
-            if (ConvertersMapping.ConversionTable.Contains(type))
+            var converter = ConvertersMapping.GetConverter(type);
+            if (converter != null)
             {
-                var converter = (IConverter)ConvertersMapping.ConversionTable[type];
                 return converter.ToJson(o);
             }
 

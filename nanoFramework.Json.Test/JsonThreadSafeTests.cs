@@ -55,7 +55,7 @@ namespace nanoFramework.Json.Test
             // Check for any errors in threads
             for (int i = 0; i < threadCount; i++)
             {
-                Assert.Equal(0, ((ThreadLogger)threadsLogs[i]).ErrorCount);
+                Assert.AreEqual(0, ((ThreadLogger)threadsLogs[i]).ErrorCount);
             }
         }
 
@@ -70,7 +70,7 @@ namespace nanoFramework.Json.Test
                 {
                     var result = (TestObject)JsonConvert.DeserializeObject(json, typeof(TestObject));
                     Debug.Write($"{count++}; ");
-                    Assert.Equal(result.TestString, testStringValue);
+                    Assert.AreEqual(result.TestString, testStringValue);
                 }
                 catch (ThreadAbortException)
                 {

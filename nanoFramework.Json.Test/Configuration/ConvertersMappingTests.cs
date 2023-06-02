@@ -44,8 +44,8 @@ namespace nanoFramework.Json.Test.Configuration
         {
             ConvertersMapping.Add(typeof(IConverter), new TestConverter());
 
-            var converter = ConvertersMapping.ConversionTable[typeof(IConverter)];
-            Assert.NotNull(converter);
+            var converter = ConvertersMapping.GetConverter(typeof(IConverter));
+            Assert.IsNotNull(converter);
 
             if (converter.GetType() != typeof(TestConverter))
             {
@@ -59,15 +59,8 @@ namespace nanoFramework.Json.Test.Configuration
             ConvertersMapping.Add(typeof(TestConverter), new TestConverter());
             ConvertersMapping.Remove(typeof(TestConverter));
 
-            var converterKeys = ConvertersMapping.ConversionTable.Keys;
-            foreach (var item in converterKeys)
-            {
-                var type = (Type)item;
-                if (type == typeof(TestConverter))
-                {
-                    throw new InvalidOperationException($"After removing {nameof(TestConverter)} type, it should not be in collection.");
-                }
-            }
+            var converter = ConvertersMapping.GetConverter(typeof(TestConverter));
+            Assert.IsNull(converter);
         }
 
         [TestMethod]
@@ -76,8 +69,8 @@ namespace nanoFramework.Json.Test.Configuration
             ConvertersMapping.Add(typeof(TestConverter2), new TestConverter());
             ConvertersMapping.Replace(typeof(TestConverter2), new TestConverter2());
 
-            var converter = ConvertersMapping.ConversionTable[typeof(TestConverter2)];
-            Assert.NotNull(converter);
+            var converter = ConvertersMapping.GetConverter(typeof(TestConverter2));
+            Assert.IsNotNull(converter);
 
             if (converter.GetType() != typeof(TestConverter2))
             {

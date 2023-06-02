@@ -20,7 +20,7 @@ namespace nanoFramework.Json.Test.Converters
             var convertedValue = (TimeSpan)converter.ToType(value);
 
             var expectedTimeSpanValue = TimeSpan.FromHours(expectedValueHours);
-            Assert.Equal(expectedTimeSpanValue.Ticks, convertedValue.Ticks);
+            Assert.AreEqual(expectedTimeSpanValue.Ticks, convertedValue.Ticks);
         }
 
         [TestMethod]
@@ -31,7 +31,7 @@ namespace nanoFramework.Json.Test.Converters
             var converter = new Json.Converters.TimeSpanConverter();
             var convertedValue = converter.ToJson(TimeSpan.FromHours(valueHours));
 
-            Assert.Equal(expectedValue, convertedValue);
+            Assert.AreEqual(expectedValue, convertedValue);
         }
     }
 }
