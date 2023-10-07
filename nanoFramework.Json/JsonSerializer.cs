@@ -110,6 +110,12 @@ namespace nanoFramework.Json
                 return false;
             }
 
+            // Ignore static methods
+            if (method.IsStatic)
+            {
+                return false;
+            }
+
             // Ignore delegates and MethodInfos
             if ((method.ReturnType == typeof(Delegate)) ||
                 (method.ReturnType == typeof(MulticastDelegate)) ||

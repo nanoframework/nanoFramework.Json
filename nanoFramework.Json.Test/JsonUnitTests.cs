@@ -27,6 +27,25 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void Can_serialize_and_deserialize_object_with_self_referencing_static_field()
+        {
+            OutputHelper.WriteLine("Can_serialize_and_deserialize_object_with_self_referencing_static_field() - Starting test...");
+
+            var serialized = JsonConvert.SerializeObject(JsonTestStaticProperty.StaticProperty);
+            var deserialized = (JsonTestStaticProperty) JsonConvert.DeserializeObject(serialized, typeof(JsonTestStaticProperty));
+
+            Assert.AreEqual(
+                JsonTestStaticProperty.StaticProperty.InstanceProperty,
+                deserialized.InstanceProperty,
+                $"Validation: JsonTestStaticProperty.StaticProperty.InstanceProperty: {JsonTestStaticProperty.StaticProperty.InstanceProperty}");
+
+            Assert.DoesNotContains(
+                "StaticProperty",
+                serialized,
+                $"Validation: JsonTestStaticProperty.StaticProperty.InstanceProperty: {JsonTestStaticProperty.StaticProperty.InstanceProperty}");
+        }
+
+        [TestMethod]
         public void Can_serialize_and_deserialize_arrays_of_class_objects()
         {
             OutputHelper.WriteLine("Can_serialize_and_deserialize_arrays_of_class_objects() - Starting test...");
