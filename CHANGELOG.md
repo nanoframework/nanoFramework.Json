@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.84...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.99...HEAD)
+
+**Documentation and other chores:**
+
+- Skipping static properties during serialization \#1379 [\#311](https://github.com/nanoframework/nanoFramework.Json/pull/311)
+
+## [v2.2.99](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.99) (2023-05-28)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.84...v2.2.99)
 
 **Implemented enhancements:**
 
