@@ -22,13 +22,13 @@ namespace nanoFramework.Json.Test.Resolvers
         [Setup]
         public void MemberResolverCaseInsensitiveTests_Setup()
         {
-            Settings.CaseSensitive = false;
+            JsonSettings.CaseSensitive = false;
         }
 
         [Cleanup]
         public void MemberResolverCaseInsensitive_Cleanup()
         {
-            Settings.CaseSensitive = true;
+            JsonSettings.CaseSensitive = true;
         }
 
         [TestMethod]
