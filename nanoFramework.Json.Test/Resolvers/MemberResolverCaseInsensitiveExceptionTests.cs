@@ -22,15 +22,15 @@ namespace nanoFramework.Json.Test.Resolvers
         [Setup]
         public void MemberResolverCaseInsensitiveExceptionTests_Setup()
         {
-            Settings.ThrowExceptionWhenPropertyNotFound = true;
-            Settings.CaseSensitive = false;
+            JsonSettings.ThrowExceptionWhenPropertyNotFound = true;
+            JsonSettings.CaseSensitive = false;
         }
 
         [Cleanup]
         public void MemberResolverCaseInsensitiveExceptionTests_Cleanup()
         {
-            Settings.ThrowExceptionWhenPropertyNotFound = false;
-            Settings.CaseSensitive = true;
+            JsonSettings.ThrowExceptionWhenPropertyNotFound = false;
+            JsonSettings.CaseSensitive = true;
         }
 
         [TestMethod]

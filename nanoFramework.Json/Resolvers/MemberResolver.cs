@@ -39,7 +39,7 @@ namespace nanoFramework.Json.Resolvers
 
         private MemberSet HandleNullPropertyMember(string memberName, Type objectType)
         {
-            if (!Settings.CaseSensitive)
+            if (!JsonSettings.CaseSensitive)
             {
                 return GetInsensitive(memberName, objectType);
             }
@@ -74,7 +74,7 @@ namespace nanoFramework.Json.Resolvers
 
         private MemberSet HandlePropertyNotFound()
         {
-            if (Settings.ThrowExceptionWhenPropertyNotFound)
+            if (JsonSettings.ThrowExceptionWhenPropertyNotFound)
             {
                 throw new DeserializationException();
             }
