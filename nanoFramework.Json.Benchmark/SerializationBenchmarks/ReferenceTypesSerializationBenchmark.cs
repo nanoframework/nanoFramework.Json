@@ -23,6 +23,8 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
         private JsonTestClassComplex complexClass;
         private JsonTestTown myTown;
         private ArrayList arrayList;
+        private JsonIgnoreTestClass ignoreTest;
+        private JsonIgnoreTestClassNoAttr ignoreTestNoAttr;
 
         [Setup]
         public void Setup()
@@ -65,6 +67,8 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
                 { DateTime.UtcNow },
                 { TimeSpan.FromSeconds(100) }
             };
+            ignoreTest = JsonIgnoreTestClass.CreateTestClass();
+            ignoreTestNoAttr = JsonIgnoreTestClassNoAttr.CreateTestClass();
         }
 
         [Benchmark]
@@ -118,6 +122,51 @@ namespace nanoFramework.Json.Benchmark.SerializationBenchmarks
             RunInIteration(() =>
             {
                 JsonConvert.SerializeObject(arrayList);
+            });
+        }
+
+        [Benchmark]
+        public void ClassWithAttributeIgnoreEnabled()
+        {
+            RunInIteration(() =>
+            {
+                // Turn ON the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = true;
+                JsonConvert.SerializeObject(ignoreTest);
+                // Turn OFF the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = false;
+            });
+        }
+        [Benchmark]
+        public void ClassWithAttributeIgnoreDisabled()
+        {
+            RunInIteration(() =>
+            {
+                // Turn OFF the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = false;
+                JsonConvert.SerializeObject(ignoreTest);
+            });
+        }
+        [Benchmark]
+        public void ClassNoAttributeIgnoreEnabled()
+        {
+            RunInIteration(() =>
+            {
+                // Turn ON the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = true;
+                JsonConvert.SerializeObject(ignoreTestNoAttr);
+                // Turn OFF the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = false;
+            });
+        }
+        [Benchmark]
+        public void ClassNoAttributeIgnoreDisabled()
+        {
+            RunInIteration(() =>
+            {
+                // Turn OFF the UseIgnore setting
+                Configuration.Settings.UseIgnoreAttribute = false;
+                JsonConvert.SerializeObject(ignoreTestNoAttr);
             });
         }
     }

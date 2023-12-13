@@ -52,6 +52,7 @@
     <Compile Include="Converters\UIntConverter.cs" />
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
+    <Compile Include="JsonIgnoreAttribute.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="Resolvers\IMemberResolver.cs" />
     <Compile Include="Resolvers\MemberResolver.cs" />
