@@ -20,6 +20,11 @@ namespace nanoFramework.Json.Test.Converters
                 "-1.02:03:04.005",
                 "1.02:03:04.0050000",
                 "4.03:02:01.654321",
+                "4.03:02:01.65432",
+                "4.03:02:01.6543",
+                "4.03:02:01.654",
+                "4.03:02:01.65",
+                "4.03:02:01.6",
                 "04:20:19",
                 "07:32",
             };
@@ -29,6 +34,11 @@ namespace nanoFramework.Json.Test.Converters
                 -new TimeSpan(1, 2, 3, 4, 5),
                 new TimeSpan(1, 2, 3, 4, 5),
                 new TimeSpan(4, 3, 2, 1, 654).Add(new TimeSpan(3210)),
+                new TimeSpan(4, 3, 2, 1, 654).Add(new TimeSpan(3200)),
+                new TimeSpan(4, 3, 2, 1, 654).Add(new TimeSpan(3000)),
+                new TimeSpan(4, 3, 2, 1, 654),
+                new TimeSpan(4, 3, 2, 1, 650),
+                new TimeSpan(4, 3, 2, 1, 600),
                 new TimeSpan(4, 20, 19),
                 new TimeSpan(7, 32, 0),
             };
