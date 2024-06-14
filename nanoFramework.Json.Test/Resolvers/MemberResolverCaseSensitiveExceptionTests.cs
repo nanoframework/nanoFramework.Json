@@ -3,7 +3,6 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
 using System;
@@ -22,13 +21,13 @@ namespace nanoFramework.Json.Test.Resolvers
         [Setup]
         public void MemberResolverCaseSensitiveExceptionTests_Setup()
         {
-            JsonSettings.ThrowExceptionWhenPropertyNotFound = true;
+            JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = true;
         }
 
         [Cleanup]
         public void MemberResolverCaseSensitiveExceptionTests_Cleanup()
         {
-            JsonSettings.ThrowExceptionWhenPropertyNotFound = false;
+            JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = false;
         }
 
         [TestMethod]

@@ -10,9 +10,9 @@ using nanoFramework.Json.Resolvers;
 namespace nanoFramework.Json.Configuration
 {
     /// <summary>
-    /// Common settings for JSON converter. This class delegates to <see cref="JsonSettings"/>
+    /// Common settings for JSON converter. This class delegates to <see cref="JsonSerializerOptions"/>
     /// </summary>
-    [Obsolete("Use JsonSettings instead")]
+    [Obsolete("Use JsonSerializerOptions instead")]
     public static class Settings
     {
         /// <summary>
@@ -20,17 +20,17 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static IMemberResolver Resolver
         {
-            get => JsonSettings.Resolver;
-            set => JsonSettings.Resolver = value;
+            get => JsonSerializerOptions.Resolver;
+            set => JsonSerializerOptions.Resolver = value;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether property resolving should be case sensitive.
+        /// Gets or sets a value indicating whether property resolving should be case-sensitive.
         /// </summary>
         public static bool CaseSensitive 
         { 
-            get => JsonSettings.CaseSensitive;
-            set => JsonSettings.CaseSensitive = value;
+            get => !JsonSerializerOptions.PropertyNameCaseInsensitive;
+            set => JsonSerializerOptions.PropertyNameCaseInsensitive = !value;
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static bool ThrowExceptionWhenPropertyNotFound
         {
-            get => JsonSettings.ThrowExceptionWhenPropertyNotFound; 
-            set => JsonSettings.ThrowExceptionWhenPropertyNotFound = value;
+            get => JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound; 
+            set => JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = value;
         }
     }
 }

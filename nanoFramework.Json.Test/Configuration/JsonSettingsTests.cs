@@ -3,7 +3,6 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json.Configuration;
 using nanoFramework.TestFramework;
 
 namespace nanoFramework.Json.Test.Configuration
@@ -12,15 +11,15 @@ namespace nanoFramework.Json.Test.Configuration
     public class JsonSettingsTests
     {
         [TestMethod]
-        public void CaseSensitive_Should_BeTrueByDefault()
+        public void PropertyNameCaseInsensitive_Should_Be_False_By_Default()
         {
-            Assert.AreEqual(JsonSettings.CaseSensitive, true);
+            Assert.IsFalse(JsonSerializerOptions.PropertyNameCaseInsensitive);
         }
 
         [TestMethod]
-        public void ThrowExceptionWhenPropertyNotFound_Should_BeFalseByDefault()
+        public void ThrowExceptionWhenPropertyNotFound_Should_Be_False_By_Default()
         {
-            Assert.AreEqual(JsonSettings.ThrowExceptionWhenPropertyNotFound, false);
+            Assert.IsFalse(JsonSerializerOptions.PropertyNameCaseInsensitive);
         }
     }
 }

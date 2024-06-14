@@ -254,7 +254,7 @@ namespace nanoFramework.Json
                     }
 
                     // Call current resolver to get info how to deal with data
-                    var memberResolver = JsonSettings.Resolver.Get(memberPropertyName, rootType);
+                    var memberResolver = JsonSerializerOptions.Resolver.Get(memberPropertyName, rootType);
                     if (memberResolver.Skip)
                     {
                         continue;

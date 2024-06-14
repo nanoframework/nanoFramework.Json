@@ -4,7 +4,6 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json.Configuration;
 using System;
 using System.Reflection;
 
@@ -39,12 +38,7 @@ namespace nanoFramework.Json.Resolvers
 
         private MemberSet HandleNullPropertyMember(string memberName, Type objectType)
         {
-            if (!JsonSettings.CaseSensitive)
-            {
-                return GetInsensitive(memberName, objectType);
-            }
-
-            return HandlePropertyNotFound();
+            return JsonSerializerOptions.PropertyNameCaseInsensitive ? GetInsensitive(memberName, objectType) : HandlePropertyNotFound();
         }
 
         internal MemberSet GetInsensitive(string memberName, Type objectType)
@@ -74,7 +68,7 @@ namespace nanoFramework.Json.Resolvers
 
         private MemberSet HandlePropertyNotFound()
         {
-            if (JsonSettings.ThrowExceptionWhenPropertyNotFound)
+            if (JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound)
             {
                 throw new DeserializationException();
             }

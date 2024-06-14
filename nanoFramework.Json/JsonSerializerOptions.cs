@@ -6,12 +6,13 @@
 
 using nanoFramework.Json.Resolvers;
 
-namespace nanoFramework.Json.Configuration
+namespace nanoFramework.Json
 {
+    // TODO: Remove static
     /// <summary>
     /// Common settings for JSON converter.
     /// </summary>
-    public static class JsonSettings
+    public static class JsonSerializerOptions
     {
         /// <summary>
         /// Gets or sets resolver which is used to find properties in target object when deserializing JSON.
@@ -19,9 +20,11 @@ namespace nanoFramework.Json.Configuration
         public static IMemberResolver Resolver { get; set; } = new MemberResolver();
 
         /// <summary>
-        /// Gets or sets a value indicating whether property resolving should be case sensitive.
+        /// Determines whether a property's name uses a case-insensitive comparison during deserialization.
+        /// The default value is false.
         /// </summary>
-        public static bool CaseSensitive { get; set; } = true;
+        /// <remarks>There is a performance cost associated when the value is true.</remarks>
+        public static bool PropertyNameCaseInsensitive { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether deserialization should throw exception when no property found.

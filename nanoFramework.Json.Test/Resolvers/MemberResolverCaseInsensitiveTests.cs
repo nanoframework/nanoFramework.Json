@@ -4,7 +4,6 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
 
@@ -16,19 +15,19 @@ namespace nanoFramework.Json.Test.Resolvers
         private sealed class TestClass
         {
             public int TestField = 1;
-            public int TestProperty { get; set; } = 1;
+            public int TestProperty { get; init; } = 1;
         }
 
         [Setup]
         public void MemberResolverCaseInsensitiveTests_Setup()
         {
-            JsonSettings.CaseSensitive = false;
+            JsonSerializerOptions.PropertyNameCaseInsensitive = true;
         }
 
         [Cleanup]
         public void MemberResolverCaseInsensitive_Cleanup()
         {
-            JsonSettings.CaseSensitive = true;
+            JsonSerializerOptions.PropertyNameCaseInsensitive = false;
         }
 
         [TestMethod]
@@ -36,7 +35,7 @@ namespace nanoFramework.Json.Test.Resolvers
         {
             var resolver = new MemberResolver();
             var classInstance = new TestClass();
-            var valueToSet = 6;
+            const int valueToSet = 6;
 
             var member = resolver.Get(nameof(TestClass.TestProperty).ToLower(), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);
@@ -51,7 +50,7 @@ namespace nanoFramework.Json.Test.Resolvers
         {
             var resolver = new MemberResolver();
             var classInstance = new TestClass();
-            var valueToSet = 5;
+            const int valueToSet = 5;
 
             var member = resolver.Get(nameof(TestClass.TestField).ToLower(), typeof(TestClass));
             member.SetValue(classInstance, valueToSet);

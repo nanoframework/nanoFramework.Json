@@ -1087,7 +1087,7 @@ namespace nanoFramework.Json.Test
 
             ArrayList files = (ArrayList)desired["Files"];
 
-            Assert.IsType(typeof(string), files[0]);
+            Assert.IsInstanceOfType(files[0], typeof(string));
             Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 
@@ -1105,7 +1105,7 @@ namespace nanoFramework.Json.Test
 
             ArrayList files = (ArrayList)hash["Files"];
 
-            Assert.IsType(typeof(string), files[0]);
+            Assert.IsInstanceOfType(files[0], typeof(string));
             Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 
