@@ -181,9 +181,9 @@ namespace nanoFramework.Json
                         {
                             rootInstanceHashtable.Add(memberProperty.Name, PopulateArrayList(jsonArray));
                         }
-                        else if (memberProperty.Value is JsonToken jsonToken)
+                        else if (memberProperty.Value is JsonObject jsonObject)
                         {
-                            rootInstanceHashtable.Add(memberProperty.Name, PopulateHashtable(jsonToken));
+                            rootInstanceHashtable.Add(memberProperty.Name, PopulateHashtable(jsonObject));
                         }
                         else
                         {
@@ -553,48 +553,13 @@ namespace nanoFramework.Json
 
         private static object PopulateObject(JsonToken rootToken)
         {
-            if (rootToken == null)
+            return rootToken switch
             {
-                // can't be null
-                throw new DeserializationException();
-            }
-
-            if (rootToken is JsonObject rootObject)
-            {
-                Hashtable rootInstance = new();
-
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (memberProperty.Value is JsonValue jsonValue)
-                    {
-                        rootInstance.Add(memberProperty.Name, jsonValue.Value);
-                    }
-                    else if (memberProperty.Value is JsonArray jsonArray)
-                    {
-                        rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
-                    }
-                    else if (memberProperty.Value is JsonToken jsonToken)
-                    {
-                        rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }
-
-                return rootInstance;
-            }
-
-            if (rootToken is JsonValue rootValue)
-            {
-                return rootValue.Value;
-            }
-
-            // not implemented
-            throw new DeserializationException();
+                JsonArray rootArray => PopulateArrayList(rootArray),
+                JsonObject rootObject => PopulateHashtable(rootObject),
+                JsonValue rootValue => rootValue.Value,
+                _ => throw new DeserializationException()
+            };
         }
 
         private static ArrayList PopulateArrayList(JsonToken rootToken)
@@ -693,16 +658,11 @@ namespace nanoFramework.Json
             return result;
         }
 
-        private static Hashtable PopulateHashtable(JsonToken jsonToken)
+        private static Hashtable PopulateHashtable(JsonObject rootObject)
         {
-            if (jsonToken is not JsonObject jsonObject)
-            {
-                throw new NotImplementedException();
-            }
-
             var result = new Hashtable();
 
-            foreach (JsonProperty member in jsonObject.Members)
+            foreach (JsonProperty member in rootObject.Members)
             {
                 if (member is null)
                 {
@@ -712,30 +672,30 @@ namespace nanoFramework.Json
                 switch (member.Value)
                 {
                     // Process the member based on JObject, JValue, or JArray
-                    case JsonObject valueJsonObject:
+                    case JsonObject jsonObject:
                     {
-                        result.Add(member.Name, PopulateHashtable(valueJsonObject));
+                        result.Add(member.Name, PopulateHashtable(jsonObject));
                         break;
                     }
-                    case JsonValue valueJsonValue:
+                    case JsonValue jsonValue:
                     {
-                        result.Add(member.Name, valueJsonValue.Value);
+                        result.Add(member.Name, jsonValue.Value);
                         break;
                     }
-                    case JsonArray valueJsonArray:
+                    case JsonArray jsonArray:
                     {
                         var valueArrayList = new ArrayList();
-                        var valueItems = valueJsonArray.Items;
+                        var valueItems = jsonArray.Items;
 
                         foreach (var valueItem in valueItems)
                         {
-                            if (valueItem is JsonValue valueJsonValue)
+                            if (valueItem is JsonValue jsonValue)
                             {
-                                valueArrayList.Add(valueJsonValue.Value);
+                                valueArrayList.Add(jsonValue.Value);
                             }
-                            else if (valueItem is not null)
+                            else if (valueItem is JsonObject jsonObject)
                             {
-                                valueArrayList.Add(PopulateHashtable(valueItem));
+                                valueArrayList.Add(PopulateHashtable(jsonObject));
                             }
                         }
 
