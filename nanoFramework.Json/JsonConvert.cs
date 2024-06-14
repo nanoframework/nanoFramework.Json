@@ -143,7 +143,7 @@ namespace nanoFramework.Json
             }
 
             var converter = ConvertersMapping.GetConverter(targetType);
-            if (converter != null)
+            if (converter is not null)
             {
                 return converter.ToType(value);
             }
@@ -575,70 +575,59 @@ namespace nanoFramework.Json
             return result;
         }
 
-        // TODO: Is this a valid case?
+        // TODO: Is this a valid case? What are we trying to accomplish by turning a JsonObject into a single item ArrayList of HashTable?
+        // Maybe it have to do with the target type? Investigate further...
         private static ArrayList PopulateArrayList(JsonToken rootToken)
         {
             switch (rootToken)
             {
-                case JsonArray array:
-                    return PopulateArrayList(array);
-                case JsonObject rootObject:
+                case JsonArray jsonArray:
+                    return PopulateArrayList(jsonArray);
+                case JsonObject jsonObject:
                 {
+                    Hashtable resultItem = new();
+
+                    var members = jsonObject.Members;
                     var result = new ArrayList();
-                    Hashtable mainTable = new();
 
-                    foreach (var m in rootObject.Members)
+                    foreach (var member in members)
                     {
-                        var memberProperty = (JsonProperty)m;
-
-                        if (memberProperty == null)
-                        {
-                            throw new NotSupportedException();
-                        }
-
-                        // Process the member based on JObject, JValue, or JArray
-                        if (memberProperty.Value is JsonObject)
+                        if (member is not JsonProperty jsonProperty)
                         {
                             throw new DeserializationException();
                         }
-                        else if (memberProperty.Value is JsonValue value)
+
+                        switch (jsonProperty.Value)
                         {
-                            mainTable.Add(memberProperty.Name, value.Value);
-                        }
-                        else if (memberProperty.Value is JsonArray jsonArrayAttribute)
-                        {
-                            // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                            var memberValueArray = jsonArrayAttribute;
-
-                            // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                            var memberValueArrayList = new ArrayList();
-
-                            // Create a JToken[] array for Items associated for this memberProperty.Value
-                            JsonToken[] memberItems = memberValueArray.Items;
-
-                            foreach (JsonToken item in memberItems)
+                            case JsonArray jsonArray:
                             {
-                                if (item is JsonValue jsonValue)
-                                {
-                                    memberValueArrayList.Add((jsonValue).Value);
-                                }
-                                else if (item is JsonToken jsonToken)
-                                {
-                                    throw new NotImplementedException();
-                                }
-                                else
-                                {
-                                    // item is not a JToken or a JValue - this case is not handled
-                                }
-                            }
+                                var values = new ArrayList();
+                                var items = jsonArray.Items;
 
-                            // add to main table
-                            mainTable.Add(memberProperty.Name, memberValueArrayList);
+                                foreach (var item in items)
+                                {
+                                    switch (item)
+                                    {
+                                        case JsonValue jsonValue:
+                                            values.Add(jsonValue.Value);
+                                            break;
+                                        case not null:
+                                            throw new NotImplementedException();
+                                    }
+                                }
+
+                                resultItem.Add(jsonProperty.Name, values);
+                                break;
+                            }
+                            case JsonObject:
+                                throw new DeserializationException();
+                            case JsonValue value:
+                                resultItem.Add(jsonProperty.Name, value.Value);
+                                break;
                         }
                     }
 
-                    // add to result
-                    result.Add(mainTable);
+                    result.Add(resultItem);
 
                     return result;
                 }
