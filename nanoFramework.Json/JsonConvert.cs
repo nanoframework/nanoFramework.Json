@@ -658,51 +658,18 @@ namespace nanoFramework.Json
             return result;
         }
 
-        private static Hashtable PopulateHashtable(JsonObject rootObject)
+        private static Hashtable PopulateHashtable(JsonObject jsonObject)
         {
             var result = new Hashtable();
 
-            foreach (JsonProperty member in rootObject.Members)
+            foreach (JsonProperty jsonProperty in jsonObject.Members)
             {
-                if (member is null)
+                if (jsonProperty is null)
                 {
-                    throw new NotSupportedException();
+                    throw new DeserializationException();
                 }
 
-                switch (member.Value)
-                {
-                    // Process the member based on JObject, JValue, or JArray
-                    case JsonObject jsonObject:
-                    {
-                        result.Add(member.Name, PopulateHashtable(jsonObject));
-                        break;
-                    }
-                    case JsonValue jsonValue:
-                    {
-                        result.Add(member.Name, jsonValue.Value);
-                        break;
-                    }
-                    case JsonArray jsonArray:
-                    {
-                        var valueArrayList = new ArrayList();
-                        var valueItems = jsonArray.Items;
-
-                        foreach (var valueItem in valueItems)
-                        {
-                            if (valueItem is JsonValue jsonValue)
-                            {
-                                valueArrayList.Add(jsonValue.Value);
-                            }
-                            else if (valueItem is JsonObject jsonObject)
-                            {
-                                valueArrayList.Add(PopulateHashtable(jsonObject));
-                            }
-                        }
-
-                        result.Add(member.Name, valueArrayList);
-                        break;
-                    }
-                }
+                result.Add(jsonProperty.Name, PopulateObject(jsonProperty.Value));
             }
 
             return result;
