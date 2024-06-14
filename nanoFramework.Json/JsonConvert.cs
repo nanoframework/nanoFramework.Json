@@ -551,9 +551,9 @@ namespace nanoFramework.Json
             return null;
         }
 
-        private static object PopulateObject(JsonToken rootToken)
+        private static object PopulateObject(JsonToken jsonToken)
         {
-            return rootToken switch
+            return jsonToken switch
             {
                 JsonArray rootArray => PopulateArrayList(rootArray),
                 JsonObject rootObject => PopulateHashtable(rootObject),
@@ -562,109 +562,99 @@ namespace nanoFramework.Json
             };
         }
 
-        private static ArrayList PopulateArrayList(JsonToken rootToken)
+        private static ArrayList PopulateArrayList(JsonArray jsonArray)
         {
             var result = new ArrayList();
+            var jsonTokens = jsonArray.Items;
 
-            // Process all members for this rootObject
-            if (rootToken is JsonObject rootObject)
+            foreach (var jsonToken in jsonTokens)
             {
-                Hashtable mainTable = new();
-
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (memberProperty == null)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObject)
-                    {
-                        throw new DeserializationException();
-                    }
-                    else if (memberProperty.Value is JsonValue value)
-                    {
-                        mainTable.Add(memberProperty.Name, value.Value);
-                    }
-                    else if (memberProperty.Value is JsonArray jsonArrayAttribute)
-                    {
-                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = jsonArrayAttribute;
-
-                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                        var memberValueArrayList = new ArrayList();
-
-                        // Create a JToken[] array for Items associated for this memberProperty.Value
-                        JsonToken[] memberItems = memberValueArray.Items;
-
-                        foreach (JsonToken item in memberItems)
-                        {
-                            if (item is JsonValue jsonValue)
-                            {
-                                memberValueArrayList.Add((jsonValue).Value);
-                            }
-                            else if (item is JsonToken jsonToken)
-                            {
-                                throw new NotImplementedException();
-                            }
-                            else
-                            {
-                                // item is not a JToken or a JValue - this case is not handled
-                            }
-                        }
-
-                        // add to main table
-                        mainTable.Add(memberProperty.Name, memberValueArrayList);
-                    }
-                }
-
-                // add to result
-                result.Add(mainTable);
-            }
-            else if (rootToken is JsonArray array)
-            {
-                // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                var memberValueArrayList = new ArrayList();
-
-                // Create a JToken[] array for Items associated for this memberProperty.Value
-                JsonToken[] memberItems = array.Items;
-
-                foreach (JsonToken item in memberItems)
-                {
-                    if (item is JsonValue jsonValue)
-                    {
-                        memberValueArrayList.Add((jsonValue).Value);
-                    }
-                    else if (item is JsonToken jsonToken)
-                    {
-                        memberValueArrayList.Add(PopulateObject(jsonToken));
-                    }
-                    else
-                    {
-                        // item is not a JToken or a JValue - this case is not handled
-                    }
-                }
-
-                result = memberValueArrayList;
-            }
-            else
-            {
-                throw new NotImplementedException();
+                result.Add(PopulateObject(jsonToken));
             }
 
             return result;
         }
 
+        // TODO: Is this a valid case?
+        private static ArrayList PopulateArrayList(JsonToken rootToken)
+        {
+            switch (rootToken)
+            {
+                case JsonArray array:
+                    return PopulateArrayList(array);
+                case JsonObject rootObject:
+                {
+                    var result = new ArrayList();
+                    Hashtable mainTable = new();
+
+                    foreach (var m in rootObject.Members)
+                    {
+                        var memberProperty = (JsonProperty)m;
+
+                        if (memberProperty == null)
+                        {
+                            throw new NotSupportedException();
+                        }
+
+                        // Process the member based on JObject, JValue, or JArray
+                        if (memberProperty.Value is JsonObject)
+                        {
+                            throw new DeserializationException();
+                        }
+                        else if (memberProperty.Value is JsonValue value)
+                        {
+                            mainTable.Add(memberProperty.Name, value.Value);
+                        }
+                        else if (memberProperty.Value is JsonArray jsonArrayAttribute)
+                        {
+                            // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
+                            var memberValueArray = jsonArrayAttribute;
+
+                            // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
+                            var memberValueArrayList = new ArrayList();
+
+                            // Create a JToken[] array for Items associated for this memberProperty.Value
+                            JsonToken[] memberItems = memberValueArray.Items;
+
+                            foreach (JsonToken item in memberItems)
+                            {
+                                if (item is JsonValue jsonValue)
+                                {
+                                    memberValueArrayList.Add((jsonValue).Value);
+                                }
+                                else if (item is JsonToken jsonToken)
+                                {
+                                    throw new NotImplementedException();
+                                }
+                                else
+                                {
+                                    // item is not a JToken or a JValue - this case is not handled
+                                }
+                            }
+
+                            // add to main table
+                            mainTable.Add(memberProperty.Name, memberValueArrayList);
+                        }
+                    }
+
+                    // add to result
+                    result.Add(mainTable);
+
+                    return result;
+                }
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         private static Hashtable PopulateHashtable(JsonObject jsonObject)
         {
             var result = new Hashtable();
+            var members = jsonObject.Members;
 
-            foreach (JsonProperty jsonProperty in jsonObject.Members)
+            foreach (var member in members)
             {
-                if (jsonProperty is null)
+                if (member is not JsonProperty jsonProperty)
                 {
                     throw new DeserializationException();
                 }
