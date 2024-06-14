@@ -5,7 +5,7 @@
 
 using nanoFramework.TestFramework;
 
-namespace nanoFramework.Json.Test.Configuration
+namespace nanoFramework.Json.Test
 {
     [TestClass]
     public class JsonSettingsTests
@@ -13,13 +13,13 @@ namespace nanoFramework.Json.Test.Configuration
         [TestMethod]
         public void PropertyNameCaseInsensitive_Should_Be_False_By_Default()
         {
-            Assert.IsFalse(JsonSerializerOptions.PropertyNameCaseInsensitive);
+            Assert.IsFalse(JsonSerializerOptions.Default.PropertyNameCaseInsensitive);
         }
 
         [TestMethod]
         public void ThrowExceptionWhenPropertyNotFound_Should_Be_False_By_Default()
         {
-            Assert.IsFalse(JsonSerializerOptions.PropertyNameCaseInsensitive);
+            Assert.IsFalse(JsonSerializerOptions.Default.PropertyNameCaseInsensitive);
         }
     }
 }

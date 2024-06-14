@@ -32,6 +32,7 @@
   </PropertyGroup>
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.props" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.props')" />
   <ItemGroup>
+    <Compile Include="JsonSerializerDefaults.cs" />
     <Compile Include="JsonSerializerOptions.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Converters\BoolConverter.cs" />

@@ -20,8 +20,8 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static IMemberResolver Resolver
         {
-            get => JsonSerializerOptions.Resolver;
-            set => JsonSerializerOptions.Resolver = value;
+            get => JsonSerializerOptions.Default.Resolver;
+            set => JsonSerializerOptions.Default.Resolver = value;
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static bool CaseSensitive 
         { 
-            get => !JsonSerializerOptions.PropertyNameCaseInsensitive;
-            set => JsonSerializerOptions.PropertyNameCaseInsensitive = !value;
+            get => !JsonSerializerOptions.Default.PropertyNameCaseInsensitive;
+            set => JsonSerializerOptions.Default.PropertyNameCaseInsensitive = !value;
         }
 
         /// <summary>
@@ -38,8 +38,8 @@ namespace nanoFramework.Json.Configuration
         /// </summary>
         public static bool ThrowExceptionWhenPropertyNotFound
         {
-            get => JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound; 
-            set => JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = value;
+            get => JsonSerializerOptions.Default.ThrowExceptionWhenPropertyNotFound; 
+            set => JsonSerializerOptions.Default.ThrowExceptionWhenPropertyNotFound = value;
         }
     }
 }

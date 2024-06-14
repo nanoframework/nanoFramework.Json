@@ -16,27 +16,27 @@ namespace nanoFramework.Json.Test.Configuration
         public void Cleanup()
         {
             // Restore default settings
-            JsonSerializerOptions.PropertyNameCaseInsensitive = _caseSensitive;
-            JsonSerializerOptions.Resolver = _resolver;
-            JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = _throwExceptionWhenPropertyNotFound;
+            JsonSerializerOptions.Default.PropertyNameCaseInsensitive = _caseSensitive;
+            JsonSerializerOptions.Default.Resolver = _resolver;
+            JsonSerializerOptions.Default.ThrowExceptionWhenPropertyNotFound = _throwExceptionWhenPropertyNotFound;
         }
 
         [Setup]
         public void Setup()
         {
             // Capture default settings
-            _caseSensitive = JsonSerializerOptions.PropertyNameCaseInsensitive;
-            _resolver = JsonSerializerOptions.Resolver;
-            _throwExceptionWhenPropertyNotFound = JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound;
+            _caseSensitive = JsonSerializerOptions.Default.PropertyNameCaseInsensitive;
+            _resolver = JsonSerializerOptions.Default.Resolver;
+            _throwExceptionWhenPropertyNotFound = JsonSerializerOptions.Default.ThrowExceptionWhenPropertyNotFound;
         }
         
         [TestMethod]
         public void CaseSensitive_Should_Delegate_To_JsonSettings()
         {
 #pragma warning disable CS0618
-            Settings.CaseSensitive = !JsonSerializerOptions.PropertyNameCaseInsensitive;
+            Settings.CaseSensitive = !Settings.CaseSensitive;
 
-            Assert.AreEqual(Settings.CaseSensitive, !JsonSerializerOptions.PropertyNameCaseInsensitive);
+            Assert.AreEqual(Settings.CaseSensitive, !JsonSerializerOptions.Default.PropertyNameCaseInsensitive);
 #pragma warning restore CS0618
         }
 
@@ -48,7 +48,7 @@ namespace nanoFramework.Json.Test.Configuration
 #pragma warning disable CS0618
             Settings.Resolver = resolver;
 
-            Assert.AreEqual(resolver, JsonSerializerOptions.Resolver);
+            Assert.AreEqual(resolver, JsonSerializerOptions.Default.Resolver);
 #pragma warning restore CS0618
         }
 
@@ -56,9 +56,9 @@ namespace nanoFramework.Json.Test.Configuration
         public void ThrowExceptionWhenPropertyNotFound_Should_Delegate_To_JsonSettings()
         {
 #pragma warning disable CS0618
-            Settings.ThrowExceptionWhenPropertyNotFound = !JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound;
+            Settings.ThrowExceptionWhenPropertyNotFound = !Settings.ThrowExceptionWhenPropertyNotFound;
 
-            Assert.AreEqual(Settings.ThrowExceptionWhenPropertyNotFound, JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound);
+            Assert.AreEqual(Settings.ThrowExceptionWhenPropertyNotFound, JsonSerializerOptions.Default.ThrowExceptionWhenPropertyNotFound);
 #pragma warning restore CS0618
         }
     }

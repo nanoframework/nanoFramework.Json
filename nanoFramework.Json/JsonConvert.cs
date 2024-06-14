@@ -19,6 +19,8 @@ namespace nanoFramework.Json
     /// </summary>
     public static class JsonConvert
     {
+        private const string RootPath = "/";
+
         private enum TokenType
         {
             LBrace, RBrace, LArray, RArray, Colon, Comma, String, Number, Date, Error,
@@ -45,46 +47,76 @@ namespace nanoFramework.Json
         /// <summary>
         /// Deserializes a Json string into an object.
         /// </summary>
-        /// <param name="sourceString"></param>
+        /// <param name="value"></param>
         /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(string sourceString, Type type)
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(string value, Type type) =>
+            DeserializeObject(value, type, JsonSerializerOptions.Default);
+
+        /// <summary>
+        /// Deserializes a Json string into an object.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="type">The object type to convert to</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(string value, Type type, JsonSerializerOptions options)
         {
             if (type == typeof(string))
             {
                 var converter = ConvertersMapping.GetConverter(type);
-                return converter.ToType(sourceString);
+                return converter.ToType(value);
             }
 
-            var dserResult = Deserialize(sourceString);
-            return PopulateObject((JsonToken)dserResult, type, "/");
+            var token = Deserialize(value);
+            return PopulateObject((JsonToken)token, type, "/", options);
         }
 
+// TODO: Is this still required?
 #if NANOFRAMEWORK_1_0
 
         /// <summary>
-        /// Deserializes a Json string into an object.
+        /// Deserializes a JSON <see cref="Stream"/> into an object.
         /// </summary>
         /// <param name="stream"></param>
         /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(Stream stream, Type type)
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(Stream stream, Type type) =>
+            DeserializeObject(stream, type, JsonSerializerOptions.Default);
+
+        /// <summary>
+        /// Deserializes a JSON <see cref="Stream"/> into an object.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="type">The object type to convert to</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(Stream stream, Type type, JsonSerializerOptions options)
         {
-            var dserResult = Deserialize(stream);
-            return PopulateObject((JsonToken)dserResult, type, "/");
+            var token = Deserialize(stream);
+            return PopulateObject((JsonToken)token, type, "/", options);
         }
 
         /// <summary>
         /// Deserializes a Json string into an object.
         /// </summary>
-        /// <param name="dr"></param>
+        /// <param name="streamReader"></param>
         /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(StreamReader dr, Type type)
-        {
-            var dserResult = Deserialize(dr);
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(StreamReader streamReader, Type type) =>
+            DeserializeObject(streamReader, type, JsonSerializerOptions.Default);
 
-            return PopulateObject((JsonToken)dserResult, type, "/");
+        /// <summary>
+        /// Deserializes a Json string into an object.
+        /// </summary>
+        /// <param name="streamReader"></param>
+        /// <param name="type">The object type to convert to</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(StreamReader streamReader, Type type, JsonSerializerOptions options)
+        {
+            var token = Deserialize(streamReader);
+            return PopulateObject((JsonToken)token, type, "/", options);
         }
 
 #endif
@@ -124,7 +156,8 @@ namespace nanoFramework.Json
             return value;
         }
 
-        private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
+        // TODO: This method is too long to track. Break into smaller methods for distinct token types
+        private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath, JsonSerializerOptions options)
         {
             if (
                 (rootToken == null)
@@ -254,7 +287,7 @@ namespace nanoFramework.Json
                     }
 
                     // Call current resolver to get info how to deal with data
-                    var memberResolver = JsonSerializerOptions.Resolver.Get(memberPropertyName, rootType);
+                    var memberResolver = options.Resolver.Get(memberPropertyName, rootType, options);
                     if (memberResolver.Skip)
                     {
                         continue;
@@ -305,7 +338,7 @@ namespace nanoFramework.Json
                         }
                         else
                         {
-                            memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, memberPath);
+                            memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, memberPath, options);
                         }
 
                         memberResolver.SetValue(rootInstance, memberObject);
@@ -355,7 +388,7 @@ namespace nanoFramework.Json
 
                                 string memberElementPath = $"{rootPath}/{memberProperty.Name}/{memberElementType.Name}";
 
-                                var itemObj = PopulateObject(item, memberElementType, memberElementPath);
+                                var itemObj = PopulateObject(item, memberElementType, memberElementPath, options);
 
                                 memberValueArrayList.Add(itemObj);
                             }
@@ -503,7 +536,7 @@ namespace nanoFramework.Json
                                 itemPath = itemPath + '/' + rootElementType.Name;
                             }
 
-                            var itemObj = PopulateObject(item, rootElementType, itemPath);
+                            var itemObj = PopulateObject(item, rootElementType, itemPath, options);
 
                             rootArrayList.Add(itemObj);
                         }

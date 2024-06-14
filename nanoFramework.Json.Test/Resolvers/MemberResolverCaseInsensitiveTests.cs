@@ -18,26 +18,19 @@ namespace nanoFramework.Json.Test.Resolvers
             public int TestProperty { get; init; } = 1;
         }
 
-        [Setup]
-        public void MemberResolverCaseInsensitiveTests_Setup()
-        {
-            JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-        }
-
-        [Cleanup]
-        public void MemberResolverCaseInsensitive_Cleanup()
-        {
-            JsonSerializerOptions.PropertyNameCaseInsensitive = false;
-        }
-
         [TestMethod]
         public void MemberResolverCaseInsensitive_Get_ShouldReturnCaseInsensitivePropertyWhenSet()
         {
-            var resolver = new MemberResolver();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var sut = new MemberResolver();
             var classInstance = new TestClass();
             const int valueToSet = 6;
 
-            var member = resolver.Get(nameof(TestClass.TestProperty).ToLower(), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.TestProperty).ToLower(), typeof(TestClass), options);
             member.SetValue(classInstance, valueToSet);
 
             Assert.AreEqual(classInstance.TestProperty, valueToSet);
@@ -48,11 +41,16 @@ namespace nanoFramework.Json.Test.Resolvers
         [TestMethod]
         public void MemberResolverCaseInsensitive_Get_ShouldReturnCaseInsensitiveFieldWhenSet()
         {
-            var resolver = new MemberResolver();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var sut = new MemberResolver();
             var classInstance = new TestClass();
             const int valueToSet = 5;
 
-            var member = resolver.Get(nameof(TestClass.TestField).ToLower(), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.TestField).ToLower(), typeof(TestClass), options);
             member.SetValue(classInstance, valueToSet);
 
             Assert.AreEqual(classInstance.TestField, valueToSet);
@@ -62,11 +60,16 @@ namespace nanoFramework.Json.Test.Resolvers
         [TestMethod]
         public void MemberResolverCaseInsensitive_Get_ShouldSkipWhenNotFoundCaseInsensitiveProperty()
         {
-            var resolver = new MemberResolver();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
 
-            var member = resolver.Get("NotExistingProperty", typeof(TestClass));
+            var sut = new MemberResolver();
 
-            Assert.AreEqual(member.Skip, true);
+            var member = sut.Get("NotExistingProperty", typeof(TestClass), options);
+
+            Assert.IsTrue(member.Skip);
         }
     }
 }

@@ -5,7 +5,6 @@
 
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
-using System;
 
 namespace nanoFramework.Json.Test.Resolvers
 {
@@ -15,55 +14,31 @@ namespace nanoFramework.Json.Test.Resolvers
         private sealed class TestClass
         {
             public int NoGetProperty { private get; set; } = 1;
-            public int NoSetProperty { get; } = 1;
-        }
-
-        [Setup]
-        public void MemberResolverCaseSensitiveExceptionTests_Setup()
-        {
-            JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = true;
-        }
-
-        [Cleanup]
-        public void MemberResolverCaseSensitiveExceptionTests_Cleanup()
-        {
-            JsonSerializerOptions.ThrowExceptionWhenPropertyNotFound = false;
+            public int NoSetProperty => 1;
         }
 
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldThrowPropertyWithoutGetWhenSet()
         {
-            var resolver = new MemberResolver();
-
-            try
+            var options = new JsonSerializerOptions
             {
-                resolver.Get(nameof(TestClass.NoGetProperty), typeof(TestClass));
-            }
-            catch (DeserializationException)
-            {
-                // Intended. Method should throw this type of exception when no set method.
-                return;
-            }
+                ThrowExceptionWhenPropertyNotFound = true
+            };
 
-            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
+            var sut = new MemberResolver();
+            Assert.ThrowsException(typeof(DeserializationException), () => sut.Get(nameof(TestClass.NoGetProperty), typeof(TestClass), options));
         }
 
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldThrowPropertyWithoutSetWhenSet()
         {
-            var resolver = new MemberResolver();
-
-            try
+            var options = new JsonSerializerOptions
             {
-                resolver.Get(nameof(TestClass.NoSetProperty), typeof(TestClass));
-            }
-            catch (DeserializationException)
-            {
-                // Intended. Method should throw this type of exception when no set method.
-                return;
-            }
+                ThrowExceptionWhenPropertyNotFound = true
+            };
 
-            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
+            var sut = new MemberResolver();
+            Assert.ThrowsException(typeof(DeserializationException), () => sut.Get(nameof(TestClass.NoSetProperty), typeof(TestClass), options));
         }
     }
 }

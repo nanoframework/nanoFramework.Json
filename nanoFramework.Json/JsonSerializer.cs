@@ -17,7 +17,7 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
-        JsonSerializer()
+        private JsonSerializer()
         {
         }
 
@@ -39,7 +39,7 @@ namespace nanoFramework.Json
 
             if (topObject
                 && !type.IsArray
-                && type.BaseType.FullName == "System.ValueType")
+                && type.BaseType?.FullName == "System.ValueType")
             {
                 return $"[{SerializeObject(o, false)}]";
             }

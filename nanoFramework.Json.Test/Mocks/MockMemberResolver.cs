@@ -5,7 +5,7 @@ namespace nanoFramework.Json.Test.Mocks
 {
     internal class MockMemberResolver: IMemberResolver
     {
-        public MemberSet Get(string memberName, Type objectType)
+        public MemberSet Get(string memberName, Type objectType, JsonSerializerOptions options)
         {
             return new MemberSet(true);
         }
