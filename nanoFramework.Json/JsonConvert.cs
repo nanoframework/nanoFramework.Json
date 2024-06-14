@@ -5,7 +5,6 @@
 //
 
 using nanoFramework.Json.Configuration;
-using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.IO;
@@ -120,6 +119,7 @@ namespace nanoFramework.Json
         }
 
 #endif
+
         private static bool ShouldSkipConvert(Type sourceType, Type targetType, bool forceConversion)
         {
             if (forceConversion)
@@ -127,12 +127,7 @@ namespace nanoFramework.Json
                 return false;
             }
 
-            if (sourceType != targetType)
-            {
-                return false;
-            }
-
-            return true;
+            return sourceType == targetType;
         }
 
         internal static object ConvertToType(Type sourceType, Type targetType, object value, bool forceConversion = false)
@@ -159,10 +154,7 @@ namespace nanoFramework.Json
         // TODO: This method is too long to track. Break into smaller methods for distinct token types
         private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath, JsonSerializerOptions options)
         {
-            if (
-                (rootToken == null)
-                || (rootType == null)
-                || (rootPath == null))
+            if (rootToken is null || rootType is null || rootPath is null)
             {
                 // All parameters must be non-null
                 throw new DeserializationException();
@@ -701,79 +693,56 @@ namespace nanoFramework.Json
             return result;
         }
 
-        private static Hashtable PopulateHashtable(JsonToken rootToken)
+        private static Hashtable PopulateHashtable(JsonToken jsonToken)
         {
+            if (jsonToken is not JsonObject jsonObject)
+            {
+                throw new NotImplementedException();
+            }
+
             var result = new Hashtable();
 
-            // Process all members for this rootObject
-
-            if (rootToken is JsonObject rootTokenObjectAttribute)
+            foreach (JsonProperty member in jsonObject.Members)
             {
-                foreach (var m in rootTokenObjectAttribute.Members)
+                if (member is null)
                 {
-                    var memberProperty = (JsonProperty)m;
+                    throw new NotSupportedException();
+                }
 
-                    if (memberProperty == null)
-                    {
-                        throw new NotSupportedException();
-                    }
-
+                switch (member.Value)
+                {
                     // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObject memberPropertyValue)
+                    case JsonObject valueJsonObject:
                     {
-                        // Call PopulateObject() for this member - i.e. recursion
-                        result.Add(memberProperty.Name, PopulateHashtable(memberPropertyValue));
+                        result.Add(member.Name, PopulateHashtable(valueJsonObject));
+                        break;
                     }
-                    else if (memberProperty.Value is JsonValue memberPropertyJsonValue)
+                    case JsonValue valueJsonValue:
                     {
-                        if (memberPropertyJsonValue is JsonValue jsonValue)
-                        {
-                            result.Add(memberProperty.Name, jsonValue.Value);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
+                        result.Add(member.Name, valueJsonValue.Value);
+                        break;
                     }
-                    else if (memberProperty.Value is JsonArray jsonArrayAttribute)
+                    case JsonArray valueJsonArray:
                     {
-                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = jsonArrayAttribute;
+                        var valueArrayList = new ArrayList();
+                        var valueItems = valueJsonArray.Items;
 
-                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                        var memberValueArrayList = new ArrayList();
-
-                        // Create a JToken[] array for Items associated for this memberProperty.Value
-                        JsonToken[] memberItems = memberValueArray.Items;
-
-                        foreach (JsonToken item in memberItems)
+                        foreach (var valueItem in valueItems)
                         {
-                            if (item is JsonValue jsonValue)
+                            if (valueItem is JsonValue valueJsonValue)
                             {
-                                memberValueArrayList.Add(jsonValue.Value);
+                                valueArrayList.Add(valueJsonValue.Value);
                             }
-                            else if (item is JsonToken jsonToken)
+                            else if (valueItem is not null)
                             {
-                                memberValueArrayList.Add(PopulateHashtable(jsonToken));
-                            }
-                            else
-                            {
-                                // item is not a JToken or a JValue - this case is not handled
+                                valueArrayList.Add(PopulateHashtable(valueItem));
                             }
                         }
 
-                        // add to main table
-                        result.Add(memberProperty.Name, memberValueArrayList);
+                        result.Add(member.Name, valueArrayList);
+                        break;
                     }
                 }
-            }
-            else if (rootToken is JsonArray)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                throw new NotImplementedException();
             }
 
             return result;
@@ -1333,10 +1302,10 @@ namespace nanoFramework.Json
             return new LexToken() { TType = TokenType.End, TValue = null };
         }
 
-        // Legal first characters for numbers
-        private static bool IsNumberIntroChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' && ch <= '9');
+        // Legal chars for 2…nth position of a number
+        private static bool IsNumberChar(char ch) => ch is '-' or '+' or '.' or 'e' or 'E' or >= '0' and <= '9';
 
-        // Legal chars for 2..n'th position of a number
-        private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
+        // Legal first characters for numbers
+        private static bool IsNumberIntroChar(char ch) => ch is '-' or '+' or '.' or >= '0' and <= '9';
     }
 }
