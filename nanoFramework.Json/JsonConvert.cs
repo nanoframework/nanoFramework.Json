@@ -36,12 +36,12 @@ namespace nanoFramework.Json
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
-        /// <param name="oSource">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+        /// <param name="value">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
-        public static string SerializeObject(object oSource)
+        public static string SerializeObject(object value)
         {
-            return JsonSerializer.SerializeObject(oSource);
+            return JsonSerializer.SerializeObject(value);
         }
 
         /// <summary>
