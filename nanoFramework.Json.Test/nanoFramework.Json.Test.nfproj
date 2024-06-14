@@ -61,39 +61,35 @@
     <Compile Include="Resolvers\MemberResolverCaseSensitiveTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=1.15.6.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.CoreLibrary.1.15.5\lib\mscorlib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nanoFramework.System.Collections, Version=1.5.31.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Collections.1.5.31\lib\nanoFramework.System.Collections.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nanoFramework.System.Text, Version=1.2.54.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.Text.1.2.54\lib\nanoFramework.System.Text.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nanoFramework.TestFramework, Version=2.1.87.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.TestFramework.2.1.87\lib\nanoFramework.TestFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nanoFramework.UnitTestLauncher, Version=0.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.TestFramework.2.1.87\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IO.Streams, Version=1.1.52.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.52\lib\System.IO.Streams.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Content Include="packages.lock.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nanoFramework.Json\nanoFramework.Json.nfproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Reference Include="mscorlib">
+      <HintPath>..\packages\nanoFramework.CoreLibrary.1.15.5\lib\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.System.Collections">
+      <HintPath>..\packages\nanoFramework.System.Collections.1.5.31\lib\nanoFramework.System.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.System.Text">
+      <HintPath>..\packages\nanoFramework.System.Text.1.2.54\lib\nanoFramework.System.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="nanoFramework.TestFramework, Version=2.1.107.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.TestFramework.2.1.107\lib\nanoFramework.TestFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nanoFramework.UnitTestLauncher, Version=0.0.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.TestFramework.2.1.107\lib\nanoFramework.UnitTestLauncher.exe</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Streams">
+      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.59\lib\System.IO.Streams.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.lock.json" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\nanoFramework.Json.Test.Shared\nanoFramework.Json.Test.Shared.projitems" Label="Shared" />
   <Import Project="$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets" Condition="Exists('$(NanoFrameworkProjectSystemPath)NFProjectSystem.CSharp.targets')" />

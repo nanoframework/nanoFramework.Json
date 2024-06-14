@@ -2,7 +2,43 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoframework.Json/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.101...HEAD)
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.117...HEAD)
+
+**Documentation and other chores:**
+
+- Handle negative time span [\#328](https://github.com/nanoframework/nanoFramework.Json/pull/328)
+- Update 1 NuGet dependencies [\#327](https://github.com/nanoframework/nanoFramework.Json/pull/327)
+- Update 1 NuGet dependencies [\#326](https://github.com/nanoframework/nanoFramework.Json/pull/326)
+- Update 1 NuGet dependencies [\#325](https://github.com/nanoframework/nanoFramework.Json/pull/325)
+
+## [v2.2.117](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.117) (2024-04-08)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.113...v2.2.117)
+
+**Documentation and other chores:**
+
+- Update 2 NuGet dependencies [\#324](https://github.com/nanoframework/nanoFramework.Json/pull/324)
+- Update 1 NuGet dependencies [\#323](https://github.com/nanoframework/nanoFramework.Json/pull/323)
+- Update 1 NuGet dependencies [\#322](https://github.com/nanoframework/nanoFramework.Json/pull/322)
+
+## [v2.2.113](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.113) (2024-04-03)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.103...v2.2.113)
+
+**Documentation and other chores:**
+
+- Update 1 NuGet dependencies [\#321](https://github.com/nanoframework/nanoFramework.Json/pull/321)
+- Update 1 NuGet dependencies [\#320](https://github.com/nanoframework/nanoFramework.Json/pull/320)
+- Update 1 NuGet dependencies [\#319](https://github.com/nanoframework/nanoFramework.Json/pull/319)
+- Update 1 NuGet dependencies [\#318](https://github.com/nanoframework/nanoFramework.Json/pull/318)
+- Update 1 NuGet dependencies [\#317](https://github.com/nanoframework/nanoFramework.Json/pull/317)
+- Update 1 NuGet dependencies [\#316](https://github.com/nanoframework/nanoFramework.Json/pull/316)
+- Update 1 NuGet dependencies [\#315](https://github.com/nanoframework/nanoFramework.Json/pull/315)
+- Update 1 NuGet dependencies [\#314](https://github.com/nanoframework/nanoFramework.Json/pull/314)
+
+## [v2.2.103](https://github.com/nanoframework/nanoframework.Json/tree/v2.2.103) (2023-11-09)
+
+[Full Changelog](https://github.com/nanoframework/nanoframework.Json/compare/v2.2.101...v2.2.103)
 
 **Documentation and other chores:**
 
