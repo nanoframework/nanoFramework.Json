@@ -77,6 +77,13 @@ namespace nanoFramework.Json
 
         private static string SerializeClass(object o, Type type)
         {
+            // Cache the type's class-level attributes only if UseIgnoreAttribute setting is enabled.
+            object[] classAttributes = null;
+            if (Settings.UseIgnoreAttribute)
+            {
+                classAttributes = type.GetCustomAttributes(false);
+            }
+
             Hashtable hashtable = new();
 
             // Iterate through all of the methods, looking for internal GET properties
@@ -84,19 +91,24 @@ namespace nanoFramework.Json
 
             foreach (MethodInfo method in methods)
             {
-                if (!ShouldSerializeMethod(method))
+                if (!ShouldSerializeMethod(method, classAttributes))
                 {
                     continue;
                 }
-
+                
                 object returnObject = method.Invoke(o, null);
-                hashtable.Add(method.Name.Substring(4), returnObject);
+                hashtable.Add(ExtractGetterName(method), returnObject);
             }
 
             return SerializeIDictionary(hashtable);
         }
 
-        private static bool ShouldSerializeMethod(MethodInfo method)
+        /// <summary>
+        /// Checks whether a property (MethodInfo) should be serialized.
+        /// </summary>
+        /// <param name="method">The MethodInfo to check.</param>
+        /// <param name="classAttributes">The cached class-level attributes. Only used if UseIgnoreAttribute is true.</param>
+        private static bool ShouldSerializeMethod(MethodInfo method, object[] classAttributes)
         {
             // We care only about property getters when serializing
             if (!method.Name.StartsWith("get_"))
@@ -131,7 +143,69 @@ namespace nanoFramework.Json
                 return false;
             }
 
+            // Ignore indexer properties
+            // (string comparison is MUCH faster than method.GetParameters)
+            if (method.Name == "get_Item")
+            {
+                return false;
+            }
+
+            // Ignore properties listed in [JsonIgnore()] attribute
+            // Only check for attribute if the setting is on
+            if (Settings.UseIgnoreAttribute &&
+                ShouldIgnorePropertyFromClassAttribute(method, classAttributes))
+            {
+                return false;
+            }
+
             return true;
+        }
+
+        /// <summary>
+        /// Checks for JsonIgnore attribute on a method's declaring class. Helper method for SerializeClass.
+        /// </summary>
+        /// <param name="method">The MethodInfo of a property getter to check.</param>
+        /// <param name="classAttributes">The cached class-level attributes. Only used if UseIgnoreAttribute is true.</param>
+        /// <returns></returns>
+        private static bool ShouldIgnorePropertyFromClassAttribute(MethodInfo method, object[] classAttributes)
+        {
+            string[] gettersToIgnore = null;
+            
+            foreach (object attribute in classAttributes)
+            {
+                if (attribute is JsonIgnoreAttribute ignoreAttribute)
+                {
+                    gettersToIgnore = ignoreAttribute.PropertyNames;
+                    break;
+                }
+            }
+
+            if (gettersToIgnore == null)
+            {
+                return false;
+            }
+
+            foreach (string propertyName in gettersToIgnore)
+            {
+                if (propertyName.Equals(ExtractGetterName(method)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Extracts "get_" from MethodInfo.Name to retrieve the name of a getter property.
+        /// Assumes the MethodInfo is for a getter, checked elsewhere.
+        /// </summary>
+        /// <param name="getterMethodInfo">The MethodInfo of the getter property.</param>
+        /// <returns>The property name as it appears in written code.</returns>
+        private static string ExtractGetterName(MethodInfo getterMethodInfo)
+        {
+            // Substring(4) is to extract the "get_" for property methods
+            return getterMethodInfo.Name.Substring(4);
         }
 
         /// <summary>
