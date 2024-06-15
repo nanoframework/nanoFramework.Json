@@ -3,8 +3,8 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using System;
 using nanoFramework.Benchmark;
-using System.Diagnostics;
 using System.Threading;
 
 namespace nanoFramework.Json.Benchmark
@@ -13,8 +13,9 @@ namespace nanoFramework.Json.Benchmark
     {
         public static void Main()
         {
-            Debug.WriteLine("Hello from nanoFramework JSON benchmark!");
-            BenchmarkRunner.Run(typeof(IAssemblyHandler).Assembly);
+            Console.WriteLine("Hello from nanoFramework JSON benchmark!");
+            //BenchmarkRunner.Run(typeof(IAssemblyHandler).Assembly);
+            BenchmarkRunner.RunClass(typeof(TypeBenchmarks));
             Thread.Sleep(Timeout.Infinite);
         }
     }
