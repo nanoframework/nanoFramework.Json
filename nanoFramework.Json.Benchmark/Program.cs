@@ -14,8 +14,7 @@ namespace nanoFramework.Json.Benchmark
         public static void Main()
         {
             Console.WriteLine("Hello from nanoFramework JSON benchmark!");
-            //BenchmarkRunner.Run(typeof(IAssemblyHandler).Assembly);
-            BenchmarkRunner.RunClass(typeof(TypeBenchmarks));
+            BenchmarkRunner.Run(typeof(IAssemblyHandler).Assembly);
             Thread.Sleep(Timeout.Infinite);
         }
     }
