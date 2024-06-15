@@ -176,25 +176,10 @@ namespace nanoFramework.Json
 
             if (isArrayList)
             {
-                foreach (var item in jsonArray.Items)
-                {
-                    if (item is JsonValue jsonValue)
-                    {
-                        result.Add(jsonValue.Value);
-                    }
-                    else if (item is not null)
-                    {
-                        result = PopulateArrayList(item);
-                    }
-                    else
-                    {
-                        throw new DeserializationException();
-                    }
-                }
+                result = PopulateArrayList(jsonArray);
 
                 if ((type.BaseType?.FullName == "System.ValueType" || type.FullName == "System.String") && result.Count == 1)
                 {
-                    // TODO: Confirm there is a unit test to validate this case
                     // This is a case of deserializing an array with a single element. Just return the element.
                     return result[0];
                 }
@@ -291,6 +276,7 @@ namespace nanoFramework.Json
                     rootArrayList.Add(result);
                 }
 
+                return PopulateArrayList(rootObject);
                 return rootArrayList;
             }
 
@@ -560,8 +546,6 @@ namespace nanoFramework.Json
             return result;
         }
 
-        // TODO: Is this a valid case? What are we trying to accomplish by turning a JsonObject into a single item ArrayList of HashTable?
-        // Maybe it have to do with the target type? Investigate further...
         private static ArrayList PopulateArrayList(JsonToken rootToken)
         {
             switch (rootToken)
@@ -569,53 +553,7 @@ namespace nanoFramework.Json
                 case JsonArray jsonArray:
                     return PopulateArrayList(jsonArray);
                 case JsonObject jsonObject:
-                {
-                    Hashtable resultItem = new();
-
-                    var members = jsonObject.Members;
-                    var result = new ArrayList();
-
-                    foreach (var member in members)
-                    {
-                        if (member is not JsonProperty jsonProperty)
-                        {
-                            throw new DeserializationException();
-                        }
-
-                        switch (jsonProperty.Value)
-                        {
-                            case JsonArray jsonArray:
-                            {
-                                var values = new ArrayList();
-                                var items = jsonArray.Items;
-
-                                foreach (var item in items)
-                                {
-                                    switch (item)
-                                    {
-                                        case JsonValue jsonValue:
-                                            values.Add(jsonValue.Value);
-                                            break;
-                                        case not null:
-                                            throw new NotImplementedException();
-                                    }
-                                }
-
-                                resultItem.Add(jsonProperty.Name, values);
-                                break;
-                            }
-                            case JsonObject:
-                                throw new DeserializationException();
-                            case JsonValue value:
-                                resultItem.Add(jsonProperty.Name, value.Value);
-                                break;
-                        }
-                    }
-
-                    result.Add(resultItem);
-
-                    return result;
-                }
+                    return new ArrayList { PopulateHashtable(jsonObject) };
                 default:
                     throw new NotImplementedException();
             }
