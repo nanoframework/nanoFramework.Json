@@ -243,58 +243,12 @@ namespace nanoFramework.Json
 
             var elementType = type.GetElementType();
 
-            if (elementType is null && type.FullName == "System.Collections.ArrayList")
+            switch (elementType)
             {
-                ArrayList rootArrayList = new();
-
-                // In case we have elements to put there.
-                var result = new Hashtable();
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (m is JsonValue value)
-                    {
-                        rootArrayList.Add(value.Value);
-                    }
-                    else if (m is JsonArray jsonArray)
-                    {
-                        rootArrayList.Add(PopulateArrayList(jsonArray));
-                    }
-                    else if (m is JsonToken)
-                    {
-                        result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
-                    }
-                    else
-                    {
-                        throw new DeserializationException();
-                    }
-                }
-
-                if (result.Count > 0)
-                {
-                    rootArrayList.Add(result);
-                }
-
-                return PopulateArrayList(rootObject);
-                return rootArrayList;
-            }
-
-            if (elementType is null && type.FullName == "System.Collections.Hashtable")
-            {
-                var result = new Hashtable();
-
-                foreach (var member in rootObject.Members)
-                {
-                    if (member is not JsonProperty jsonProperty)
-                    {
-                        throw new DeserializationException();
-                    }
-
-                    result.Add(jsonProperty.Name, PopulateObject(jsonProperty.Value));
-                }
-
-                return PopulateHashtable(rootObject);
+                case null when type.FullName == "System.Collections.ArrayList":
+                    return PopulateArrayList(rootObject);
+                case null when type.FullName == "System.Collections.Hashtable":
+                    return PopulateHashtable(rootObject);
             }
 
             var converter = ConvertersMapping.GetConverter(type);
@@ -590,7 +544,7 @@ namespace nanoFramework.Json
 
         private static object Deserialize(Stream sourceStream)
         {
-            // Read the sourcestream into jsonBytes[]
+            // Read the source stream into jsonBytes[]
             var jsonBytes = new byte[sourceStream.Length];
             sourceStream.Read(jsonBytes, 0, (int)sourceStream.Length);
             var jsonPos = 0;
@@ -673,6 +627,7 @@ namespace nanoFramework.Json
             return Deserialize(ref jsonPos, ref jsonBytes);
         }
 
+        // ReSharper disable once RedundantAssignment
         private static JsonObject ParseObject(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
         {
             var result = new JsonObject();
@@ -857,10 +812,6 @@ namespace nanoFramework.Json
         }
 
         private static LexToken GetNextToken(ref int jsonPos, ref byte[] jsonBytes)
-        {
-            return GetNextTokenInternal(ref jsonPos, ref jsonBytes);
-        }
-        private static LexToken GetNextTokenInternal(ref int jsonPos, ref byte[] jsonBytes)
         {
             StringBuilder sb = null;
 
