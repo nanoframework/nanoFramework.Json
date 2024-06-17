@@ -53,6 +53,8 @@
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="JsonSerializerDefaults.cs" />
+    <Compile Include="JsonSerializerOptions.cs" />
     <Compile Include="Resolvers\IMemberResolver.cs" />
     <Compile Include="Resolvers\MemberResolver.cs" />
     <Compile Include="Resolvers\MemberSet.cs" />

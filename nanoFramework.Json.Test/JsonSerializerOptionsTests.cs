@@ -12,7 +12,7 @@ using System.Diagnostics;
 namespace nanoFramework.Json.Test
 {
     [TestClass]
-    public class JsonUnitTests
+    public class JsonSerializerOptionsTests
     {
         [Setup]
         public void Initialize()
@@ -32,7 +32,7 @@ namespace nanoFramework.Json.Test
             OutputHelper.WriteLine("Can_serialize_and_deserialize_object_with_self_referencing_static_field() - Starting test...");
 
             var serialized = JsonConvert.SerializeObject(JsonTestStaticProperty.StaticProperty);
-            var deserialized = (JsonTestStaticProperty) JsonConvert.DeserializeObject(serialized, typeof(JsonTestStaticProperty));
+            var deserialized = (JsonTestStaticProperty)JsonConvert.DeserializeObject(serialized, typeof(JsonTestStaticProperty));
 
             Assert.AreEqual(
                 JsonTestStaticProperty.StaticProperty.InstanceProperty,
@@ -930,7 +930,7 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
 
             Assert.AreEqual((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
-            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.IsInstanceOfType(dserResult.arguments, typeof(ArrayList), "arguments type it's wrong after deserialization");
             Assert.AreEqual(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             Hashtable arg0 = (Hashtable)dserResult.arguments[0];
@@ -971,7 +971,7 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(dserResult.target, "ReceiveAdvancedMessage", "target value is not correct");
 
             Assert.AreEqual((int)dserResult.arguments[2], 3, "arguments[2] value is not correct");
-            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.IsInstanceOfType(dserResult.arguments, typeof(ArrayList), "arguments type it's wrong after deserialization");
             Assert.AreEqual(dserResult.arguments.Count, 3, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             OutputHelper.WriteLine("Serializing dserResult.arguments[0]");
@@ -1022,7 +1022,7 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(dserResult.type, 1, "type value is not correct");
             Assert.AreEqual(dserResult.target, "ReceiveMessage", "target value is not correct");
 
-            Assert.IsType(typeof(ArrayList), dserResult.arguments, "arguments type it's wrong after deserialization");
+            Assert.IsInstanceOfType(dserResult.arguments, typeof(ArrayList), "arguments type it's wrong after deserialization");
             Assert.AreEqual(dserResult.arguments.Count, 2, $"number of arguments is different than expected: {dserResult.arguments.Count}");
 
             OutputHelper.WriteLine($"SerializingdserResult.arguments[0]:{dserResult.arguments[0]}");
@@ -1081,13 +1081,13 @@ namespace nanoFramework.Json.Test
 
             Hashtable desired = (Hashtable)hash["desired"];
 
-            Assert.IsType(typeof(string), desired["Authorization"], "Authorization is not a string and it should be.");
+            Assert.IsInstanceOfType(desired["Authorization"], typeof(string), "Authorization is not a string and it should be.");
 
             Assert.AreEqual("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)desired["Authorization"], "Authorization string doesn't match original value.");
 
             ArrayList files = (ArrayList)desired["Files"];
 
-            Assert.IsType(typeof(string), files[0]);
+            Assert.IsInstanceOfType(files[0], typeof(string));
             Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 
@@ -1100,12 +1100,12 @@ namespace nanoFramework.Json.Test
 
             Hashtable hash = (Hashtable)JsonConvert.DeserializeObject(correctValue, typeof(Hashtable));
 
-            Assert.IsType(typeof(string), hash["Authorization"], "Authorization is not a string and it should be.");
+            Assert.IsInstanceOfType(hash["Authorization"], typeof(string), "Authorization is not a string and it should be.");
             Assert.AreEqual("sp=r&st=2021-06-12T09:11:53Z&se=2021-06-14T17:11:53Z&spr=https&sv=2020-02-10&sr=c&sig=rn125LiO55RSCoEs4IEaCgg%2BuXKETdEZQPygxVjCHiY%3D", (string)hash["Authorization"], "Authorization string doesn't match original value.");
 
             ArrayList files = (ArrayList)hash["Files"];
 
-            Assert.IsType(typeof(string), files[0]);
+            Assert.IsInstanceOfType(files[0], typeof(string));
             Assert.AreEqual("Iot.Device.Bmxx80.pe", (string)files[0]);
         }
 

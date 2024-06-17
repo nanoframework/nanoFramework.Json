@@ -50,8 +50,10 @@
     <Compile Include="Converters\DoubleConverterTests.cs" />
     <Compile Include="Configuration\JsonCustomTypeTests.cs" />
     <Compile Include="JsonDeserializationArraysTests.cs" />
+    <Compile Include="JsonSettingsTests.cs" />
     <Compile Include="JsonThreadSafeTests.cs" />
-    <Compile Include="JsonUnitTests.cs" />
+    <Compile Include="JsonSerializerOptionsTests.cs" />
+    <Compile Include="Mocks\MockMemberResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolvers\MemberResolverCaseInsensitiveExceptionTests.cs" />
     <Compile Include="Resolvers\MemberResolverCaseInsensitiveTests.cs" />
