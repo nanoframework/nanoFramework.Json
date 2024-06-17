@@ -15,19 +15,19 @@ namespace nanoFramework.Json.Test.Resolvers
         private sealed class TestClass
         {
             public int TestField = 1;
-            public int TestProperty { get; set; } = 1;
+            public int TestProperty { get; init; } = 1;
             public int NoGetProperty { private get; set; } = 1;
-            public int NoSetProperty { get; } = 1;
+            public int NoSetProperty => 1;
         }
 
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldResolveField()
         {
-            var resolver = new MemberResolver();
+            var sut = new MemberResolver();
             var classInstance = new TestClass();
-            var valueToSet = 5;
+            const int valueToSet = 5;
 
-            var member = resolver.Get(nameof(TestClass.TestField), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.TestField), typeof(TestClass), new JsonSerializerOptions());
             member.SetValue(classInstance, valueToSet);
 
             Assert.AreEqual(classInstance.TestField, valueToSet);
@@ -37,11 +37,11 @@ namespace nanoFramework.Json.Test.Resolvers
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldResolveProperty()
         {
-            var resolver = new MemberResolver();
+            var sut = new MemberResolver();
             var classInstance = new TestClass();
-            var valueToSet = 6;
+            const int valueToSet = 6;
 
-            var member = resolver.Get(nameof(TestClass.TestProperty), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.TestProperty), typeof(TestClass), new JsonSerializerOptions());
             member.SetValue(classInstance, valueToSet);
 
             Assert.AreEqual(classInstance.TestProperty, valueToSet);
@@ -51,9 +51,9 @@ namespace nanoFramework.Json.Test.Resolvers
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldSkipPropertyWithoutGet()
         {
-            var resolver = new MemberResolver();
+            var sut = new MemberResolver();
 
-            var member = resolver.Get(nameof(TestClass.NoGetProperty), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.NoGetProperty), typeof(TestClass), new JsonSerializerOptions());
 
             Assert.IsTrue(member.Skip);
         }
@@ -61,9 +61,9 @@ namespace nanoFramework.Json.Test.Resolvers
         [TestMethod]
         public void MemberResolverCaseSensitive_Get_ShouldSkipPropertyWithoutSet()
         {
-            var resolver = new MemberResolver();
+            var sut = new MemberResolver();
 
-            var member = resolver.Get(nameof(TestClass.NoSetProperty), typeof(TestClass));
+            var member = sut.Get(nameof(TestClass.NoSetProperty), typeof(TestClass), new JsonSerializerOptions());
 
             Assert.IsTrue(member.Skip);
         }

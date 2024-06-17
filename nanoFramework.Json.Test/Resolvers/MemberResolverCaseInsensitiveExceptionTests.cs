@@ -3,10 +3,8 @@
 // See LICENSE file in the project root for full license information.
 //
 
-using nanoFramework.Json.Configuration;
 using nanoFramework.Json.Resolvers;
 using nanoFramework.TestFramework;
-using System;
 
 namespace nanoFramework.Json.Test.Resolvers
 {
@@ -16,57 +14,33 @@ namespace nanoFramework.Json.Test.Resolvers
         private sealed class TestClass
         {
             public int NoGetProperty { private get; set; } = 1;
-            public int NoSetProperty { get; } = 1;
-        }
-
-        [Setup]
-        public void MemberResolverCaseInsensitiveExceptionTests_Setup()
-        {
-            Settings.ThrowExceptionWhenPropertyNotFound = true;
-            Settings.CaseSensitive = false;
-        }
-
-        [Cleanup]
-        public void MemberResolverCaseInsensitiveExceptionTests_Cleanup()
-        {
-            Settings.ThrowExceptionWhenPropertyNotFound = false;
-            Settings.CaseSensitive = true;
+            public int NoSetProperty => 1;
         }
 
         [TestMethod]
         public void MemberResolverCaseInsensitiveExceptionTests_Get_ShouldSkipPropertyWithoutGet()
         {
-            var resolver = new MemberResolver();
-
-            try
+            var options = new JsonSerializerOptions
             {
-                resolver.Get(nameof(TestClass.NoGetProperty), typeof(TestClass));
-            }
-            catch (DeserializationException)
-            {
-                // Intended. Method should throw this type of exception when no set method.
-                return;
-            }
+                PropertyNameCaseInsensitive = true,
+                ThrowExceptionWhenPropertyNotFound = true,
+            };
 
-            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
+            var sut = new MemberResolver();
+            Assert.ThrowsException(typeof(DeserializationException), () => sut.Get(nameof(TestClass.NoGetProperty), typeof(TestClass), options));
         }
 
         [TestMethod]
         public void MemberResolverCaseInsensitiveExceptionTests_Get_ShouldSkipPropertyWithoutSet()
         {
-            var resolver = new MemberResolver();
-
-            try
+            var options = new JsonSerializerOptions
             {
-                resolver.Get(nameof(TestClass.NoSetProperty), typeof(TestClass));
-            }
-            catch (DeserializationException)
-            {
-                // Intended. Method should throw this type of exception when no set method.
-                return;
-            }
+                PropertyNameCaseInsensitive = true,
+                ThrowExceptionWhenPropertyNotFound = true,
+            };
 
-            throw new InvalidOperationException($"Should throw {nameof(DeserializationException)}.");
+            var sut = new MemberResolver();
+            Assert.ThrowsException(typeof(DeserializationException), () => sut.Get(nameof(TestClass.NoSetProperty), typeof(TestClass), options));
         }
     }
 }

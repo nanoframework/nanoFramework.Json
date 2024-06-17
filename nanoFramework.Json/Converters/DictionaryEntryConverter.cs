@@ -17,11 +17,10 @@ namespace nanoFramework.Json.Converters
         {
             Hashtable hashtable = new();
 
-            DictionaryEntry dic = (DictionaryEntry)value;
-            DictionaryEntry entry = dic;
+            var entry = (DictionaryEntry)value;
             hashtable.Add(entry.Key, entry.Value);
 
-            return JsonSerializer.SerializeIDictionary(hashtable);
+            return JsonSerializer.SerializeDictionary(hashtable);
         }
 
         /// <summary>

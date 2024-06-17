@@ -5,11 +5,9 @@
 //
 
 using nanoFramework.Json.Configuration;
-using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace nanoFramework.Json
@@ -19,6 +17,9 @@ namespace nanoFramework.Json
     /// </summary>
     public static class JsonConvert
     {
+        private static readonly Type[] EmptyTypeArray = { };
+        private const string PathSeparator = "/";
+
         private enum TokenType
         {
             LBrace, RBrace, LArray, RArray, Colon, Comma, String, Number, Date, Error,
@@ -32,62 +33,87 @@ namespace nanoFramework.Json
         }
 
         /// <summary>
-        /// Convert an object to a JSON string.
+        /// Deserializes a JSON string into an object.
         /// </summary>
-        /// <param name="oSource">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
-        /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
-        /// <remarks>For objects, only public properties with getters are converted.</remarks>
-        public static string SerializeObject(object oSource)
-        {
-            return JsonSerializer.SerializeObject(oSource);
-        }
+        /// <param name="value">The JSON string to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(string value, Type type) =>
+            DeserializeObject(value, type, JsonSerializerOptions.Default);
 
         /// <summary>
-        /// Deserializes a Json string into an object.
+        /// Deserializes a JSON string into an object.
         /// </summary>
-        /// <param name="sourceString"></param>
-        /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(string sourceString, Type type)
+        /// <param name="value">The JSON string to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(string value, Type type, JsonSerializerOptions options)
         {
+            // Short circuit populating the object when target type is string
             if (type == typeof(string))
             {
                 var converter = ConvertersMapping.GetConverter(type);
-                return converter.ToType(sourceString);
+                return converter.ToType(value);
             }
 
-            var dserResult = Deserialize(sourceString);
-            return PopulateObject((JsonToken)dserResult, type, "/");
+            return PopulateObject(Deserialize(value), type, PathSeparator, options);
         }
 
+        // TODO: Is this still required?
 #if NANOFRAMEWORK_1_0
+        /// <summary>
+        /// Deserializes a JSON <see cref="Stream"/> into an object.
+        /// </summary>
+        /// <param name="stream">The JSON stream to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(Stream stream, Type type) =>
+            DeserializeObject(stream, type, JsonSerializerOptions.Default);
 
         /// <summary>
-        /// Deserializes a Json string into an object.
+        /// Deserializes a JSON <see cref="Stream"/> into an object.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(Stream stream, Type type)
-        {
-            var dserResult = Deserialize(stream);
-            return PopulateObject((JsonToken)dserResult, type, "/");
-        }
+        /// <param name="stream">The JSON stream to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(Stream stream, Type type, JsonSerializerOptions options) =>
+            PopulateObject(Deserialize(stream), type, PathSeparator, options);
 
         /// <summary>
-        /// Deserializes a Json string into an object.
+        /// Deserializes a JSON <see cref="StreamReader"/> into an object.
         /// </summary>
-        /// <param name="dr"></param>
-        /// <param name="type">The object type to convert to</param>
-        /// <returns></returns>
-        public static object DeserializeObject(StreamReader dr, Type type)
+        /// <param name="streamReader">The JSON stream reader to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(StreamReader streamReader, Type type) =>
+            DeserializeObject(streamReader, type, JsonSerializerOptions.Default);
+
+        /// <summary>
+        /// Deserializes a JSON <see cref="StreamReader"/> into an object.
+        /// </summary>
+        /// <param name="streamReader">The JSON stream reader to deserialize.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used during deserialization.</param>
+        /// <returns>The deserialized object.</returns>
+        public static object DeserializeObject(StreamReader streamReader, Type type, JsonSerializerOptions options)
         {
-            var dserResult = Deserialize(dr);
-
-            return PopulateObject((JsonToken)dserResult, type, "/");
+            return PopulateObject(Deserialize(streamReader), type, PathSeparator, options);
         }
-
 #endif
+
+        /// <summary>
+        /// Convert an object to a JSON string.
+        /// </summary>
+        /// <param name="value">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+        /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
+        /// <remarks>For objects, only public properties with getters are converted.</remarks>
+        public static string SerializeObject(object value)
+        {
+            return JsonSerializer.SerializeObject(value);
+        }
+        
         private static bool ShouldSkipConvert(Type sourceType, Type targetType, bool forceConversion)
         {
             if (forceConversion)
@@ -95,684 +121,402 @@ namespace nanoFramework.Json
                 return false;
             }
 
-            if (sourceType != targetType)
-            {
-                return false;
-            }
-
-            return true;
+            return sourceType == targetType;
         }
 
         internal static object ConvertToType(Type sourceType, Type targetType, object value, bool forceConversion = false)
         {
-            if (ShouldSkipConvert(sourceType, targetType, forceConversion))
+            while (true)
             {
-                return value;
-            }
+                if (targetType is null)
+                {
+                    throw new ArgumentNullException();
+                }
 
-            if (targetType.IsArray)
-            {
-                return ConvertToType(sourceType, targetType.GetElementType(), value, forceConversion);
-            }
+                if (ShouldSkipConvert(sourceType, targetType, forceConversion))
+                {
+                    return value;
+                }
 
-            var converter = ConvertersMapping.GetConverter(targetType);
-            if (converter != null)
-            {
-                return converter.ToType(value);
-            }
+                if (targetType.IsArray)
+                {
+                    targetType = targetType.GetElementType();
+                    continue;
+                }
 
-            return value;
+                var converter = ConvertersMapping.GetConverter(targetType);
+                return converter is not null ? converter.ToType(value) : value;
+            }
         }
 
-        private static object PopulateObject(JsonToken rootToken, Type rootType, string rootPath)
+        private static string CreatePath(string path, Type elementType) => CreatePath(path, elementType.Name);
+
+        private static string CreatePath(string path, string elementName)
         {
-            if (
-                (rootToken == null)
-                || (rootType == null)
-                || (rootPath == null))
+            if (path.EndsWith(PathSeparator))
+            {
+                path += elementName;
+            }
+            else
+            {
+                path += $"{PathSeparator}{elementName}";
+            }
+
+            return path;
+        }
+
+        // TODO: At first glance `path` doesn't appear to be used. I assume it was intended to be used in exceptions to indicate where the problem occurred.
+        // Look into this and see if it should be (A) implemented or (B) removed
+        private static object PopulateObject(JsonArray jsonArray, Type type, string path, JsonSerializerOptions options)
+        {
+            if (jsonArray is null || type is null || path is null)
+            {
+                throw new DeserializationException();
+            }
+
+            var isArrayList = false;
+            var elementType = type.GetElementType();
+
+            if (elementType is null)
+            {
+                // Check if this result should be an ArrayList
+                if (TypeUtils.IsArrayList(type) || TypeUtils.IsString(type) || TypeUtils.IsValueType(type))
+                {
+                    isArrayList = true;
+                    elementType = type;
+                }
+                else
+                {
+                    // Arrays must have a valid element type
+                    throw new DeserializationException();
+                }
+            }
+
+            var result = new ArrayList();
+
+            if (isArrayList)
+            {
+                result = PopulateArrayList(jsonArray);
+
+                if ((TypeUtils.IsString(type) || TypeUtils.IsValueType(type)) && result.Count == 1)
+                {
+                    // This is a case of deserializing an array with a single element. Just return the element.
+                    return result[0];
+                }
+
+                return result;
+            }
+
+            foreach (var item in jsonArray.Items)
+            {
+                if (item is JsonValue jsonValue)
+                {
+                    if (jsonValue.Value is null)
+                    {
+                        result.Add(null);
+                        continue;
+                    }
+
+                    var value = jsonValue.Value;
+
+                    result.Add(ConvertToType(value.GetType(), elementType, value));
+                }
+                else
+                {
+                    result.Add(PopulateObject(item, elementType, CreatePath(path, elementType), options));
+                }
+            }
+
+            // ReSharper disable once ConstantNullCoalescingCondition
+            var targetArray = Array.CreateInstance(elementType, jsonArray.Length) ?? throw new DeserializationException();
+
+            result.CopyTo(targetArray);
+
+            return targetArray;
+        }
+
+        private static object PopulateObject(JsonObject rootObject, Type type, string path, JsonSerializerOptions options)
+        {
+            if (rootObject is null || type is null || path is null)
+            {
+                throw new DeserializationException();
+            }
+
+            var elementType = type.GetElementType();
+            if (elementType is null)
+            {
+                if (TypeUtils.IsArrayList(type))
+                {
+                    return PopulateArrayList(rootObject);
+                }
+
+                if (TypeUtils.IsHashTable(type))
+                {
+                    return PopulateHashtable(rootObject);
+                }
+            }
+
+            var converter = ConvertersMapping.GetConverter(type);
+            if (converter is not null)
+            {
+                return converter.ToType(rootObject);
+            }
+
+            if (rootObject?.Members is null)
+            {
+                throw new DeserializationException();
+            }
+
+            var constructor = type.GetConstructor(EmptyTypeArray) ?? throw new DeserializationException();
+
+            // This is the object that gets populated and returned. Create rootInstance from the type's constructor.
+            var rootInstance = constructor.Invoke(null) ?? throw new DeserializationException();
+
+            var rootMembers = rootObject.Members;
+
+            foreach (var rootMember in rootMembers)
+            {
+                if (rootMember is not JsonProperty memberProperty)
+                {
+                    throw new DeserializationException();
+                }
+
+                var memberPropertyName = memberProperty.Name;
+
+                // Workaround for property names that start with '$' like Azure Twins
+                if (memberPropertyName[0] == '$')
+                {
+                    memberPropertyName = "_" + memberProperty.Name.Substring(1);
+                }
+
+                // Call current resolver to get info how to deal with data
+                var memberResolver = options.Resolver.Get(memberPropertyName, type, options);
+                if (memberResolver.Skip)
+                {
+                    continue;
+                }
+
+                // Process the member based on JObject, JValue, or JArray
+                if (memberProperty.Value is JsonObject memberPropertyObject)
+                {
+                    object memberObject = null;
+
+                    if (TypeUtils.IsHashTable(memberResolver.ObjectType))
+                    {
+                        var hashtable = new Hashtable();
+
+                        foreach (JsonProperty jsonProperty in memberPropertyObject.Members)
+                        {
+                            switch (jsonProperty.Value)
+                            {
+                                case JsonArray:
+                                    throw new NotImplementedException();
+                                case JsonObject jsonObject:
+                                    hashtable.Add(jsonProperty.Name, PopulateHashtable(jsonObject));
+                                    break;
+                                case JsonValue jsonValue:
+                                    hashtable.Add(jsonProperty.Name, jsonValue.Value);
+                                    break;
+                            }
+                        }
+
+                        memberObject = hashtable;
+                    }
+                    else
+                    {
+                        memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, CreatePath(path, memberPropertyName), options);
+                    }
+
+                    memberResolver.SetValue(rootInstance, memberObject);
+                }
+                else if (memberProperty.Value is JsonValue memberPropertyValue)
+                {
+                    var returnType = memberPropertyValue.Value != null ? memberPropertyValue.Value.GetType() : memberResolver.ObjectType;
+                    var convertedValueAsObject = ConvertToType(returnType, memberResolver.ObjectType, memberPropertyValue.Value, true);
+                    memberResolver.SetValue(rootInstance, convertedValueAsObject);
+                }
+                else if (memberProperty.Value is JsonArray memberPropertyArray)
+                {
+                    // Need this type when we try to populate the array elements
+                    var memberElementType = memberResolver.ObjectType.GetElementType();
+                    var isArrayList = false;
+
+                    if (memberElementType is null && TypeUtils.IsArrayList(memberResolver.ObjectType))
+                    {
+                        memberElementType = memberResolver.ObjectType;
+                        isArrayList = true;
+                    }
+
+                    var memberArrayList = new ArrayList();
+
+                    var memberItems = memberPropertyArray.Items;
+
+                    foreach (var item in memberItems)
+                    {
+                        if (item is JsonValue value)
+                        {
+                            memberArrayList.Add(ConvertToType(value.Value.GetType(), memberResolver.ObjectType, value.Value));
+                        }
+                        else if (item is not null)
+                        {
+                            if (memberElementType is null)
+                            {
+                                throw new DeserializationException();
+                            }
+
+                            var memberElementPath = $"{path}/{memberProperty.Name}/{memberElementType.Name}";
+
+                            memberArrayList.Add(PopulateObject(item, memberElementType, memberElementPath, options));
+                        }
+                    }
+
+                    // Fill targetArray with the memberValueArrayList
+                    if (isArrayList)
+                    {
+                        ArrayList targetArray = new();
+
+                        for (var i = 0; i < memberArrayList.Count; i++)
+                        {
+                            // Test if we have only 1 element and that the element is a Hashtable.
+                            // In this case, we'll make it more efficient and add it as an Hashtable.
+                            if (memberArrayList[i] is ArrayList { Count: 1 } memberItemArrayList && memberItemArrayList[0] is Hashtable hashtable)
+                            {
+                                targetArray.Add(hashtable);
+                            }
+                            else
+                            {
+                                targetArray.Add(memberArrayList[i]);
+                            }
+                        }
+
+                        // Populate rootInstance
+                        memberResolver.SetValue(rootInstance, targetArray);
+                    }
+                    else
+                    {
+                        // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
+
+                        var targetArray = Array.CreateInstance(memberElementType, memberPropertyArray.Length) ?? throw new DeserializationException();
+
+                        memberArrayList.CopyTo(targetArray);
+
+                        // Populate rootInstance
+                        memberResolver.SetValue(rootInstance, targetArray);
+                    }
+                }
+            }
+
+            return rootInstance;
+
+        }
+
+        private static object PopulateObject(JsonToken jsonToken, Type type, string path, JsonSerializerOptions options)
+        {
+            if (jsonToken is null || type is null || path is null)
             {
                 // All parameters must be non-null
                 throw new DeserializationException();
             }
 
-            Type rootElementType = rootType.GetElementType();
-
-            if (rootToken is JsonObject rootObject)
+            // TODO: Is there a reason JsonValue isn't handled here?
+            return jsonToken switch
             {
-                if (rootElementType == null
-                    && rootType.FullName == "System.Collections.Hashtable")
-                {
-                    Hashtable rootInstanceHashtable = new();
-
-                    foreach (var m in rootObject.Members)
-                    {
-                        var memberProperty = (JsonProperty)m;
-
-                        if (memberProperty.Value is JsonValue jsonValue)
-                        {
-                            rootInstanceHashtable.Add(memberProperty.Name, jsonValue.Value);
-                        }
-                        else if (memberProperty.Value is JsonArray jsonArray)
-                        {
-                            rootInstanceHashtable.Add(memberProperty.Name, PopulateArrayList(jsonArray));
-                        }
-                        else if (memberProperty.Value is JsonToken jsonToken)
-                        {
-                            rootInstanceHashtable.Add(memberProperty.Name, PopulateHashtable(jsonToken));
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-
-                    return rootInstanceHashtable;
-                }
-
-                if (rootElementType == null
-                    && rootType.FullName == "System.Collections.ArrayList")
-                {
-                    ArrayList rootArrayList = new();
-
-                    // In case we have elements to put there.
-                    var result = new Hashtable();
-                    foreach (var m in rootObject.Members)
-                    {
-                        var memberProperty = (JsonProperty)m;
-
-                        if (m is JsonValue value)
-                        {
-                            rootArrayList.Add(value.Value);
-                        }
-                        else if (m is JsonArray jsonArray)
-                        {
-                            rootArrayList.Add(PopulateArrayList(jsonArray));
-                        }
-                        else if (m is JsonToken)
-                        {
-                            result.Add(memberProperty.Name, PopulateObject(memberProperty.Value));
-                        }
-                        else
-                        {
-                            throw new DeserializationException();
-                        }
-                    }
-
-                    if (result.Count > 0)
-                    {
-                        rootArrayList.Add(result);
-                    }
-
-                    return rootArrayList;
-                }
-
-                var converter = ConvertersMapping.GetConverter(rootType);
-                if (converter != null)
-                {
-                    return converter.ToType(rootObject);
-                }
-
-                // Empty array of Types - GetConstructor didn't work unless given an empty array of Type[]
-                Type[] types = { };
-
-                ConstructorInfo ci = rootType.GetConstructor(types);
-
-                if (ci == null)
-                {
-                    // failed to create target instance
-                    throw new DeserializationException();
-                }
-
-                // This is the object that gets populated and returned
-                // Create rootInstance from the rootType's constructor
-                var rootInstance = ci.Invoke(null);
-
-                // If we haven't successfully created rootInstance, bail out
-                if (rootInstance == null)
-                {
-                    // failed to create target instance from rootType
-                    throw new DeserializationException();
-                }
-
-                if ((rootObject == null) || (rootObject.Members == null))
-                {
-                    // failed to create target instance from rootType
-                    throw new DeserializationException();
-                }
-
-                // Process all members for this rootObject
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    string memberPropertyName = memberProperty.Name;
-
-                    // workaround for for property names that start with '$' like Azure Twins
-                    if (memberPropertyName[0] == '$')
-                    {
-                        memberPropertyName = "_" + memberProperty.Name.Substring(1);
-                    }
-
-                    // Call current resolver to get info how to deal with data
-                    var memberResolver = Settings.Resolver.Get(memberPropertyName, rootType);
-                    if (memberResolver.Skip)
-                    {
-                        continue;
-                    }
-
-                    // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObject @object)
-                    {
-                        // Call PopulateObject() for this member - i.e. recursion
-                        var memberPath = rootPath;
-
-                        if (memberPath[memberPath.Length - 1] == '/')
-                        {
-                            // Don't need to add a slash before appending rootElementType
-                            memberPath += memberPropertyName;
-                        }
-                        else
-                        {
-                            // Need to add a slash before appending rootElementType
-                            memberPath = memberPath + '/' + memberPropertyName;
-                        }
-
-                        object memberObject = null;
-
-                        // check if property type it's HashTable
-                        // whole if can be replaced with memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);??
-                        if (memberResolver.ObjectType.FullName == "System.Collections.Hashtable")
-                        {
-                            Hashtable table = new();
-
-                            foreach (JsonProperty v in @object.Members)
-                            {
-                                if (v.Value is JsonValue jsonValue)
-                                {
-                                    table.Add(v.Name, (jsonValue).Value);
-                                }
-                                else if (v.Value is JsonObject JsonObject)
-                                {
-                                    table.Add(v.Name, PopulateHashtable(JsonObject));
-                                }
-                                else if (v.Value is JsonArray jsonArrayAttribute)
-                                {
-                                    throw new NotImplementedException();
-                                }
-                            }
-
-                            memberObject = table;
-                        }
-                        else
-                        {
-                            memberObject = PopulateObject(memberProperty.Value, memberResolver.ObjectType, memberPath);
-                        }
-
-                        memberResolver.SetValue(rootInstance, memberObject);
-                    }
-                    else if (memberProperty.Value is JsonValue memberPropertyValue)
-                    {
-                        var returnType = memberPropertyValue.Value != null ? memberPropertyValue.Value.GetType() : memberResolver.ObjectType;
-                        var convertedValueAsObject = ConvertToType(returnType, memberResolver.ObjectType, memberPropertyValue.Value, true);
-                        memberResolver.SetValue(rootInstance, convertedValueAsObject);
-                    }
-                    else if (memberProperty.Value is JsonArray array)
-                    {
-                        // Need this type when we try to populate the array elements
-                        Type memberElementType = memberResolver.ObjectType.GetElementType();
-                        bool isArrayList = false;
-
-                        if (memberElementType == null && memberResolver.ObjectType.FullName == "System.Collections.ArrayList")
-                        {
-                            memberElementType = memberResolver.ObjectType;
-                            isArrayList = true;
-                        }
-
-                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = array;
-
-                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                        var memberValueArrayList = new ArrayList();
-
-                        // Create a JToken[] array for Items associated for this memberProperty.Value
-                        JsonToken[] memberItems = memberValueArray.Items;
-
-                        foreach (JsonToken item in memberItems)
-                        {
-                            if (item is JsonValue value)
-                            {
-                                var valueToAddAsObject = ConvertToType(value.Value.GetType(), memberResolver.ObjectType, value.Value);
-                                memberValueArrayList.Add(valueToAddAsObject);
-                            }
-                            else if (item != null)
-                            {
-                                // sanity check for null memberElementType
-                                if (memberElementType == null)
-                                {
-                                    // {memberType.Name} is null and this can't happen.
-                                    throw new DeserializationException();
-                                }
-
-                                string memberElementPath = $"{rootPath}/{memberProperty.Name}/{memberElementType.Name}";
-
-                                var itemObj = PopulateObject(item, memberElementType, memberElementPath);
-
-                                memberValueArrayList.Add(itemObj);
-                            }
-                            else
-                            {
-                                // item is not a JToken or a JValue - this case is not handled
-                            }
-                        }
-
-                        // Fill targetArray with the memberValueArrayList
-                        if (isArrayList)
-                        {
-                            ArrayList targetArray = new();
-
-                            for (int i = 0; i < memberValueArrayList.Count; i++)
-                            {
-                                // Test if we have only 1 element and that the element is a Hashtable.
-                                // In this case, we'll make it more efficient and add it as an Hashtable.
-                                if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
-                                    (((ArrayList)memberValueArrayList[i]).Count == 1) &&
-                                    ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
-                                {
-                                    targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
-                                }
-                                else
-                                {
-                                    targetArray.Add(memberValueArrayList[i]);
-                                }
-                            }
-
-                            // Populate rootInstance
-                            memberResolver.SetValue(rootInstance, targetArray);
-                        }
-                        else
-                        {
-                            // Create targetArray - an Array of memberElementType objects - targetArray will be copied to rootInstance - then rootInstance will be returned
-
-                            Array targetArray = Array.CreateInstance(memberElementType, memberValueArray.Length);
-
-                            if (targetArray == null)
-                            {
-                                // failed to create Array of type: {memberElementType}[]
-                                throw new DeserializationException();
-                            }
-
-                            memberValueArrayList.CopyTo(targetArray);
-
-                            // Populate rootInstance
-                            memberResolver.SetValue(rootInstance, targetArray);
-                        }
-                    }
-                }
-
-                return rootInstance;
-            }
-
-            if (rootToken is JsonArray rootArray)
-            {
-                bool isArrayList = false;
-
-                if (rootElementType == null)
-                {
-                    // check if this is an ArrayList
-                    if (rootType.FullName == "System.Collections.ArrayList"
-                        || rootType.BaseType.FullName == "System.ValueType"
-                        || rootType.FullName == "System.String")
-                    {
-                        isArrayList = true;
-
-                        rootElementType = rootType;
-                    }
-                    else
-                    {
-                        // For arrays, type: {rootType.Name} must have a valid element type
-                        throw new DeserializationException();
-                    }
-                }
-
-                // Create & populate rootArrayList with the items in rootToken - call PopulateObject if the item is more complicated than a JValue 
-
-                ArrayList rootArrayList = new();
-
-                if (isArrayList)
-                {
-                    foreach (var item in rootArray.Items)
-                    {
-                        if (item is JsonValue value)
-                        {
-                            rootArrayList.Add(value.Value);
-                        }
-                        else if (item != null)
-                        {
-                            rootArrayList = PopulateArrayList(item);
-                        }
-                        else
-                        {
-                            throw new DeserializationException();
-                        }
-                    }
-
-                    if ((rootType.BaseType.FullName == "System.ValueType"
-                         || rootType.FullName == "System.String")
-                        && rootArrayList.Count == 1)
-                    {
-                        // this is a case of deserialing a array with a single element,
-                        // so just return the element
-                        return rootArrayList[0];
-                    }
-
-                    return rootArrayList;
-                }
-
-                foreach (var item in rootArray.Items)
-                {
-                    if (item is JsonValue value)
-                    {
-                        if (value.Value == null)
-                        {
-                            rootArrayList.Add(null);
-                            continue;
-                        }
-
-                        var valueToAddAsObject = ConvertToType(value.Value.GetType(), rootType.GetElementType(), value.Value);
-                        rootArrayList.Add(valueToAddAsObject);
-                    }
-                    else
-                    {
-                        if (isArrayList)
-                        {
-                            rootArrayList = PopulateArrayList(item);
-                        }
-                        else
-                        {
-                            // Pass rootElementType and rootPath with rootElementType appended to PopulateObject for this item 
-                            string itemPath = rootPath;
-
-                            if (itemPath[itemPath.Length - 1] == '/')
-                            {
-                                // Don't need to add a slash before appending rootElementType
-                                itemPath += rootElementType.Name;
-                            }
-                            else
-                            {
-                                // Need to add a slash before appending rootElementType
-                                itemPath = itemPath + '/' + rootElementType.Name;
-                            }
-
-                            var itemObj = PopulateObject(item, rootElementType, itemPath);
-
-                            rootArrayList.Add(itemObj);
-                        }
-                    }
-                }
-
-                Array targetArray = Array.CreateInstance(rootType.GetElementType(), rootArray.Length);
-
-                if (targetArray == null)
-                {
-                    //  CreateInstance() failed for type: {rootElementType.Name}    length: {rootArray.Length}
-                    throw new DeserializationException();
-                }
-
-                rootArrayList.CopyTo(targetArray);
-
-                return targetArray;
-            }
-
-            return null;
+                JsonArray jsonArray => PopulateObject(jsonArray, type, path, options),
+                JsonObject jsonObject => PopulateObject(jsonObject, type, path, options),
+                _ => null
+            };
         }
 
-        private static object PopulateObject(JsonToken rootToken)
+        // TODO: Rename to GetTokenValue to be more clear? (PopulateArrayList and PopulateDictionary would be similar)
+        private static object PopulateObject(JsonToken jsonToken)
         {
-            if (rootToken == null)
+            return jsonToken switch
             {
-                // can't be null
-                throw new DeserializationException();
-            }
-
-            if (rootToken is JsonObject rootObject)
-            {
-                Hashtable rootInstance = new();
-
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (memberProperty.Value is JsonValue jsonValue)
-                    {
-                        rootInstance.Add(memberProperty.Name, jsonValue.Value);
-                    }
-                    else if (memberProperty.Value is JsonArray jsonArray)
-                    {
-                        rootInstance.Add(memberProperty.Name, PopulateArrayList(jsonArray));
-                    }
-                    else if (memberProperty.Value is JsonToken jsonToken)
-                    {
-                        rootInstance.Add(memberProperty.Name, PopulateHashtable(jsonToken));
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
-                }
-
-                return rootInstance;
-            }
-
-            if (rootToken is JsonValue rootValue)
-            {
-                return rootValue.Value;
-            }
-
-            // not implemented
-            throw new DeserializationException();
+                JsonArray rootArray => PopulateArrayList(rootArray),
+                JsonObject rootObject => PopulateHashtable(rootObject),
+                JsonValue rootValue => rootValue.Value,
+                _ => throw new DeserializationException()
+            };
         }
 
-        private static ArrayList PopulateArrayList(JsonToken rootToken)
+        private static ArrayList PopulateArrayList(JsonArray jsonArray)
         {
             var result = new ArrayList();
+            var jsonTokens = jsonArray.Items;
 
-            // Process all members for this rootObject
-            if (rootToken is JsonObject rootObject)
+            foreach (var jsonToken in jsonTokens)
             {
-                Hashtable mainTable = new();
-
-                foreach (var m in rootObject.Members)
-                {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (memberProperty == null)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObject)
-                    {
-                        throw new DeserializationException();
-                    }
-                    else if (memberProperty.Value is JsonValue value)
-                    {
-                        mainTable.Add(memberProperty.Name, value.Value);
-                    }
-                    else if (memberProperty.Value is JsonArray jsonArrayAttribute)
-                    {
-                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = jsonArrayAttribute;
-
-                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                        var memberValueArrayList = new ArrayList();
-
-                        // Create a JToken[] array for Items associated for this memberProperty.Value
-                        JsonToken[] memberItems = memberValueArray.Items;
-
-                        foreach (JsonToken item in memberItems)
-                        {
-                            if (item is JsonValue jsonValue)
-                            {
-                                memberValueArrayList.Add((jsonValue).Value);
-                            }
-                            else if (item is JsonToken jsonToken)
-                            {
-                                throw new NotImplementedException();
-                            }
-                            else
-                            {
-                                // item is not a JToken or a JValue - this case is not handled
-                            }
-                        }
-
-                        // add to main table
-                        mainTable.Add(memberProperty.Name, memberValueArrayList);
-                    }
-                }
-
-                // add to result
-                result.Add(mainTable);
-            }
-            else if (rootToken is JsonArray array)
-            {
-                // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                var memberValueArrayList = new ArrayList();
-
-                // Create a JToken[] array for Items associated for this memberProperty.Value
-                JsonToken[] memberItems = array.Items;
-
-                foreach (JsonToken item in memberItems)
-                {
-                    if (item is JsonValue jsonValue)
-                    {
-                        memberValueArrayList.Add((jsonValue).Value);
-                    }
-                    else if (item is JsonToken jsonToken)
-                    {
-                        memberValueArrayList.Add(PopulateObject(jsonToken));
-                    }
-                    else
-                    {
-                        // item is not a JToken or a JValue - this case is not handled
-                    }
-                }
-
-                result = memberValueArrayList;
-            }
-            else
-            {
-                throw new NotImplementedException();
+                result.Add(PopulateObject(jsonToken));
             }
 
             return result;
         }
 
-        private static Hashtable PopulateHashtable(JsonToken rootToken)
+        private static ArrayList PopulateArrayList(JsonObject jsonObject)
+        {
+            return new ArrayList { PopulateHashtable(jsonObject) };
+        }
+
+        private static Hashtable PopulateHashtable(JsonObject jsonObject)
         {
             var result = new Hashtable();
+            var members = jsonObject.Members;
 
-            // Process all members for this rootObject
-
-            if (rootToken is JsonObject rootTokenObjectAttribute)
+            foreach (var member in members)
             {
-                foreach (var m in rootTokenObjectAttribute.Members)
+                if (member is not JsonProperty jsonProperty)
                 {
-                    var memberProperty = (JsonProperty)m;
-
-                    if (memberProperty == null)
-                    {
-                        throw new NotSupportedException();
-                    }
-
-                    // Process the member based on JObject, JValue, or JArray
-                    if (memberProperty.Value is JsonObject memberPropertyValue)
-                    {
-                        // Call PopulateObject() for this member - i.e. recursion
-                        result.Add(memberProperty.Name, PopulateHashtable(memberPropertyValue));
-                    }
-                    else if (memberProperty.Value is JsonValue memberPropertyJsonValue)
-                    {
-                        if (memberPropertyJsonValue is JsonValue jsonValue)
-                        {
-                            result.Add(memberProperty.Name, jsonValue.Value);
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-                    else if (memberProperty.Value is JsonArray jsonArrayAttribute)
-                    {
-                        // Create a JArray (memberValueArray) to hold the contents of memberProperty.Value 
-                        var memberValueArray = jsonArrayAttribute;
-
-                        // Create a temporary ArrayList memberValueArrayList - populate this as the memberItems are parsed
-                        var memberValueArrayList = new ArrayList();
-
-                        // Create a JToken[] array for Items associated for this memberProperty.Value
-                        JsonToken[] memberItems = memberValueArray.Items;
-
-                        foreach (JsonToken item in memberItems)
-                        {
-                            if (item is JsonValue jsonValue)
-                            {
-                                memberValueArrayList.Add(jsonValue.Value);
-                            }
-                            else if (item is JsonToken jsonToken)
-                            {
-                                memberValueArrayList.Add(PopulateHashtable(jsonToken));
-                            }
-                            else
-                            {
-                                // item is not a JToken or a JValue - this case is not handled
-                            }
-                        }
-
-                        // add to main table
-                        result.Add(memberProperty.Name, memberValueArrayList);
-                    }
+                    throw new DeserializationException();
                 }
-            }
-            else if (rootToken is JsonArray)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                throw new NotImplementedException();
+
+                result.Add(jsonProperty.Name, PopulateObject(jsonProperty.Value));
             }
 
             return result;
         }
 
+        private static JsonToken Deserialize(string value)
+        {
+            var jsonBytes = Encoding.UTF8.GetBytes(value);
+            var jsonPos = 0;
+            return Deserialize(ref jsonPos, ref jsonBytes);
+        }
 
         // Trying to deserialize a stream in nanoFramework is problematic.
         // as Stream.Peek() has not been implemented in nanoFramework
         // Therefore, read all input into the static jsonBytes[] and use jsonPos to keep track of where we are when parsing the input
-        private static object Deserialize(string sourceString)
+        // TODO: There is no encoder being used here. Could solve this by wrapping the Stream in a StreamReader. Is this necessary?
+        // There was a discussion in Discord about this: https://discord.com/channels/478725473862549535/481782754674212867/1246886757828526301
+        // TODO: See if I can reproduce the issue and then test the StreamReader option
+        private static JsonToken Deserialize(Stream stream)
         {
-            var jsonBytes = Encoding.UTF8.GetBytes(sourceString);
+            var jsonBytes = new byte[stream.Length];
             var jsonPos = 0;
+
+            stream.Read(jsonBytes, 0, (int)stream.Length);
+
             return Deserialize(ref jsonPos, ref jsonBytes);
         }
 
-        private static object Deserialize(Stream sourceStream)
+        private static JsonToken Deserialize(StreamReader streamReader)
         {
-            // Read the sourcestream into jsonBytes[]
-            var jsonBytes = new byte[sourceStream.Length];
-            sourceStream.Read(jsonBytes, 0, (int)sourceStream.Length);
+            var jsonBytes = new byte[streamReader.BaseStream.Length];
             var jsonPos = 0;
+
+            while (!streamReader.EndOfStream)
+            {
+                jsonBytes[jsonPos++] = (byte)streamReader.Read();
+            }
+
+            jsonPos = 0;
+
             return Deserialize(ref jsonPos, ref jsonBytes);
         }
 
-        // Deserialize() now assumes that the input has been copied into jsonBytes[]
-        // Keep track of position with jsonPos
         private static JsonToken Deserialize(ref int jsonPos, ref byte[] jsonBytes)
         {
-            LexToken token = GetNextToken(ref jsonPos, ref jsonBytes);
+            var token = GetNextToken(ref jsonPos, ref jsonBytes);
 
-            // Deserialize the json input data in jsonBytes[]
             JsonToken result;
 
             switch (token.TType)
@@ -826,22 +570,7 @@ namespace nanoFramework.Json
             return result;
         }
 
-        private static object Deserialize(StreamReader dr)
-        {
-            // Read the DataReader into jsonBytes[]
-            var jsonBytes = new byte[dr.BaseStream.Length];
-            var jsonPos = 0;
-
-            while (!dr.EndOfStream)
-            {
-                jsonBytes[jsonPos++] = (byte)dr.Read();
-            }
-
-            jsonPos = 0;
-
-            return Deserialize(ref jsonPos, ref jsonBytes);
-        }
-
+        // ReSharper disable once RedundantAssignment
         private static JsonObject ParseObject(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
         {
             var result = new JsonObject();
@@ -935,6 +664,7 @@ namespace nanoFramework.Json
             return new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
         }
 
+        // ReSharper disable once RedundantAssignment
         private static JsonToken ParseValue(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
         {
             token = GetNextToken(ref jsonPos, ref jsonBytes);
@@ -1026,10 +756,6 @@ namespace nanoFramework.Json
         }
 
         private static LexToken GetNextToken(ref int jsonPos, ref byte[] jsonBytes)
-        {
-            return GetNextTokenInternal(ref jsonPos, ref jsonBytes);
-        }
-        private static LexToken GetNextTokenInternal(ref int jsonPos, ref byte[] jsonBytes)
         {
             StringBuilder sb = null;
 
@@ -1300,10 +1026,10 @@ namespace nanoFramework.Json
             return new LexToken() { TType = TokenType.End, TValue = null };
         }
 
-        // Legal first characters for numbers
-        private static bool IsNumberIntroChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' && ch <= '9');
+        // Legal chars for 2…nth position of a number
+        private static bool IsNumberChar(char ch) => ch is '-' or '+' or '.' or 'e' or 'E' or >= '0' and <= '9';
 
-        // Legal chars for 2..n'th position of a number
-        private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
+        // Legal first characters for numbers
+        private static bool IsNumberIntroChar(char ch) => ch is '-' or '+' or '.' or >= '0' and <= '9';
     }
 }

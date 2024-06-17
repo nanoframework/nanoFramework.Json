@@ -7,6 +7,7 @@ using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 
+// TODO: Look into moving this into JsonSerializationOptions
 namespace nanoFramework.Json.Configuration
 {
     /// <summary>

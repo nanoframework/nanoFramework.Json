@@ -18,7 +18,8 @@ namespace nanoFramework.Json.Resolvers
         /// </summary>
         /// <param name="memberName">Key from JSON property. Property name we are looking for.</param>
         /// <param name="objectType">Type of object in which <paramref name="memberName"/> should be.</param>
+        /// <param name="options">The <see cref="JsonSerializerOptions"/> to be used.</param>
         /// <returns>Data about member which we want to populate based on passed parameters.</returns>
-        MemberSet Get(string memberName, Type objectType);
+        MemberSet Get(string memberName, Type objectType, JsonSerializerOptions options);
     }
 }
