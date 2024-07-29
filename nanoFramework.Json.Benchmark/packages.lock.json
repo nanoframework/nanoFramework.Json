@@ -4,9 +4,9 @@
     ".NETnanoFramework,Version=v1.0": {
       "nanoFramework.Benchmark": {
         "type": "Direct",
-        "requested": "[1.0.71, 1.0.71]",
-        "resolved": "1.0.71",
-        "contentHash": "EtRfsEQkVQ0nSSIFndosn8V6VkipXhX+WhLlnVey9UmEDVIijfOiihYbcM1WhoTUmofso9wgTevUftfDC/Mb3w=="
+        "requested": "[1.0.72, 1.0.72]",
+        "resolved": "1.0.72",
+        "contentHash": "SPFjexj8VsG9kUKJLHOro5Av+RUdIxeN3vz+kHY/+EbBGtTEn2/t+XlmA2DwaHALkSHNcMCBUXnKyccL0bbpQA=="
       },
       "nanoFramework.CoreLibrary": {
         "type": "Direct",
@@ -16,9 +16,9 @@
       },
       "nanoFramework.Logging": {
         "type": "Direct",
-        "requested": "[1.1.100, 1.1.100]",
-        "resolved": "1.1.100",
-        "contentHash": "tEx1orxtXQLwxtEAp8+dYt25AoftrdeRyhUO6B4zOpHB0GRSeh9xluuWw6Ojxyy62dxZweD3VkJe4U/gA5FvGQ=="
+        "requested": "[1.1.107, 1.1.107]",
+        "resolved": "1.1.107",
+        "contentHash": "xHqtIjx5/ss1dKzk8L0N+m3CTY74f1eywTtWG/XhTEeapHY2DPN7Ma9kazmVCYn4ekMXYfBFTWnLXXMXUjJsPw=="
       },
       "nanoFramework.Runtime.Native": {
         "type": "Direct",
