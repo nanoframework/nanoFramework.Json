@@ -55,5 +55,17 @@ namespace nanoFramework.Json.Benchmark
                 }
             });
         }
+
+        [Benchmark]
+        public void Benchmark_TypeUtils_Comparison()
+        {
+            RunInIteration(() =>
+            {
+                if (!TypeUtils.IsArrayList(_list.GetType()))
+                {
+                    throw new Exception();
+                }
+            });
+        }
     }
 }
