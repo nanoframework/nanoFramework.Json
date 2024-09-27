@@ -29,6 +29,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DeserializationBenchmarks\ReferenceTypesDeserializationBenchmark.cs" />
     <Compile Include="SerializationBenchmarks\ValueTypesSerializationBenchmark.cs" />
+    <Compile Include="TypeBenchmarks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib, Version=1.15.6.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
