@@ -5,7 +5,6 @@
 //
 
 using nanoFramework.Json.Configuration;
-using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.Reflection;
@@ -17,7 +16,7 @@ namespace nanoFramework.Json
     /// </summary>
     public class JsonSerializer
     {
-        JsonSerializer()
+        private JsonSerializer()
         {
         }
 
@@ -35,11 +34,9 @@ namespace nanoFramework.Json
                 return "null";
             }
 
-            Type type = o.GetType();
+            var type = o.GetType();
 
-            if (topObject
-                && !type.IsArray
-                && type.BaseType.FullName == "System.ValueType")
+            if (topObject && !type.IsArray && TypeUtils.IsValueType(type))
             {
                 return $"[{SerializeObject(o, false)}]";
             }
@@ -55,15 +52,13 @@ namespace nanoFramework.Json
                 return o.ToString();
             }
 
-            if (o is IDictionary && !type.IsArray)
+            if (o is IDictionary dictionary && !type.IsArray)
             {
-                IDictionary dictionary = o as IDictionary;
                 return SerializeIDictionary(dictionary);
             }
 
-            if (o is IEnumerable)
+            if (o is IEnumerable enumerable)
             {
-                IEnumerable enumerable = o as IEnumerable;
                 return SerializeIEnumerable(enumerable);
             }
 

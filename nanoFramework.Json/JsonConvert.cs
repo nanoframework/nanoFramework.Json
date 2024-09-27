@@ -5,7 +5,6 @@
 //
 
 using nanoFramework.Json.Configuration;
-using nanoFramework.Json.Converters;
 using System;
 using System.Collections;
 using System.IO;
@@ -61,7 +60,7 @@ namespace nanoFramework.Json
         public static object DeserializeObject(string value, Type type, JsonSerializerOptions options)
         {
             // Short circuit populating the object when target type is string
-            if (type == typeof(string))
+            if (TypeUtils.IsString(type))
             {
                 var converter = ConvertersMapping.GetConverter(type);
                 return converter.ToType(value);
@@ -160,12 +159,11 @@ namespace nanoFramework.Json
                 throw new DeserializationException();
             }
 
-            Type rootElementType = rootType.GetElementType();
+            var rootElementType = rootType.GetElementType();
 
             if (rootToken is JsonObject rootObject)
             {
-                if (rootElementType == null
-                    && rootType.FullName == "System.Collections.Hashtable")
+                if (rootElementType is null && TypeUtils.IsHashTable(rootType))
                 {
                     Hashtable rootInstanceHashtable = new();
 
@@ -194,8 +192,7 @@ namespace nanoFramework.Json
                     return rootInstanceHashtable;
                 }
 
-                if (rootElementType == null
-                    && rootType.FullName == "System.Collections.ArrayList")
+                if (rootElementType is null && TypeUtils.IsArrayList(rootType))
                 {
                     ArrayList rootArrayList = new();
 
@@ -306,7 +303,7 @@ namespace nanoFramework.Json
 
                         // check if property type it's HashTable
                         // whole if can be replaced with memberObject = PopulateObject(memberProperty.Value, memberType, memberPath);??
-                        if (memberResolver.ObjectType.FullName == "System.Collections.Hashtable")
+                        if (TypeUtils.IsHashTable(memberResolver.ObjectType))
                         {
                             Hashtable table = new();
 
@@ -347,7 +344,7 @@ namespace nanoFramework.Json
                         Type memberElementType = memberResolver.ObjectType.GetElementType();
                         bool isArrayList = false;
 
-                        if (memberElementType == null && memberResolver.ObjectType.FullName == "System.Collections.ArrayList")
+                        if (memberElementType is null && TypeUtils.IsArrayList(memberResolver.ObjectType))
                         {
                             memberElementType = memberResolver.ObjectType;
                             isArrayList = true;
@@ -395,19 +392,18 @@ namespace nanoFramework.Json
                         {
                             ArrayList targetArray = new();
 
-                            for (int i = 0; i < memberValueArrayList.Count; i++)
+                            for (var i = 0; i < memberValueArrayList.Count; i++)
                             {
+                                var item = memberValueArrayList[i];
                                 // Test if we have only 1 element and that the element is a Hashtable.
                                 // In this case, we'll make it more efficient and add it as an Hashtable.
-                                if ((memberValueArrayList[i].GetType() == typeof(ArrayList)) &&
-                                    (((ArrayList)memberValueArrayList[i]).Count == 1) &&
-                                    ((ArrayList)memberValueArrayList[i])[0].GetType() == typeof(Hashtable))
+                                if (item is ArrayList { Count: 1 } itemArrayList && itemArrayList[0] is Hashtable elementHashTable)
                                 {
-                                    targetArray.Add(((ArrayList)memberValueArrayList[i])[0]);
+                                    targetArray.Add(elementHashTable);
                                 }
                                 else
                                 {
-                                    targetArray.Add(memberValueArrayList[i]);
+                                    targetArray.Add(item);
                                 }
                             }
 
@@ -444,9 +440,7 @@ namespace nanoFramework.Json
                 if (rootElementType == null)
                 {
                     // check if this is an ArrayList
-                    if (rootType.FullName == "System.Collections.ArrayList"
-                        || rootType.BaseType.FullName == "System.ValueType"
-                        || rootType.FullName == "System.String")
+                    if (TypeUtils.IsArrayList(rootType) || TypeUtils.IsString(rootType) || TypeUtils.IsValueType(rootType))
                     {
                         isArrayList = true;
 
@@ -481,12 +475,9 @@ namespace nanoFramework.Json
                         }
                     }
 
-                    if ((rootType.BaseType.FullName == "System.ValueType"
-                         || rootType.FullName == "System.String")
-                        && rootArrayList.Count == 1)
+                    if ((TypeUtils.IsString(rootType) || TypeUtils.IsValueType(rootType)) && rootArrayList.Count == 1)
                     {
-                        // this is a case of deserialing a array with a single element,
-                        // so just return the element
+                        // This is a case of deserializing an array with a single element, so just return the element
                         return rootArrayList[0];
                     }
 
