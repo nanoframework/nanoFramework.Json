@@ -13,7 +13,7 @@ namespace nanoFramework.Json.Benchmark.Base
 
         public void RunInIteration(Action methodToRun)
         {
-            for (int i = 0; i < IterationCount; i++)
+            for (var i = 0; i < IterationCount; i++)
             {
                 methodToRun();
             }
