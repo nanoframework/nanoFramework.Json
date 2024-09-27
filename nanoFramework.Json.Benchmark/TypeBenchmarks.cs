@@ -27,7 +27,7 @@ namespace nanoFramework.Json.Benchmark
             {
                 if (!ArrayListFullName.Equals(_list.GetType().FullName))
                 {
-                    throw new Exception();
+                    throw new ApplicationException();
                 }
             });
         }
@@ -39,7 +39,7 @@ namespace nanoFramework.Json.Benchmark
             {
                 if (_list.GetType() != typeof(ArrayList))
                 {
-                    throw new Exception();
+                    throw new ApplicationException();
                 }
             });
         }
@@ -51,7 +51,7 @@ namespace nanoFramework.Json.Benchmark
             {
                 if (_list.GetType() != ArrayListType)
                 {
-                    throw new Exception();
+                    throw new ApplicationException();
                 }
             });
         }
@@ -63,7 +63,7 @@ namespace nanoFramework.Json.Benchmark
             {
                 if (!TypeUtils.IsArrayList(_list.GetType()))
                 {
-                    throw new Exception();
+                    throw new ApplicationException();
                 }
             });
         }
