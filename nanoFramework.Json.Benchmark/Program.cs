@@ -3,9 +3,11 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using System;
 using nanoFramework.Benchmark;
-using System.Diagnostics;
 using System.Threading;
+using nanoFramework.Json.Benchmark.DeserializationBenchmarks;
+using nanoFramework.Json.Benchmark.SerializationBenchmarks;
 
 namespace nanoFramework.Json.Benchmark
 {
@@ -13,8 +15,13 @@ namespace nanoFramework.Json.Benchmark
     {
         public static void Main()
         {
-            Debug.WriteLine("Hello from nanoFramework JSON benchmark!");
-            BenchmarkRunner.Run(typeof(IAssemblyHandler).Assembly);
+            Console.WriteLine("********** Starting benchmarks **********");
+            BenchmarkRunner.RunClass(typeof(ReferenceTypesDeserializationBenchmark));
+            BenchmarkRunner.RunClass(typeof(ValueTypesDeserializationBenchmark));
+            BenchmarkRunner.RunClass(typeof(ReferenceTypesSerializationBenchmark));
+            BenchmarkRunner.RunClass(typeof(ValueTypesSerializationBenchmark));
+            BenchmarkRunner.RunClass(typeof(TypeBenchmarks));
+            Console.WriteLine("********** Completed benchmarks **********");
             Thread.Sleep(Timeout.Infinite);
         }
     }
