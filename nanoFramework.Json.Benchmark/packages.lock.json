@@ -4,9 +4,9 @@
     ".NETnanoFramework,Version=v1.0": {
       "nanoFramework.Benchmark": {
         "type": "Direct",
-        "requested": "[1.0.77, 1.0.77]",
-        "resolved": "1.0.77",
-        "contentHash": "uqFQKU0RhuaxSb9ZoaoUkk4hjhTq4+RAXS3jJ/fkG0wGWEJ0m1RDFjKlyfvHJj2rx3/ydfxF18elDLwMMExJAQ=="
+        "requested": "[1.0.78, 1.0.78]",
+        "resolved": "1.0.78",
+        "contentHash": "73Hh26jDPow0A0RV+ViRPGXigLuKL4HvECkywj+naNRcSA2oK9qvvr8bDLeb5pkGoiJ+mZ/i2icZ05oty69BoA=="
       },
       "nanoFramework.CoreLibrary": {
         "type": "Direct",
