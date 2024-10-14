@@ -48,20 +48,50 @@ variables:
   - name: nugetPackageName
     value: 'nanoFramework.Json'
 
-steps:
+parameters:
+- name: appComponents
+  displayName: List of capabilities to run the tests on
+  type: object
+  default:
+    - XIAO_ESP32C3
+    - ESP32_C3_REV3
 
-# step from template @ nf-tools repo
-# all build, update and publish steps
-- template: azure-pipelines-templates/class-lib-build.yml@templates
-  parameters:
-    sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
-    runUnitTests: true
-    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\.runsettings'
+stages:
+- stage: Build
+  displayName: 'Build'
+  jobs:
+  - job: Build
+    displayName: 'Build job'
+    pool:
+      # default is the following VM Image
+      vmImage: 'windows-latest'
+    steps:
 
-# step from template @ nf-tools repo
-# report error
-- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
-  parameters:
-    status: 'failure'
-    webhookUrl: '$(DiscordWebhook)'
-    message: ''
+    # step from template @ nf-tools repo
+    # all build, update and publish steps
+    - template: azure-pipelines-templates/class-lib-build.yml@templates
+      parameters:
+        sonarCloudProject: 'nanoframework_lib-nanoFramework.Json'
+        runUnitTests: true
+        unitTestRunsettings: '$(System.DefaultWorkingDirectory)\.runsettings'
+
+    # step from template @ nf-tools repo
+    # report error
+    - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+      parameters:
+        status: 'failure'
+        webhookUrl: '$(DiscordWebhook)'
+        message: ''
+
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Pipeline Artifact copy
+      inputs:
+        path: '$(System.DefaultWorkingDirectory)'
+        artifactName: 'Artifacts'
+
+- ${{ each appComponents in parameters.appComponents }}:   
+  - template: azure-pipelines-templates/device-test.yml
+    parameters:
+      appComponents: ${{ appComponents }}
+      unitTestRunsettings: 
+        - 'nanoFramework.Json.Test\nano.runsettings,nanoFramework.Json.Test\bin\Debug\nanoFramework.System.Text.dll'
