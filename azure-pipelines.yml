@@ -94,4 +94,4 @@ stages:
     parameters:
       appComponents: ${{ appComponents }}
       unitTestRunsettings: 
-        - 'nanoFramework.Json.Test/nano.runsettings,nanoFramework.Json.Test/bin/Release/nanoFramework.System.Text.dll'
+        - 'nanoFramework.Json.Test/nano.runsettings,nanoFramework.Json.Test/bin/Release/NFUnitTest.dll'
