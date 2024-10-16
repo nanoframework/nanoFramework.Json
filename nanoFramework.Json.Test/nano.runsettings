@@ -11,5 +11,6 @@
    <nanoFrameworkAdapter>
        <Logging>None</Logging>
        <IsRealHardware>False</IsRealHardware>
+       <RealHardwarePort>COM3</RealHardwarePort>
    </nanoFrameworkAdapter>
 </RunSettings>
