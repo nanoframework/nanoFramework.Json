@@ -1,28 +1,10 @@
 # Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 
-trigger:
-  branches:
-    include:
-      - main
-      - develop
-      - release-*
-  paths:
-    exclude:
-      - .github_changelog_generator
-      - .gitignore
-      - CHANGELOG.md
-      - CODE_OF_CONDUCT.md
-      - LICENSE.md
-      - README.md
-      - NuGet.Config
-      - assets/*
-      - config/*
-      - .github/*
-
-# PR always trigger build
-pr:
-  autoCancel: true
+# The Pipeline is going to be called by the GitHub action.
+# Manual trigger is always possible.
+trigger: none
+pr: none
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
@@ -53,8 +35,7 @@ parameters:
   displayName: List of capabilities to run the tests on
   type: object
   default:
-    - XIAO_ESP32C3
-    - ESP32_C3_REV3
+    - none
 
 stages:
 - stage: Build
