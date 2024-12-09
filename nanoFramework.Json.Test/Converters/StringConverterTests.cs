@@ -51,6 +51,7 @@ namespace nanoFramework.Json.Test.Converters
         [DataRow("['Text3', 1]", "['Text3', 1]")] // Array
         [DataRow("{\"Text1\" : \"/Text1/\"}", "{\"Text1\" : \"/Text1/\"}")] // Json
         [DataRow("ä", "ä")]  // Unicode
+        [DataRow("I:\\nano\\rpath\\to", "I:\\nano\\rpath\\to")]  // More complex with combination of special characters and possible new line
         public void StringConverter_ToType_Should_HandleSpecialCharacters(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
