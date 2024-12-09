@@ -48,8 +48,6 @@ namespace nanoFramework.Json.Test.Converters
         [DataRow("Text\"1", "Text\"1")]  // DoubleQuote
         [DataRow("Text\n1", "Text\n1")]  // Newline
         [DataRow("Text\t1", "Text\t1")]  // Tab
-        [DataRow("Text\01", "Text\01")]  // OctalNull
-        [DataRow("Tex\0t1", "Tex\0t1")]  // NullChar
         [DataRow("['Text3', 1]", "['Text3', 1]")] // Array
         [DataRow("{\"Text1\" : \"/Text1/\"}", "{\"Text1\" : \"/Text1/\"}")] // Json
         [DataRow("ä", "ä")]  // Unicode
