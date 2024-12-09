@@ -1088,32 +1088,32 @@ namespace nanoFramework.Json
                         return EndToken(sb);
                     }
 
-                    //TODO: replace with a mapping array? This switch is really incomplete.
-                    switch (ch)
-                    {
-                        case 't':
-                            ch = '\t';
-                            break;
+                    ////TODO: replace with a mapping array? This switch is really incomplete.
+                    //switch (ch)
+                    //{
+                    //    case 't':
+                    //        ch = '\t';
+                    //        break;
 
-                        case 'r':
-                            ch = '\r';
-                            break;
+                    //    case 'r':
+                    //        ch = '\r';
+                    //        break;
 
-                        case 'n':
-                            ch = '\n';
-                            break;
+                    //    case 'n':
+                    //        ch = '\n';
+                    //        break;
 
-                        case 'u':
-                            unicodeEncoded = true;
-                            break;
+                    //    case 'u':
+                    //        unicodeEncoded = true;
+                    //        break;
 
-                        case '"':
-                            ch = '"';
-                            break;
+                    //    case '"':
+                    //        ch = '"';
+                    //        break;
 
-                        default:
-                            throw new DeserializationException();
-                    }
+                    //    default:
+                    //        throw new DeserializationException();
+                    //}
                 }
 
                 if ((sb != null) && ((ch != openQuote) || (escaped)))
