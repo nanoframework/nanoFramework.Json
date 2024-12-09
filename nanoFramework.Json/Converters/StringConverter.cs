@@ -15,6 +15,10 @@ namespace nanoFramework.Json.Converters
         {
             {'\n', 'n'},
             {'\r', 'r'},
+            {'\b', 'b' },
+            {'\f', 'f' },
+            {'\t', 't' },
+            {'\\', '\\' },
             {'\"', '"' }
         };
 
