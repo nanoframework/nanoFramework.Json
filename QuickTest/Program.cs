@@ -16,6 +16,13 @@ namespace QuickTest
             TestObject testObject3 = (TestObject)JsonConvert.DeserializeObject(testJson3, typeof(TestObject));
             Console.WriteLine("testJsonObject3: " + testObject3?.Value);
 
+            string teststring = "I:\\nanoApp\\rNFTestApp2.pe";
+            Console.WriteLine("teststring: " + teststring);
+            string testJson = JsonConvert.SerializeObject(teststring);
+            Console.WriteLine("testJson: " + testJson);
+            string testStringDeserialized = (string)JsonConvert.DeserializeObject(testJson, typeof(string));
+            Console.WriteLine("testJsonObject: " + testStringDeserialized);
+
             Thread.Sleep(Timeout.Infinite);
 
             // Browse our samples repository: https://github.com/nanoframework/samples
