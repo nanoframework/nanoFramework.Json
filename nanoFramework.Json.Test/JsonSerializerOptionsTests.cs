@@ -388,6 +388,34 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void Can_serialize_and_deserialize_object_containing_string_with_multiple_escaped_characters()
+        {
+            var thing = new ThingWithString
+            {
+                Value = "I:\\Nano\\rApp\\app.pe"
+            };
+
+            var serialized = JsonConvert.SerializeObject(thing);
+            var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
+            Assert.AreEqual(thing.Value, deserialized.Value);
+        }
+
+        [TestMethod]
+        public void Can_serialize_and_deserialize_string_with_multiple_escaped_characters()
+        {
+            var testValue = "I:\\Nano\\rApp\\app.pe";
+            Console.WriteLine("Original: " + testValue);
+
+            var serialized = JsonConvert.SerializeObject(testValue);
+            Console.WriteLine("Serialized: " + serialized);
+
+            var deserialized = (string)JsonConvert.DeserializeObject(serialized, typeof(string));
+            Console.WriteLine("Deserialized: " + deserialized);
+
+            Assert.AreEqual(testValue, deserialized);
+        }
+
+        [TestMethod]
         public void Can_serialize_and_deserialize_complex_object()
         {
             OutputHelper.WriteLine("Can_serialize_and_deserialize_complex_object() - Starting test...");

@@ -51,6 +51,7 @@ namespace nanoFramework.Json.Test.Converters
         [DataRow("['Text3', 1]", "['Text3', 1]")] // Array
         [DataRow("{\"Text1\" : \"/Text1/\"}", "{\"Text1\" : \"/Text1/\"}")] // Json
         [DataRow("ä", "ä")]  // Unicode
+        [DataRow("\"I:\\\\nano\\\\rpath\\\\to\"", "I:\\nano\\rpath\\to")]
         public void StringConverter_ToType_Should_HandleSpecialCharacters(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
@@ -68,6 +69,7 @@ namespace nanoFramework.Json.Test.Converters
         [DataRow("Text\n1", "\"Text\\n1\"")]  // Newline
         [DataRow("Text\t1", "\"Text\\t1\"")]  // Tab
         [DataRow("ä", "\"ä\"")]  // Unicode
+        [DataRow("I:\\nano\\rpath\\to", "\"I:\\\\nano\\\\rpath\\\\to\"")]
         public void StringConverter_ToJson_Should_HandleSpecialCharacters(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
