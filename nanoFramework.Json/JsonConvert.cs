@@ -1088,32 +1088,38 @@ namespace nanoFramework.Json
                         return EndToken(sb);
                     }
 
-                    //TODO: replace with a mapping array? This switch is really incomplete.
-                    switch (ch)
+                    if(ch == 'u')
                     {
-                        case 't':
-                            ch = '\t';
-                            break;
-
-                        case 'r':
-                            ch = '\r';
-                            break;
-
-                        case 'n':
-                            ch = '\n';
-                            break;
-
-                        case 'u':
-                            unicodeEncoded = true;
-                            break;
-
-                        case '"':
-                            ch = '"';
-                            break;
-
-                        default:
-                            throw new DeserializationException();
+                        unicodeEncoded = true;
                     }
+
+                    //TODO: replace with a mapping array? This switch is really incomplete.
+                    // Has been moved to StringConverter but unicode part still remains here
+                    //switch (ch)
+                    //{
+                    //    case 't':
+                    //        ch = '\t';
+                    //        break;
+
+                    //    case 'r':
+                    //        ch = '\r';
+                    //        break;
+
+                    //    case 'n':
+                    //        ch = '\n';
+                    //        break;
+
+                    //    case 'u':
+                    //        unicodeEncoded = true;
+                    //        break;
+
+                    //    case '"':
+                    //        ch = '"';
+                    //        break;
+
+                    //    default:
+                    //        throw new DeserializationException();
+                    //}
                 }
 
                 if ((sb != null) && ((ch != openQuote) || (escaped)))

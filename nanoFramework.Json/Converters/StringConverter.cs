@@ -101,8 +101,18 @@ namespace nanoFramework.Json.Converters
                 return value;
             }
 
-            //String by default has escaped \" at beggining and end, just remove them
-            var resultString = sourceString.Substring(1, sourceString.Length - 2);
+            string resultString;
+
+            // String by default has escaped \" at beggining and end, just remove them
+            // if they have already been removed, string has likely already been deserialized,
+            // and if so, then we just return it.
+            if (!sourceString.StartsWith("\"") && !sourceString.EndsWith("\""))
+            {
+                return sourceString;
+            }
+
+            resultString = sourceString.Substring(1, sourceString.Length - 2);
+
             var newString = new StringBuilder();
             //Last character can not be escaped, because it's last one
             for (int i = 0; i < resultString.Length - 1; i++)
