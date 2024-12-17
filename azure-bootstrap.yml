@@ -39,7 +39,7 @@ jobs:
     vmImage: 'ubuntu-latest'  
 
   steps:
-  - template: bootstrap.yml
+  - template: azure-pipelines-templates/bootstrap.yml@templates
     parameters:
       AZURE_DEVOPS_PROJECT: nanoFramework.IoT.TestStream
       AZURE_DEVOPS_PIPELINE_ID: 59
