@@ -39,7 +39,7 @@ jobs:
     vmImage: 'ubuntu-latest'  
 
   steps:
-  - template: azure-pipelines-templates/bootstrap.yml@templates
+  - template: azure-pipelines-templates/device-bootstrap.yml@templates
     parameters:
       AZURE_DEVOPS_PROJECT: nanoFramework.Json
       AZURE_DEVOPS_PIPELINE_ID: 59
