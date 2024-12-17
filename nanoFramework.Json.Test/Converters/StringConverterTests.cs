@@ -11,8 +11,10 @@ namespace nanoFramework.Json.Test.Converters
     public class StringConverterTests
     {
         [TestMethod]
-        [DataRow("\"TestJson\"", "\"TestJson\"")]
+        [DataRow("\"a\"", "a")]
+        [DataRow("\"TestJson\"", "TestJson")]
         [DataRow("TestJson1", "TestJson1")]
+        [DataRow("\"Test / solidus\"", "Test / solidus")]
         public void StringConverter_ToType_ShouldReturnValidData(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();
@@ -31,7 +33,10 @@ namespace nanoFramework.Json.Test.Converters
         }
 
         [TestMethod]
+        [DataRow("a", "\"a\"")]
+        [DataRow("\"TestJson\"", "\"\\\"TestJson\\\"\"")]
         [DataRow("TestJson2", "\"TestJson2\"")]
+        [DataRow("Test / solidus", "\"Test / solidus\"")]
         public void StringConverter_ToJson_Should_ReturnValidData(string value, string expectedValue)
         {
             var converter = new Json.Converters.StringConverter();

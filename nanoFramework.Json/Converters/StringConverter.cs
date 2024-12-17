@@ -96,12 +96,6 @@ namespace nanoFramework.Json.Converters
             }
 
             var sourceString = value.ToString();
-            if (!StringContainsCharactersToEscape(sourceString, true))
-            {
-                return value;
-            }
-
-            string resultString;
 
             // String by default has escaped \" at beggining and end, just remove them
             // if they have already been removed, string has likely already been deserialized,
@@ -110,8 +104,13 @@ namespace nanoFramework.Json.Converters
             {
                 return sourceString;
             }
+            string resultString = sourceString.Substring(1, sourceString.Length - 2);
 
-            resultString = sourceString.Substring(1, sourceString.Length - 2);
+            // No characters to escape so we short circuit the character loop
+            if (!StringContainsCharactersToEscape(sourceString, true))
+            {
+                return resultString;
+            }
 
             var newString = new StringBuilder();
             //Last character can not be escaped, because it's last one
@@ -120,16 +119,24 @@ namespace nanoFramework.Json.Converters
                 var curChar = resultString[i];
                 var nextChar = resultString[i + 1];
 
-                if (curChar == '\\')
+                if (curChar != '\\')
                 {
-                    var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
-                    newString.Append(charToAppend);
-                    i++;
+                    newString.Append(curChar);
                     continue;
                 }
-                newString.Append(curChar);
+
+                var charToAppend = GetEscapableCharKeyBasedOnValue(nextChar);
+                newString.Append(charToAppend);
+                i++;
+
+                // If the end of the string is an escapped character, return the string
+                if (i == resultString.Length - 1)
+                {
+                    return newString.ToString();
+                }
             }
-            //Append last character skkiped by loop
+
+            //Append last character skipped by loop
             newString.Append(resultString[resultString.Length - 1]);
             return newString.ToString();
         }

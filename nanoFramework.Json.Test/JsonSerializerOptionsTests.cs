@@ -375,35 +375,57 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_escaped_string()
+        [DataRow("a")]
+        [DataRow("1")]
+        [DataRow("\t")]
+        [DataRow("Testing / solidus")]
+        [DataRow("Testing  solidus")]
+        [DataRow("Some string with \" that needs escaping")]
+        [DataRow("Quotes in a \"string\".")]
+        [DataRow("Escaped last character \n")]
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash
+        [DataRow("Tab \t in a string \t")]
+        [DataRow("Newline \n in a string \n")]
+        [DataRow("LineFeed \f in a string \f")]
+        [DataRow("CarriageReturn \r in a string \r")]
+        [DataRow("Backspace \b in a string \b")]
+        [DataRow("TestString")]
+        [DataRow("\"TestString\"")]
+        public void Can_serialize_and_deserialize_object_containing_string_with_escaped_characters(string testValue)
         {
             var thing = new ThingWithString
             {
-                Value = "Some string with \" that needs escaping"
+                Value = testValue
             };
 
+            Console.WriteLine("Original: " + testValue);
+
             var serialized = JsonConvert.SerializeObject(thing);
+            Console.WriteLine("Serialized: " + serialized);
+
             var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
+            Console.WriteLine("Deserialized: " + deserialized.Value);
+
             Assert.AreEqual(thing.Value, deserialized.Value);
         }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_object_containing_string_with_multiple_escaped_characters()
+        [DataRow("a")]
+        [DataRow("\t")]
+        [DataRow("Testing / solidus")]
+        [DataRow("Testing  solidus")]
+        [DataRow("Quotes in a \"string\".")]
+        [DataRow("Escaped last character \n")]
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash
+        [DataRow("Tab \t in a string \ta")]
+        [DataRow("Newline \n in a string \na")]
+        [DataRow("LineFeed \f in a string \fa")]
+        [DataRow("CarriageReturn \r in a string \ra")]
+        [DataRow("Backspace \b in a string \ba")]
+        [DataRow("TestString")]
+        [DataRow("\"TestString\"")]
+        public void Can_serialize_and_deserialize_string_with_escaped_characters(string testValue)
         {
-            var thing = new ThingWithString
-            {
-                Value = "I:\\Nano\\rApp\\app.pe"
-            };
-
-            var serialized = JsonConvert.SerializeObject(thing);
-            var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
-            Assert.AreEqual(thing.Value, deserialized.Value);
-        }
-
-        [TestMethod]
-        public void Can_serialize_and_deserialize_string_with_multiple_escaped_characters()
-        {
-            var testValue = "I:\\Nano\\rApp\\app.pe";
             Console.WriteLine("Original: " + testValue);
 
             var serialized = JsonConvert.SerializeObject(testValue);
@@ -1065,8 +1087,8 @@ namespace nanoFramework.Json.Test
 
             string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
 
-            Assert.AreEqual(arg0, "\"I_am_a_string\"", $"arg0 has unexpected value: {arg0}");
-            Assert.AreEqual(arg1, "\"I_am_another_string\"", $"arg1 has unexpected value: {arg1}");
+            Assert.AreEqual(arg0, "I_am_a_string", $"arg0 has unexpected value: {arg0}");
+            Assert.AreEqual(arg1, "I_am_another_string", $"arg1 has unexpected value: {arg1}");
         }
 
         [TestMethod]
