@@ -35,7 +35,6 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'  
 
-
   steps:
   - template: azure-pipelines-templates/device-bootstrap.yml@templates
     parameters:
