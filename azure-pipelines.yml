@@ -1,7 +1,7 @@
 # Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 
-# The Pipeline is going to be called by the GitHub action.
+# The Pipeline is going to be triggered by a call to Azure DevOps REST API
 # Manual trigger is always possible.
 trigger: none
 pr: none

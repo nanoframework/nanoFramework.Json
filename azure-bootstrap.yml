@@ -33,7 +33,7 @@ jobs:
 - job: Trigger
   displayName: Trigger Azure Dev Ops build and test pipeline
   pool:
-    vmImage: 'ubuntu-latest'  
+    vmImage: 'ubuntu-latest'
 
   steps:
   - template: azure-pipelines-templates/device-bootstrap.yml@templates
