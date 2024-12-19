@@ -375,22 +375,40 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        [DataRow("a")]
-        [DataRow("1")]
-        [DataRow("\t")]
-        [DataRow("Testing / solidus")]
-        [DataRow("Testing  solidus")]
-        [DataRow("Some string with \" that needs escaping")]
-        [DataRow("Quotes in a \"string\".")]
-        [DataRow("Escaped last character \n")]
-        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash
-        [DataRow("Tab \t in a string \t")]
-        [DataRow("Newline \n in a string \n")]
-        [DataRow("LineFeed \f in a string \f")]
-        [DataRow("CarriageReturn \r in a string \r")]
-        [DataRow("Backspace \b in a string \b")]
-        [DataRow("TestString")]
-        [DataRow("\"TestString\"")]
+        [DataRow("a")]  // Single character
+        [DataRow("1")]  // Single numeric character
+        [DataRow("\t")]  // Single Tab character
+        [DataRow("Testing / solidus")] // Forward slash in string
+        [DataRow("Testing  solidus")] // Double space in string
+        [DataRow("Some string with \" that needs escaping")] // String containing a quote
+        [DataRow("Quotes in a \"string\".")] // String with escaped quotes
+        [DataRow("Escaped last character \n")] // Newline as the last character
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash in string
+        [DataRow("Tab \t in a string \t")] // Tab character in multiple places
+        [DataRow("Newline \n in a string \n")] // Newline character in multiple places
+        [DataRow("LineFeed \f in a string \f")] // Line feed character in multiple places
+        [DataRow("CarriageReturn \r in a string \r")] // Carriage return character in multiple places
+        [DataRow("Backspace \b in a string \b")] // Backspace character in multiple places
+        [DataRow("TestString")] // Simple string with no special characters
+        [DataRow("\"TestString\"")] // String wrapped in quotes
+        [DataRow("\u0041")] // Unicode character (A)
+        [DataRow("\u2764")] // Unicode character (❤)
+        [DataRow("\x1B")] // Escape character (ASCII 27)
+        [DataRow("\x7F")] // Delete character (ASCII 127)
+        [DataRow("\0")] // Null character
+        [DataRow("")] // Empty string
+        [DataRow("Line 1\nLine 2\nLine 3")] // Multi-line string
+        [DataRow("Curly braces: { }")] // JSON-like curly braces
+        [DataRow("Square brackets: [ ]")] // JSON-like square brackets
+        [DataRow("Colon and comma: : ,")] // Colon and comma
+        [DataRow("Special symbols: @#$%^&*()_+~")] // Special symbols
+        [DataRow("English 中文 Español العربية हिंदी")] // Mixed language text
+        [DataRow("{\"key\": \"value\"}")] // JSON-like string
+        [DataRow("\"[{\"inner\":\"value\"}]\"")] // Serialized JSON-like string
+        [DataRow("{\"name\":\"John\",\"age\":30}")] // Serialized JSON
+        [DataRow("Invalid escape: \\q")] // Invalid escape sequence
+        [DataRow("https://example.com/api?query=escaped%20characters")] // URL
+        [DataRow("Unicode \u2764, Newline \n, Tab \t, Backslash \\")] // Combination of cases
         public void Can_serialize_and_deserialize_object_containing_string_with_escaped_characters(string testValue)
         {
             var thing = new ThingWithString
@@ -410,20 +428,39 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        [DataRow("a")]
-        [DataRow("\t")]
-        [DataRow("Testing / solidus")]
-        [DataRow("Testing  solidus")]
-        [DataRow("Quotes in a \"string\".")]
-        [DataRow("Escaped last character \n")]
-        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash
-        [DataRow("Tab \t in a string \ta")]
-        [DataRow("Newline \n in a string \na")]
-        [DataRow("LineFeed \f in a string \fa")]
-        [DataRow("CarriageReturn \r in a string \ra")]
-        [DataRow("Backspace \b in a string \ba")]
-        [DataRow("TestString")]
-        [DataRow("\"TestString\"")]
+        [DataRow("a")] // Single character
+        [DataRow("\t")] // Tab character
+        [DataRow("Testing / solidus")] // Forward slash
+        [DataRow("Testing  solidus")] // Double space
+        [DataRow("Quotes in a \"string\".")] // String with escaped quotes
+        [DataRow("Escaped last character \n")] // Newline at the end
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash in string
+        [DataRow("Tab \t in a string \ta")] // Tab character in multiple places
+        [DataRow("Newline \n in a string \na")] // Newline character in multiple places
+        [DataRow("LineFeed \f in a string \fa")] // Line feed character
+        [DataRow("CarriageReturn \r in a string \ra")] // Carriage return character
+        [DataRow("Backspace \b in a string \ba")] // Backspace character
+        [DataRow("TestString")] // Simple string
+        [DataRow("\"TestString\"")] // String wrapped in quotes
+        [DataRow("\u0041")] // Unicode character (A)
+        [DataRow("\u2764")] // Unicode character (❤)
+        [DataRow("\x1B")] // Escape character (ASCII 27)
+        [DataRow("\x7F")] // Delete character (ASCII 127)
+        [DataRow("\0")] // Null character
+        [DataRow("")] // Empty string
+        [DataRow("Line 1\nLine 2\nLine 3")] // Multi-line string
+        [DataRow("Curly braces: { }")] // JSON-like curly braces
+        [DataRow("Square brackets: [ ]")] // JSON-like square brackets
+        [DataRow("Colon and comma: : ,")] // Colon and comma
+        [DataRow("Special symbols: @#$%^&*()_+~")] // Special symbols
+        [DataRow("English 中文 Español العربية हिंदी")] // Mixed language text
+        [DataRow("{\"key\": \"value\"}")] // JSON-like string
+        [DataRow("\"[{\"inner\":\"value\"}]\"")] // Serialized JSON-like string
+        [DataRow("{\"name\":\"John\",\"age\":30}")] // Serialized JSON
+        [DataRow("Invalid escape: \\q")] // Invalid escape sequence
+        [DataRow("https://example.com/api?query=escaped%20characters")] // URL
+        [DataRow("Unicode \u2764, Newline \n, Tab \t, Backslash \\")] // Combination of cases
+        [DataRow("\"\\\"TestJson\\\"\"")] // Double escaped string
         public void Can_serialize_and_deserialize_string_with_escaped_characters(string testValue)
         {
             Console.WriteLine("Original: " + testValue);
