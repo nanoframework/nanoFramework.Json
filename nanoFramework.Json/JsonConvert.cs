@@ -1251,6 +1251,14 @@ namespace nanoFramework.Json
 
                                 var stringValue = sb.ToString();
 
+                                // This adds an extra set of quotes since an extra set is removed during de-serialization
+                                if (ch == '"' && stringValue.StartsWith("\""))
+                                {
+                                    sb.Insert(0, "\"", 1);
+                                    sb.Append("\"");
+                                    stringValue = sb.ToString();
+                                }
+
                                 if (DateTimeExtensions.ConvertFromString(stringValue, out _))
                                 {
                                     return new LexToken() { TType = TokenType.Date, TValue = stringValue };
