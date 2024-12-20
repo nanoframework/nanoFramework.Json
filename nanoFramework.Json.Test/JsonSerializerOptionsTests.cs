@@ -375,16 +375,103 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
-        public void Can_serialize_and_deserialize_escaped_string()
+        [DataRow("a")]  // Single character
+        [DataRow("1")]  // Single numeric character
+        [DataRow("\t")]  // Single Tab character
+        [DataRow("Testing / solidus")] // Forward slash in string
+        [DataRow("Testing  solidus")] // Double space in string
+        [DataRow("Some string with \" that needs escaping")] // String containing a quote
+        [DataRow("Quotes in a \"string\".")] // String with escaped quotes
+        [DataRow("Escaped last character \n")] // Newline as the last character
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash in string
+        [DataRow("Tab \t in a string \t")] // Tab character in multiple places
+        [DataRow("Newline \n in a string \n")] // Newline character in multiple places
+        [DataRow("LineFeed \f in a string \f")] // Line feed character in multiple places
+        [DataRow("CarriageReturn \r in a string \r")] // Carriage return character in multiple places
+        [DataRow("Backspace \b in a string \b")] // Backspace character in multiple places
+        [DataRow("TestString")] // Simple string with no special characters
+        [DataRow("\"TestString\"")] // String wrapped in quotes
+        [DataRow("\u0041")] // Unicode character (A)
+        [DataRow("\u2764")] // Unicode character (❤)
+        [DataRow("\x1B")] // Escape character (ASCII 27)
+        [DataRow("\x7F")] // Delete character (ASCII 127)
+        [DataRow("\0")] // Null character
+        [DataRow("")] // Empty string
+        [DataRow("Line 1\nLine 2\nLine 3")] // Multi-line string
+        [DataRow("Curly braces: { }")] // JSON-like curly braces
+        [DataRow("Square brackets: [ ]")] // JSON-like square brackets
+        [DataRow("Colon and comma: : ,")] // Colon and comma
+        [DataRow("Special symbols: @#$%^&*()_+~")] // Special symbols
+        [DataRow("English 中文 Español العربية हिंदी")] // Mixed language text
+        [DataRow("{\"key\": \"value\"}")] // JSON-like string
+        [DataRow("\"[{\"inner\":\"value\"}]\"")] // Serialized JSON-like string
+        [DataRow("{\"name\":\"John\",\"age\":30}")] // Serialized JSON
+        [DataRow("Invalid escape: \\q")] // Invalid escape sequence
+        [DataRow("https://example.com/api?query=escaped%20characters")] // URL
+        [DataRow("Unicode \u2764, Newline \n, Tab \t, Backslash \\")] // Combination of cases
+        public void Can_serialize_and_deserialize_object_containing_string_with_escaped_characters(string testValue)
         {
             var thing = new ThingWithString
             {
-                Value = "Some string with \" that needs escaping"
+                Value = testValue
             };
 
+            Console.WriteLine("Original: " + testValue);
+
             var serialized = JsonConvert.SerializeObject(thing);
+            Console.WriteLine("Serialized: " + serialized);
+
             var deserialized = (ThingWithString)JsonConvert.DeserializeObject(serialized, typeof(ThingWithString));
+            Console.WriteLine("Deserialized: " + deserialized.Value);
+
             Assert.AreEqual(thing.Value, deserialized.Value);
+        }
+
+        [TestMethod]
+        [DataRow("a")] // Single character
+        [DataRow("\t")] // Tab character
+        [DataRow("Testing / solidus")] // Forward slash
+        [DataRow("Testing  solidus")] // Double space
+        [DataRow("Quotes in a \"string\".")] // String with escaped quotes
+        [DataRow("Escaped last character \n")] // Newline at the end
+        [DataRow("I:\\Nano\\rApp\\app.pe")] // Backslash in string
+        [DataRow("Tab \t in a string \ta")] // Tab character in multiple places
+        [DataRow("Newline \n in a string \na")] // Newline character in multiple places
+        [DataRow("LineFeed \f in a string \fa")] // Line feed character
+        [DataRow("CarriageReturn \r in a string \ra")] // Carriage return character
+        [DataRow("Backspace \b in a string \ba")] // Backspace character
+        [DataRow("TestString")] // Simple string
+        [DataRow("\"TestString\"")] // String wrapped in quotes
+        [DataRow("\u0041")] // Unicode character (A)
+        [DataRow("\u2764")] // Unicode character (❤)
+        [DataRow("\x1B")] // Escape character (ASCII 27)
+        [DataRow("\x7F")] // Delete character (ASCII 127)
+        [DataRow("\0")] // Null character
+        [DataRow("")] // Empty string
+        [DataRow("Line 1\nLine 2\nLine 3")] // Multi-line string
+        [DataRow("Curly braces: { }")] // JSON-like curly braces
+        [DataRow("Square brackets: [ ]")] // JSON-like square brackets
+        [DataRow("Colon and comma: : ,")] // Colon and comma
+        [DataRow("Special symbols: @#$%^&*()_+~")] // Special symbols
+        [DataRow("English 中文 Español العربية हिंदी")] // Mixed language text
+        [DataRow("{\"key\": \"value\"}")] // JSON-like string
+        [DataRow("\"[{\"inner\":\"value\"}]\"")] // Serialized JSON-like string
+        [DataRow("{\"name\":\"John\",\"age\":30}")] // Serialized JSON
+        [DataRow("Invalid escape: \\q")] // Invalid escape sequence
+        [DataRow("https://example.com/api?query=escaped%20characters")] // URL
+        [DataRow("Unicode \u2764, Newline \n, Tab \t, Backslash \\")] // Combination of cases
+        [DataRow("\"\\\"TestJson\\\"\"")] // Double escaped string
+        public void Can_serialize_and_deserialize_string_with_escaped_characters(string testValue)
+        {
+            Console.WriteLine("Original: " + testValue);
+
+            var serialized = JsonConvert.SerializeObject(testValue);
+            Console.WriteLine("Serialized: " + serialized);
+
+            var deserialized = (string)JsonConvert.DeserializeObject(serialized, typeof(string));
+            Console.WriteLine("Deserialized: " + deserialized);
+
+            Assert.AreEqual(testValue, deserialized);
         }
 
         [TestMethod]
@@ -1037,8 +1124,8 @@ namespace nanoFramework.Json.Test
 
             string arg1 = (string)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(dserResult.arguments[1]), typeof(string));
 
-            Assert.AreEqual(arg0, "\"I_am_a_string\"", $"arg0 has unexpected value: {arg0}");
-            Assert.AreEqual(arg1, "\"I_am_another_string\"", $"arg1 has unexpected value: {arg1}");
+            Assert.AreEqual(arg0, "I_am_a_string", $"arg0 has unexpected value: {arg0}");
+            Assert.AreEqual(arg1, "I_am_another_string", $"arg1 has unexpected value: {arg1}");
         }
 
         [TestMethod]
