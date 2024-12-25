@@ -1103,6 +1103,18 @@ namespace nanoFramework.Json
                             ch = '\n';
                             break;
 
+                        case 'b':
+                            ch = '\b';
+                            break;
+
+                        case 'f':
+                            ch = '\f';
+                            break;
+
+                        case '\\':
+                            ch = '\\';
+                            break;
+
                         case 'u':
                             unicodeEncoded = true;
                             break;
@@ -1238,6 +1250,14 @@ namespace nanoFramework.Json
                                 // The ch must match openQuote, or otherwise we should have eaten it above as string content
 
                                 var stringValue = sb.ToString();
+
+                                // This adds an extra set of quotes since an extra set is removed during de-serialization
+                                if (ch == '"' && stringValue.StartsWith("\""))
+                                {
+                                    sb.Insert(0, "\"", 1);
+                                    sb.Append("\"");
+                                    stringValue = sb.ToString();
+                                }
 
                                 if (DateTimeExtensions.ConvertFromString(stringValue, out _))
                                 {
