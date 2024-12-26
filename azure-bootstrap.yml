@@ -1,0 +1,42 @@
+# Copyright (c) .NET Foundation and Contributors
+# See LICENSE file in the project root for full license information.
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - release-*
+  paths:
+    exclude:
+      - .gitignore
+      - CHANGELOG.md
+      - LICENSE.md
+      - README.md
+      - NuGet.Config
+      - assets/*
+      - .github/*
+
+# PR always trigger build
+pr:
+  autoCancel: true
+
+# add nf-tools repo to resources (for Azure Pipelines templates)
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: nanoframework/nf-tools
+      endpoint: nanoframework
+
+jobs:
+- job: Trigger
+  displayName: Trigger Azure Dev Ops build and test pipeline
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - template: azure-pipelines-templates/device-bootstrap.yml@templates
+    parameters:
+      AZURE_DEVOPS_PROJECT: nanoFramework.Json
+      AZURE_DEVOPS_PIPELINE_ID: 59
