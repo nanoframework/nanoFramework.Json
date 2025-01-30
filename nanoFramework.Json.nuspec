@@ -18,8 +18,8 @@
     <description>This package includes nanoFramework.Json, a helper class library to deal with json serialization/deserialization in .NET nanoFramework C# projects.</description>
     <tags>nanoFramework C# csharp netmf netnf json</tags>
     <dependencies>
-      <dependency id="nanoFramework.CoreLibrary" version="1.15.5" />
-      <dependency id="nanoFramework.System.Collections" version="1.5.45" />
+      <dependency id="nanoFramework.CoreLibrary" version="1.16.1" />
+      <dependency id="nanoFramework.System.Collections" version="1.5.56" />
       <dependency id="nanoFramework.System.IO.Streams" version="1.1.77" />
     </dependencies>
   </metadata>
