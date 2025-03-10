@@ -47,8 +47,8 @@
     <Reference Include="nanoFramework.Benchmark, Version=1.0.104.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Benchmark.1.0.104\lib\nanoFramework.Benchmark.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.Logging, Version=1.1.147.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Logging.1.1.147\lib\nanoFramework.Logging.dll</HintPath>
+    <Reference Include="nanoFramework.Logging, Version=1.1.148.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Logging.1.1.148\lib\nanoFramework.Logging.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native, Version=1.7.10.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Runtime.Native.1.7.10\lib\nanoFramework.Runtime.Native.dll</HintPath>
@@ -62,8 +62,8 @@
     <Reference Include="System.Diagnostics.Stopwatch, Version=1.2.0.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.System.Diagnostics.Stopwatch.1.2.815\lib\System.Diagnostics.Stopwatch.dll</HintPath>
     </Reference>
-    <Reference Include="System.IO.Streams, Version=1.1.89.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.89\lib\System.IO.Streams.dll</HintPath>
+    <Reference Include="System.IO.Streams, Version=1.1.91.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.System.IO.Streams.1.1.91\lib\System.IO.Streams.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
