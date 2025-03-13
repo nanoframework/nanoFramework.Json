@@ -44,11 +44,11 @@
     <Reference Include="mscorlib, Version=1.17.7.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.CoreLibrary.1.17.7\lib\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.Benchmark, Version=1.0.104.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Benchmark.1.0.104\lib\nanoFramework.Benchmark.dll</HintPath>
+    <Reference Include="nanoFramework.Benchmark, Version=1.0.105.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Benchmark.1.0.105\lib\nanoFramework.Benchmark.dll</HintPath>
     </Reference>
-    <Reference Include="nanoFramework.Logging, Version=1.1.150.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
-      <HintPath>..\packages\nanoFramework.Logging.1.1.150\lib\nanoFramework.Logging.dll</HintPath>
+    <Reference Include="nanoFramework.Logging, Version=1.1.151.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
+      <HintPath>..\packages\nanoFramework.Logging.1.1.151\lib\nanoFramework.Logging.dll</HintPath>
     </Reference>
     <Reference Include="nanoFramework.Runtime.Native, Version=1.7.10.0, Culture=neutral, PublicKeyToken=c07d481e9758c731">
       <HintPath>..\packages\nanoFramework.Runtime.Native.1.7.10\lib\nanoFramework.Runtime.Native.dll</HintPath>
