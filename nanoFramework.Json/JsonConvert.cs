@@ -974,37 +974,28 @@ namespace nanoFramework.Json
                     return new JsonValue(double.Parse(token.TValue));
                 }
 
-                // int.MaxValue:    2,147,483,647
-                // int.MinValue:   -2,147,483,648
-                // uint.MaxValue:   4,294,967,295
-                // long.MaxValue:   9,223,372,036,854,775,807
-                // long.MinValue:  -9,223,372,036,854,775,808
-                // If we are sure, don't go to the try catch
-                if (token.TValue.Length < 9)
+                // trying parse int value from lowest possible to highest
+                if(int.TryParse(token.TValue, out int _int32Value))
                 {
-                    return new JsonValue(int.Parse(token.TValue));
+                    return new JsonValue(_int32Value);
+                }
+    
+                if(uint.TryParse(token.TValue, out uint _uint32Value))
+                {
+                    return new JsonValue(_uint32Value);
                 }
 
-                if ((token.TValue.Length >= 12) && (token.TValue.Length < 20))
+                if (long.TryParse(token.TValue, out long _int64Value))
                 {
-                    return new JsonValue(long.Parse(token.TValue));
+                    return new JsonValue(_int64Value);
                 }
 
-                try
+                if (ulong.TryParse(token.TValue, out ulong _uint64Value))
                 {
-                    return new JsonValue(int.Parse(token.TValue));
+                    return new JsonValue(_uint64Value);
                 }
-                catch
-                {
-                    try
-                    {
-                        return new JsonValue(long.Parse(token.TValue));
-                    }
-                    catch
-                    {
-                        return new JsonValue(ulong.Parse(token.TValue));
-                    }
-                }
+                // if execution goes beyond this point - there were too many digits
+                throw new DeserializationException();
             }
 
             if (token.TType == TokenType.True)
