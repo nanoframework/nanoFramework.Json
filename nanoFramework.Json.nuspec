@@ -20,7 +20,7 @@
     <dependencies>
       <dependency id="nanoFramework.CoreLibrary" version="1.17.11" />
       <dependency id="nanoFramework.System.Collections" version="1.5.67" />
-      <dependency id="nanoFramework.System.IO.Streams" version="1.1.94" />
+      <dependency id="nanoFramework.System.IO.Streams" version="1.1.96" />
     </dependencies>
   </metadata>
   <files>
