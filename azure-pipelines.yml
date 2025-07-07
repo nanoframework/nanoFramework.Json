@@ -72,8 +72,8 @@ stages:
 
 - ${{ each appComponents in parameters.appComponents }}:
   - ${{ if ne(appComponents, 'none') }}:
-    - template: test.yml
+    - template: azure-pipelines-templates/device-test.yml@templates
       parameters:
         appComponents: ${{ appComponents }}
         unitTestRunsettings: 
-          - 'UnitTestStream/nano.runsettings,UnitTestStream/bin/Release/NFUnitTest.dll'
+          - 'nanoFramework.Json.Test/nano.runsettings,nanoFramework.Json.Test/bin/Release/NFUnitTest.dll'
