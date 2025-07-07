@@ -55,6 +55,11 @@ namespace nanoFramework.Json
                 time = result;  // localtime
             }
 
+            if (time.Length < 15)
+            {
+                return DateTime.MaxValue;
+            }
+
             // We now have the time string to parse, and we'll adjust
             // to UTC or timezone after parsing
             string year = time.Substring(0, 4);
@@ -65,43 +70,56 @@ namespace nanoFramework.Json
             string second = time.Substring(13, 2);
 
             // Check if any of the date time parts is non-numeric
-            if (!IsNumeric(year))
+            if (!int.TryParse(year, out int intYear) ||
+                intYear < DateTime.MinValue.Year ||
+                intYear > DateTime.MaxValue.Year)
             {
                 return DateTime.MaxValue;
             }
-            else if (!IsNumeric(month))
+            if (!int.TryParse(month, out int intMonth) ||
+                intMonth < DateTime.MinValue.Month ||
+                intMonth > DateTime.MaxValue.Month)
             {
                 return DateTime.MaxValue;
             }
-            else if (!IsNumeric(day))
+            if (!int.TryParse(day, out int intDay) ||
+                intDay < DateTime.MinValue.Day ||
+                intDay > DateTime.MaxValue.Day ||
+                intDay > DateTime.DaysInMonth(intYear, intMonth))
             {
                 return DateTime.MaxValue;
             }
-            else if (!IsNumeric(hour))
+            if (!int.TryParse(hour, out int intHour) ||
+                intHour < DateTime.MinValue.Hour ||
+                intHour > DateTime.MaxValue.Hour)
             {
                 return DateTime.MaxValue;
             }
-            else if (!IsNumeric(minute))
+            if (!int.TryParse(minute, out int intMinute) ||
+                intMinute < DateTime.MinValue.Minute ||
+                intMinute > DateTime.MaxValue.Minute)
             {
                 return DateTime.MaxValue;
             }
-            else if (!IsNumeric(second))
+            if (!int.TryParse(second, out int intSecond) ||
+                intSecond < DateTime.MinValue.Second ||
+                intSecond > DateTime.MaxValue.Second)
             {
                 return DateTime.MaxValue;
             }
 
             DateTime dt = new(
-                Convert.ToInt32(year),
-                Convert.ToInt32(month),
-                Convert.ToInt32(day),
-                Convert.ToInt32(hour),
-                Convert.ToInt32(minute),
-                Convert.ToInt32(second));
+                intYear,
+                intMonth,
+                intDay,
+                intHour,
+                intMinute,
+                intSecond);
 
             if (utc)
             {
                 // Convert the Kind to DateTimeKind.Utc
-                dt = new DateTime(0, DateTimeKind.Utc).AddTicks(dt.Ticks);
+                dt = new DateTime(dt.Ticks, DateTimeKind.Utc);
             }
             else if (tzid)
             {
