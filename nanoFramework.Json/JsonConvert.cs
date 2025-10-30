@@ -33,7 +33,9 @@ namespace nanoFramework.Json
         /// <summary>
         /// Convert an object to a JSON string.
         /// </summary>
-        /// <param name="oSource">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+        /// <param name="oSource">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32,
+        /// Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.
+        /// </param>
         /// <returns>The JSON object as a string or null when the value type is not supported.</returns>
         /// <remarks>For objects, only public properties with getters are converted.</remarks>
         public static string SerializeObject(object oSource)
@@ -1088,7 +1090,7 @@ namespace nanoFramework.Json
                         return EndToken(sb);
                     }
 
-                    //TODO: replace with a mapping array? This switch is really incomplete.
+                    // handle escaped characters
                     switch (ch)
                     {
                         case 't':
@@ -1115,15 +1117,21 @@ namespace nanoFramework.Json
                             ch = '\\';
                             break;
 
-                        case 'u':
-                            unicodeEncoded = true;
-                            break;
-
                         case '"':
                             ch = '"';
                             break;
 
+                        case '\'':
+                            ch = '\'';
+                            break;
+
+                        case 'u':
+                            // unicode escape \uXXXX - we'll handle below
+                            unicodeEncoded = true;
+                            break;
+
                         default:
+                            // unknown escape sequence
                             throw new DeserializationException();
                     }
                 }
@@ -1132,56 +1140,32 @@ namespace nanoFramework.Json
                 {
                     if (unicodeEncoded)
                     {
-                        int numberCounter = 0;
-
-                        // next 4 chars have to be numeric
-                        StringBuilder encodedValue = new();
-
-                        // advance position to next char
-                        jsonPos++;
-                        ch = (char)jsonBytes[jsonPos];
-
-                        for (int i = 0; i < 4; i++)
+                        // We must decode exactly 4 hex digits following the '\u'
+                        // Ensure there are at least 4 bytes remaining
+                        if (jsonPos + 4 > jsonBytes.Length)
                         {
-                            if (IsNumberChar(ch))
-                            {
-                                numberCounter++;
-
-                                encodedValue.Append(ch);
-
-                                ch = (char)jsonBytes[jsonPos];
-
-                                if (IsNumberChar(ch))
-                                {
-                                    // We're still working on the number - advance jsonPos
-                                    jsonPos++;
-                                }
-                            }
-                        }
-
-                        if (numberCounter == 4)
-                        {
-                            // we're good with the encoded data
-                            // try parse number as an UTF-8 char
-                            try
-                            {
-                                // NOTE: the encoded value has hexadecimal format
-                                int unicodeChar = Convert.ToInt16(encodedValue.ToString(), 16);
-
-                                _ = sb.Append((char)unicodeChar);
-                            }
-                            catch
-                            {
-                                // couldn't parse this number as a valid Unicode value
-                                throw new DeserializationException();
-                            }
-                        }
-                        else
-                        {
-                            // anything else, we can't parse it properly
-                            // throw exception
                             throw new DeserializationException();
                         }
+
+                        // Read 4 ASCII hex chars (they should be ASCII hex digits)
+                        int val = 0;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            char hc = (char)jsonBytes[jsonPos++];
+                            int digit;
+                            if (hc >= '0' && hc <= '9') digit = hc - '0';
+                            else if (hc >= 'a' && hc <= 'f') digit = 10 + (hc - 'a');
+                            else if (hc >= 'A' && hc <= 'F') digit = 10 + (hc - 'A');
+                            else
+                            {
+                                throw new DeserializationException();
+                            }
+
+                            val = (val << 4) + digit;
+                        }
+
+                        // Append the decoded unicode character
+                        sb.Append((char)val);
                     }
                     else
                     {
