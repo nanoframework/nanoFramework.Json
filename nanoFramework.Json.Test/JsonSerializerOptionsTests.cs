@@ -120,6 +120,32 @@ namespace nanoFramework.Json.Test
         }
 
         [TestMethod]
+        public void Can_deserialize_string_starting_with_unicode_escape()
+        {
+
+            OutputHelper.WriteLine("Starting test...");
+
+            Console.WriteLine($"{TimeSpan.FromHours(1).TotalMilliseconds}");
+
+            JsonTestCompany test = new JsonTestCompany
+            {
+                CompanyID = 10,
+                CompanyName = "5 Guys"
+            };
+
+            var jsonString = "{\u0022CompanyID\u0022:10,\u0022CompanyName\u0022:\u00225 Guys\u0022}";
+
+
+            JsonTestCompany deserializedResult = (JsonTestCompany)JsonConvert.DeserializeObject(jsonString, typeof(JsonTestCompany));
+
+            Assert.NotNull(deserializedResult);
+            Assert.Equal("5 Guys", deserializedResult.CompanyName);
+            Assert.Equal(10, deserializedResult.CompanyID);
+
+            OutputHelper.WriteLine("Finished test...");
+        }
+
+        [TestMethod]
         public void Can_serialize_and_deserialize_arrays_of_class_objects_when_array_items_may_be_null()
         {
             OutputHelper.WriteLine("Starting test...");
