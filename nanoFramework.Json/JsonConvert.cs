@@ -836,7 +836,7 @@ namespace nanoFramework.Json
 
         private static JsonToken Deserialize(StreamReader dr)
         {
-            return Deserialize(new ByteJsonInput(Encoding.UTF8.GetBytes(dr.ReadToEnd())));
+            return Deserialize(new StreamJsonInput(dr.BaseStream));
         }
 
         private static JsonObject ParseObject(IJsonInput input, ref LexToken token)
