@@ -51,6 +51,7 @@
     <Compile Include="Configuration\JsonCustomTypeTests.cs" />
     <Compile Include="DateTimeExtensionsTests.cs" />
     <Compile Include="JsonDeserializationArraysTests.cs" />
+    <Compile Include="JsonDeserializeStreamTests.cs" />
     <Compile Include="JsonSettingsTests.cs" />
     <Compile Include="JsonThreadSafeTests.cs" />
     <Compile Include="JsonSerializerOptionsTests.cs" />

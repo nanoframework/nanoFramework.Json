@@ -52,6 +52,9 @@
     <Compile Include="Converters\UIntConverter.cs" />
     <Compile Include="Converters\ULongConverter.cs" />
     <Compile Include="Converters\UShortConverter.cs" />
+    <Compile Include="Input\ByteJsonInput.cs" />
+    <Compile Include="Input\IJsonInput.cs" />
+    <Compile Include="Input\StreamJsonInput.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="JsonSerializerDefaults.cs" />
     <Compile Include="JsonSerializerOptions.cs" />
