@@ -42,6 +42,12 @@ namespace nanoFramework.Json.Input
             }
 
             int charLength = GetUtf8CharLength(jsonBytes[jsonPos]);
+
+            if (jsonPos + charLength > jsonBytes.Length)
+            {
+                return EndOfInput;
+            }
+
             char ch = charLength == 1
                 ? (char)jsonBytes[jsonPos]
                 : Encoding.UTF8.GetChars(jsonBytes, jsonPos, charLength)[0];
