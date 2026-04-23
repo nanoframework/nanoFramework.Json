@@ -1120,11 +1120,7 @@ namespace nanoFramework.Json
                             ushort unicodeChar = Convert.ToUInt16(encodedValue.ToString(), 16);
                             _ = sb.Append((char)unicodeChar);
                         }
-                        catch (FormatException)
-                        {
-                            throw new DeserializationException();
-                        }
-                        catch (OverflowException)
+                        catch
                         {
                             throw new DeserializationException();
                         }
