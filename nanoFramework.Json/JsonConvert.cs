@@ -10,6 +10,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using nanoFramework.Json.Input;
 
 namespace nanoFramework.Json
 {
@@ -762,43 +763,34 @@ namespace nanoFramework.Json
             return result;
         }
 
+        private const char EndOfInput = (char)0xffff;
 
-        // Trying to deserialize a stream in nanoFramework is problematic.
-        // as Stream.Peek() has not been implemented in nanoFramework
-        // Therefore, read all input into the static jsonBytes[] and use jsonPos to keep track of where we are when parsing the input
         private static JsonToken Deserialize(string sourceString)
         {
             var jsonBytes = Encoding.UTF8.GetBytes(sourceString);
-            var jsonPos = 0;
-            return Deserialize(ref jsonPos, ref jsonBytes);
+            IJsonInput input = new ByteJsonInput(jsonBytes);
+            return Deserialize(input);
         }
 
         private static JsonToken Deserialize(Stream sourceStream)
         {
-            // Read the sourcestream into jsonBytes[]
-            var jsonBytes = new byte[sourceStream.Length];
-            sourceStream.Read(jsonBytes, 0, (int)sourceStream.Length);
-            var jsonPos = 0;
-            return Deserialize(ref jsonPos, ref jsonBytes);
+            return Deserialize(new StreamJsonInput(sourceStream));
         }
 
-        // Deserialize() now assumes that the input has been copied into jsonBytes[]
-        // Keep track of position with jsonPos
-        private static JsonToken Deserialize(ref int jsonPos, ref byte[] jsonBytes)
+        private static JsonToken Deserialize(IJsonInput input)
         {
-            LexToken token = GetNextToken(ref jsonPos, ref jsonBytes);
+            LexToken token = GetNextToken(input);
 
-            // Deserialize the json input data in jsonBytes[]
             JsonToken result;
 
             switch (token.TType)
             {
                 case TokenType.LBrace:
-                    result = ParseObject(ref jsonPos, ref jsonBytes, ref token);
+                    result = ParseObject(input, ref token);
 
                     if (token.TType == TokenType.RBrace)
                     {
-                        token = GetNextToken(ref jsonPos, ref jsonBytes);
+                        token = GetNextToken(input);
                     }
                     else if (token.TType != TokenType.End && token.TType != TokenType.Error)
                     {
@@ -808,11 +800,11 @@ namespace nanoFramework.Json
                     break;
 
                 case TokenType.LArray:
-                    result = ParseArray(ref jsonPos, ref jsonBytes, ref token);
+                    result = ParseArray(input, ref token);
 
                     if (token.TType == TokenType.RArray)
                     {
-                        token = GetNextToken(ref jsonPos, ref jsonBytes);
+                        token = GetNextToken(input);
                     }
                     else if (token.TType != TokenType.End && token.TType != TokenType.Error)
                     {
@@ -844,25 +836,14 @@ namespace nanoFramework.Json
 
         private static JsonToken Deserialize(StreamReader dr)
         {
-            // Read the DataReader into jsonBytes[]
-            var jsonBytes = new byte[dr.BaseStream.Length];
-            var jsonPos = 0;
-
-            while (!dr.EndOfStream)
-            {
-                jsonBytes[jsonPos++] = (byte)dr.Read();
-            }
-
-            jsonPos = 0;
-
-            return Deserialize(ref jsonPos, ref jsonBytes);
+            return Deserialize(new StreamReaderJsonInput(dr));
         }
 
-        private static JsonObject ParseObject(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
+        private static JsonObject ParseObject(IJsonInput input, ref LexToken token)
         {
             var result = new JsonObject();
 
-            token = GetNextToken(ref jsonPos, ref jsonBytes);
+            token = GetNextToken(input);
 
             while (token.TType is not TokenType.End and not TokenType.Error and not TokenType.RBrace)
             {
@@ -875,7 +856,7 @@ namespace nanoFramework.Json
 
                 var propName = token.TValue;
                 // Look for the :
-                token = GetNextToken(ref jsonPos, ref jsonBytes);
+                token = GetNextToken(input);
 
                 if (token.TType != TokenType.Colon)
                 {
@@ -884,15 +865,15 @@ namespace nanoFramework.Json
                 }
 
                 // Get the value from the name:value pair
-                var value = ParseValue(ref jsonPos, ref jsonBytes, ref token);
+                var value = ParseValue(input, ref token);
                 result.Add(propName, value);
 
                 // Look for additional name:value pairs (i.e. separated by a comma)
-                token = GetNextToken(ref jsonPos, ref jsonBytes);
+                token = GetNextToken(input);
 
                 if (token.TType == TokenType.Comma)
                 {
-                    token = GetNextToken(ref jsonPos, ref jsonBytes);
+                    token = GetNextToken(input);
                 }
 
             }
@@ -912,13 +893,13 @@ namespace nanoFramework.Json
             return result;
         }
 
-        private static JsonArray ParseArray(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
+        private static JsonArray ParseArray(IJsonInput input, ref LexToken token)
         {
             ArrayList list = new();
 
             while (token.TType is not TokenType.End and not TokenType.Error and not TokenType.RArray)
             {
-                var value = ParseValue(ref jsonPos, ref jsonBytes, ref token);
+                var value = ParseValue(input, ref token);
 
                 if (value == null)
                 {
@@ -927,7 +908,7 @@ namespace nanoFramework.Json
 
                 list.Add(value);
 
-                token = GetNextToken(ref jsonPos, ref jsonBytes);
+                token = GetNextToken(input);
 
                 if (token.TType != TokenType.Comma && token.TType != TokenType.RArray)
                 {
@@ -951,9 +932,9 @@ namespace nanoFramework.Json
             return new JsonArray((JsonToken[])list.ToArray(typeof(JsonToken)));
         }
 
-        private static JsonToken ParseValue(ref int jsonPos, ref byte[] jsonBytes, ref LexToken token)
+        private static JsonToken ParseValue(IJsonInput input, ref LexToken token)
         {
-            token = GetNextToken(ref jsonPos, ref jsonBytes);
+            token = GetNextToken(input);
 
             if (token.TType == TokenType.RArray)
             {
@@ -1029,23 +1010,24 @@ namespace nanoFramework.Json
 
             if (token.TType == TokenType.LBrace)
             {
-                return ParseObject(ref jsonPos, ref jsonBytes, ref token);
+                return ParseObject(input, ref token);
             }
 
             if (token.TType == TokenType.LArray)
             {
-                return ParseArray(ref jsonPos, ref jsonBytes, ref token);
+                return ParseArray(input, ref token);
             }
 
             // invalid value found during json parse
             throw new DeserializationException();
         }
 
-        private static LexToken GetNextToken(ref int jsonPos, ref byte[] jsonBytes)
+        private static LexToken GetNextToken(IJsonInput input)
         {
-            return GetNextTokenInternal(ref jsonPos, ref jsonBytes);
+            return GetNextTokenInternal(input);
         }
-        private static LexToken GetNextTokenInternal(ref int jsonPos, ref byte[] jsonBytes)
+
+        private static LexToken GetNextTokenInternal(IJsonInput input)
         {
             StringBuilder sb = null;
 
@@ -1054,19 +1036,12 @@ namespace nanoFramework.Json
 
             while (true)
             {
-                if (jsonPos >= jsonBytes.Length)
+                ch = input.ReadChar();
+
+                if (ch == EndOfInput)
                 {
                     return EndToken(sb);
                 }
-
-#pragma warning disable S1121
-#pragma warning disable S3358
-                ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                    : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                    : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                    : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
-#pragma warning restore S1121
-#pragma warning restore S3358
 
                 // Handle json escapes
                 bool escaped = false;
@@ -1075,15 +1050,8 @@ namespace nanoFramework.Json
                 if (ch == '\\')
                 {
                     escaped = true;
-#pragma warning disable S1121
-#pragma warning disable S3358
-                    ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                        : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                        : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                        : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
-#pragma warning restore S1121
-#pragma warning restore S3358
-                    if (ch == (char)0xffff)
+                    ch = input.ReadChar();
+                    if (ch == EndOfInput)
                     {
                         return EndToken(sb);
                     }
@@ -1132,54 +1100,28 @@ namespace nanoFramework.Json
                 {
                     if (unicodeEncoded)
                     {
-                        int numberCounter = 0;
-
-                        // next 4 chars have to be numeric
-                        StringBuilder encodedValue = new();
-
-                        // advance position to next char
-                        jsonPos++;
-                        ch = (char)jsonBytes[jsonPos];
-
+                        StringBuilder encodedValue = new(4);
                         for (int i = 0; i < 4; i++)
                         {
-                            if (IsNumberChar(ch))
-                            {
-                                numberCounter++;
+                            ch = input.ReadRawChar();
 
+                            if (IsHexChar(ch))
+                            {
                                 encodedValue.Append(ch);
-
-                                ch = (char)jsonBytes[jsonPos];
-
-                                if (IsNumberChar(ch))
-                                {
-                                    // We're still working on the number - advance jsonPos
-                                    jsonPos++;
-                                }
                             }
-                        }
-
-                        if (numberCounter == 4)
-                        {
-                            // we're good with the encoded data
-                            // try parse number as an UTF-8 char
-                            try
+                            else
                             {
-                                // NOTE: the encoded value has hexadecimal format
-                                int unicodeChar = Convert.ToInt16(encodedValue.ToString(), 16);
-
-                                _ = sb.Append((char)unicodeChar);
-                            }
-                            catch
-                            {
-                                // couldn't parse this number as a valid Unicode value
                                 throw new DeserializationException();
                             }
                         }
-                        else
+
+                        try
                         {
-                            // anything else, we can't parse it properly
-                            // throw exception
+                            ushort unicodeChar = Convert.ToUInt16(encodedValue.ToString(), 16);
+                            _ = sb.Append((char)unicodeChar);
+                        }
+                        catch
+                        {
                             throw new DeserializationException();
                         }
                     }
@@ -1195,18 +1137,14 @@ namespace nanoFramework.Json
                     {
                         sb.Append(ch);
 
-                        // nanoFramework doesn't support Peek() for Streams or DataReaders
-                        // This is why we converted everything to a byte[] instead of trying to work directly from a Stream or a DataReader
-                        // Look at the next byte but don't advance jsonPos unless we're still working on the number
-                        // i.e. 'peek' to see if we're at the end of the number
-                        ch = (char)jsonBytes[jsonPos];
+                        ch = input.PeekChar();
 
                         if (IsNumberChar(ch))
                         {
-                            jsonPos++;                      // We're still working on the number - advance jsonPos
+                            ch = input.ReadRawChar();
                         }
 
-                        if (ch == (char)0xffff)
+                        if (ch == EndOfInput)
                         {
                             return EndToken(sb);
                         }
@@ -1274,7 +1212,7 @@ namespace nanoFramework.Json
                         case '\n':
                             break; // whitespace - go around again
 
-                        case (char)0xffff:
+                        case EndOfInput:
                             return EndToken(sb);
 
                         default:
@@ -1282,22 +1220,22 @@ namespace nanoFramework.Json
                             switch (ch.ToLower())
                             {
                                 case 't':
-                                    Expect('r', ref jsonPos, ref jsonBytes);
-                                    Expect('u', ref jsonPos, ref jsonBytes);
-                                    Expect('e', ref jsonPos, ref jsonBytes);
+                                    Expect('r', input);
+                                    Expect('u', input);
+                                    Expect('e', input);
                                     return new LexToken() { TType = TokenType.True, TValue = null };
 
                                 case 'f':
-                                    Expect('a', ref jsonPos, ref jsonBytes);
-                                    Expect('l', ref jsonPos, ref jsonBytes);
-                                    Expect('s', ref jsonPos, ref jsonBytes);
-                                    Expect('e', ref jsonPos, ref jsonBytes);
+                                    Expect('a', input);
+                                    Expect('l', input);
+                                    Expect('s', input);
+                                    Expect('e', input);
                                     return new LexToken() { TType = TokenType.False, TValue = null };
 
                                 case 'n':
-                                    Expect('u', ref jsonPos, ref jsonBytes);
-                                    Expect('l', ref jsonPos, ref jsonBytes);
-                                    Expect('l', ref jsonPos, ref jsonBytes);
+                                    Expect('u', input);
+                                    Expect('l', input);
+                                    Expect('l', input);
                                     return new LexToken() { TType = TokenType.Null, TValue = null };
 
                                 default:
@@ -1309,16 +1247,10 @@ namespace nanoFramework.Json
             }
         }
 
-        private static void Expect(char expected, ref int jsonPos, ref byte[] jsonBytes)
+        private static void Expect(char expected, IJsonInput input)
         {
-#pragma warning disable S1121
-#pragma warning disable S3358
-            char ch = (jsonBytes[jsonPos] & 0x80) == 0 ? (char)jsonBytes[jsonPos++]
-                : (jsonBytes[jsonPos] & 0x20) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 2) - 2, 2)[0]
-                : (jsonBytes[jsonPos] & 0x10) == 0 ? Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 3) - 3, 3)[0]
-                : Encoding.UTF8.GetChars(jsonBytes, (jsonPos += 4) - 4, 4)[0];
-#pragma warning restore S1121
-#pragma warning restore S3358
+            char ch = input.ReadChar();
+
             if (ch.ToLower() != expected)
             {
                 // unexpected character during json lexical parse
@@ -1341,5 +1273,10 @@ namespace nanoFramework.Json
 
         // Legal chars for 2..n'th position of a number
         private static bool IsNumberChar(char ch) => (ch == '-') || (ch == '+') || (ch == '.') || (ch == 'e') || (ch == 'E') || (ch >= '0' && ch <= '9');
+
+        private static bool IsHexChar(char ch) =>
+            (ch >= '0' && ch <= '9')
+            || (ch >= 'a' && ch <= 'f')
+            || (ch >= 'A' && ch <= 'F');
     }
 }
