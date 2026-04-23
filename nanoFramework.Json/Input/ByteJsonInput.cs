@@ -13,6 +13,7 @@ namespace nanoFramework.Json.Input
 
         private readonly byte[] _jsonBytes;
         private int _jsonPos;
+        private char _pendingLowSurrogate;
 
         public ByteJsonInput(byte[] jsonBytes)
         {
@@ -21,39 +22,70 @@ namespace nanoFramework.Json.Input
 
         public char ReadChar()
         {
-            return ReadUtf8CharFromBytes(_jsonBytes, ref _jsonPos);
+            return ReadUtf8CharFromBytes(advance: true);
         }
 
         public char PeekChar()
         {
-            return _jsonPos >= _jsonBytes.Length ? EndOfInput : (char)_jsonBytes[_jsonPos];
+            return ReadUtf8CharFromBytes(advance: false);
         }
 
         public char ReadRawChar()
         {
-            return _jsonPos >= _jsonBytes.Length ? EndOfInput : (char)_jsonBytes[_jsonPos++];
+            return ReadUtf8CharFromBytes(advance: true);
         }
 
-        private static char ReadUtf8CharFromBytes(byte[] jsonBytes, ref int jsonPos)
+        private char ReadUtf8CharFromBytes(bool advance)
         {
-            if (jsonPos >= jsonBytes.Length)
+            if (_pendingLowSurrogate != '\0')
+            {
+                char pending = _pendingLowSurrogate;
+
+                if (advance)
+                {
+                    _pendingLowSurrogate = '\0';
+                }
+
+                return pending;
+            }
+
+            if (_jsonPos >= _jsonBytes.Length)
             {
                 return EndOfInput;
             }
 
-            int charLength = GetUtf8CharLength(jsonBytes[jsonPos]);
+            int charLength = GetUtf8CharLength(_jsonBytes[_jsonPos]);
 
-            if (jsonPos + charLength > jsonBytes.Length)
+            if (_jsonPos + charLength > _jsonBytes.Length)
             {
                 return EndOfInput;
             }
 
-            char ch = charLength == 1
-                ? (char)jsonBytes[jsonPos]
-                : Encoding.UTF8.GetChars(jsonBytes, jsonPos, charLength)[0];
+            char[] chars = charLength == 1
+                ? null
+                : Encoding.UTF8.GetChars(_jsonBytes, _jsonPos, charLength);
 
-            jsonPos += charLength;
-            return ch;
+            if (advance)
+            {
+                _jsonPos += charLength;
+            }
+
+            if (charLength == 1)
+            {
+                return (char)_jsonBytes[_jsonPos - (advance ? 1 : 0)];
+            }
+
+            if (chars.Length == 2)
+            {
+                if (advance)
+                {
+                    _pendingLowSurrogate = chars[1];
+                }
+
+                return chars[0];
+            }
+
+            return chars[0];
         }
 
         private static int GetUtf8CharLength(byte value) =>

@@ -18,6 +18,7 @@ namespace nanoFramework.Json.Input
         private int _streamOffset;
         private int _streamCount;
         private bool _endOfStream;
+        private char _pendingLowSurrogate;
 
         public StreamJsonInput(Stream stream, int bufferSize = 256)
         {
@@ -27,6 +28,39 @@ namespace nanoFramework.Json.Input
 
         public char ReadChar()
         {
+            return ReadUtf8CharFromStream(advance: true);
+        }
+
+        public char PeekChar()
+        {
+            return ReadUtf8CharFromStream(advance: false);
+        }
+
+        public char ReadRawChar()
+        {
+            return ReadUtf8CharFromStream(advance: true);
+        }
+
+        private static int GetUtf8CharLength(byte value) =>
+            (value & 0x80) == 0 ? 1
+            : (value & 0x20) == 0 ? 2
+            : (value & 0x10) == 0 ? 3
+            : 4;
+
+        private char ReadUtf8CharFromStream(bool advance)
+        {
+            if (_pendingLowSurrogate != '\0')
+            {
+                char pending = _pendingLowSurrogate;
+
+                if (advance)
+                {
+                    _pendingLowSurrogate = '\0';
+                }
+
+                return pending;
+            }
+
             if (!EnsureStreamBytes(1))
             {
                 return EndOfInput;
@@ -39,40 +73,33 @@ namespace nanoFramework.Json.Input
                 return EndOfInput;
             }
 
-            char ch = charLength == 1
-                ? (char)_streamBuffer[_streamOffset]
-                : Encoding.UTF8.GetChars(_streamBuffer, _streamOffset, charLength)[0];
+            char[] chars = charLength == 1
+                ? null
+                : Encoding.UTF8.GetChars(_streamBuffer, _streamOffset, charLength);
 
-            _streamOffset += charLength;
-            _streamCount -= charLength;
-
-            return ch;
-        }
-
-        public char PeekChar()
-        {
-            return !EnsureStreamBytes(1) ? EndOfInput : (char)_streamBuffer[_streamOffset];
-        }
-
-        public char ReadRawChar()
-        {
-            if (!EnsureStreamBytes(1))
+            if (advance)
             {
-                return EndOfInput;
+                _streamOffset += charLength;
+                _streamCount -= charLength;
             }
 
-            char ch = (char)_streamBuffer[_streamOffset];
-            _streamOffset++;
-            _streamCount--;
+            if (charLength == 1)
+            {
+                return (char)_streamBuffer[_streamOffset - (advance ? 1 : 0)];
+            }
 
-            return ch;
+            if (chars.Length == 2)
+            {
+                if (advance)
+                {
+                    _pendingLowSurrogate = chars[1];
+                }
+
+                return chars[0];
+            }
+
+            return chars[0];
         }
-
-        private static int GetUtf8CharLength(byte value) =>
-            (value & 0x80) == 0 ? 1
-            : (value & 0x20) == 0 ? 2
-            : (value & 0x10) == 0 ? 3
-            : 4;
 
         private bool EnsureStreamBytes(int count)
         {

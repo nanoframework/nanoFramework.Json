@@ -1117,10 +1117,14 @@ namespace nanoFramework.Json
 
                         try
                         {
-                            int unicodeChar = Convert.ToInt16(encodedValue.ToString(), 16);
+                            ushort unicodeChar = Convert.ToUInt16(encodedValue.ToString(), 16);
                             _ = sb.Append((char)unicodeChar);
                         }
-                        catch
+                        catch (FormatException)
+                        {
+                            throw new DeserializationException();
+                        }
+                        catch (OverflowException)
                         {
                             throw new DeserializationException();
                         }
