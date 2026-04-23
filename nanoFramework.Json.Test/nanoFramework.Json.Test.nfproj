@@ -50,6 +50,7 @@
     <Compile Include="DateTimeExtensionsTests.cs" />
     <Compile Include="JsonDeserializationArraysTests.cs" />
     <Compile Include="JsonGenericsTests.cs" />
+    <Compile Include="JsonDeserializeTests.cs" />
     <Compile Include="JsonSettingsTests.cs" />
     <Compile Include="JsonThreadSafeTests.cs" />
     <Compile Include="JsonSerializerOptionsTests.cs" />
