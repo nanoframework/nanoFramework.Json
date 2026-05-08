@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>nanoFramework.Json</id>
@@ -19,9 +19,9 @@
     <tags>nanoFramework C# csharp netmf netnf json</tags>
     <dependencies>
       <group targetFramework=".NETnanoFramework1.0">
-        <dependency id="nanoFramework.CoreLibrary" version="2.0.0-preview.35" />
-        <dependency id="nanoFramework.System.Collections" version="2.0.0-preview.8" />
-        <dependency id="nanoFramework.System.IO.Streams" version="2.0.0-preview.10" />
+        <dependency id="nanoFramework.CoreLibrary" version="2.0.0-preview.43" />
+        <dependency id="nanoFramework.System.Collections" version="2.0.0-preview.14" />
+        <dependency id="nanoFramework.System.IO.Streams" version="2.0.0-preview.15" />
       </group>
     </dependencies>
   </metadata>
