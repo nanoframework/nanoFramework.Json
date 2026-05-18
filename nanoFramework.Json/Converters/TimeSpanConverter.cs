@@ -20,7 +20,15 @@ namespace nanoFramework.Json.Converters
             var isNegative = ts < TimeSpan.Zero;
             if (isNegative)
             {
-                ts = ts.Negate();
+                // Special case: TimeSpan.MinValue cannot be negated, so handle it separately
+                if (ts == TimeSpan.MinValue)
+                {
+                    ts = new TimeSpan(long.MaxValue);
+                }
+                else
+                {
+                    ts = ts.Negate();
+                }
             }
 
             var subSecondTicks = (int)(ts.Ticks % TimeSpan.TicksPerSecond);
