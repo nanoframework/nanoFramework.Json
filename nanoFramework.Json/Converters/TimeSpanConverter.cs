@@ -4,6 +4,7 @@
 //
 
 using System;
+using System.Text;
 
 namespace nanoFramework.Json.Converters
 {
@@ -12,7 +13,71 @@ namespace nanoFramework.Json.Converters
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public string ToJson(object value) => $"\"{value}\"";
+        public string ToJson(object value) => "\"" + FormatTimeSpan((TimeSpan)value) + "\"";
+
+        private static string FormatTimeSpan(TimeSpan ts)
+        {
+            var isNegative = ts < TimeSpan.Zero;
+            if (isNegative)
+            {
+                // Special case: TimeSpan.MinValue cannot be negated, so handle it separately
+                if (ts == TimeSpan.MinValue)
+                {
+                    ts = new TimeSpan(long.MaxValue);
+                }
+                else
+                {
+                    ts = ts.Negate();
+                }
+            }
+
+            var subSecondTicks = (int)(ts.Ticks % TimeSpan.TicksPerSecond);
+            var hasDays = ts.Days != 0;
+            var hasSubSecond = subSecondTicks != 0;
+
+            var sb = new StringBuilder();
+
+            if (isNegative)
+            {
+                sb.Append('-');
+            }
+
+            if (hasDays)
+            {
+                sb.Append(ts.Days.ToString());
+                sb.Append('.');
+            }
+
+            sb.Append(Pad2(ts.Hours));
+            sb.Append(':');
+            sb.Append(Pad2(ts.Minutes));
+            sb.Append(':');
+            sb.Append(Pad2(ts.Seconds));
+
+            if (hasSubSecond)
+            {
+                sb.Append('.');
+                sb.Append(Pad7(subSecondTicks));
+            }
+
+            return sb.ToString();
+        }
+
+        private static string Pad2(int value)
+        {
+            return value < 10 ? "0" + value.ToString() : value.ToString();
+        }
+
+        private static string Pad7(int value)
+        {
+            var s = value.ToString();
+            while (s.Length < 7)
+            {
+                s = "0" + s;
+            }
+
+            return s;
+        }
 
         /// <summary>
         /// <inheritdoc/>
