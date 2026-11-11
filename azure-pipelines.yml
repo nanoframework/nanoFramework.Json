@@ -14,9 +14,6 @@ resources:
       name: nanoframework/nf-tools
       endpoint: nanoframework
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   - group: sign-client-credentials
   - name: DOTNET_NOLOGO
@@ -45,7 +42,7 @@ stages:
     displayName: 'Build job'
     pool:
       # default is the following VM Image
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2025-vs2026'
     steps:
 
     # step from template @ nf-tools repo
