@@ -1,10 +1,25 @@
 # Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 
-# The Pipeline is going to be triggered by a call to Azure DevOps REST API
-# Manual trigger is always possible.
-trigger: none
-pr: none
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+      - release-*
+  paths:
+    exclude:
+      - .gitignore
+      - CHANGELOG.md
+      - LICENSE.md
+      - README.md
+      - NuGet.Config
+      - assets/*
+      - .github/*
+
+# PR always trigger build
+pr:
+  autoCancel: true
 
 # add nf-tools repo to resources (for Azure Pipelines templates)
 resources:
