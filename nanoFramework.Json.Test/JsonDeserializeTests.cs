@@ -55,6 +55,33 @@ namespace nanoFramework.Json.Test
             public string Description { get; set; }
         }
 
+        private class RpcResponse
+        {
+            public string CorrelationId { get; set; }
+
+            public int Status { get; set; }
+
+            public string Result { get; set; }
+        }
+
+        private class Product
+        {
+            public int ProductId { get; set; }
+
+            public string Name { get; set; }
+
+            public string Description { get; set; }
+
+            public int Price { get; set; }
+
+            public int LiterCount { get; set; }
+        }
+
+        private class StringTarget
+        {
+            public string Value { get; set; }
+        }
+
         [TestMethod]
         [DataRow(DeserializeSource.String)]
         [DataRow(DeserializeSource.Stream)]
@@ -82,6 +109,46 @@ namespace nanoFramework.Json.Test
             Assert.AreEqual(
                 LongUtf8Text + LongUtf8Text + LongUtf8Text + LongUtf8Text + LongUtf8Text + LongUtf8Text + LongUtf8Text + LongUtf8Text,
                 deserialized.Description);
+        }
+
+        [TestMethod]
+        public void DeserializeObject_Should_PreserveDigitFollowingUnicodeEscape()
+        {
+            const string message =
+                "{\"CorrelationId\":\"48c972d2-787c-4151-96ab-70eb26cd21b8\",\"Status\":1," +
+                "\"Result\":\"{\\u0022ProductId\\u0022:1,\\u0022Name\\u0022:\\u0022A 5-liter bottle\\u0022," +
+                "\\u0022Description\\u0022:\\u00225 liters\\u0022,\\u0022Price\\u0022:100,\\u0022LiterCount\\u0022:5}\"}";
+            const string expectedResult =
+                "{\"ProductId\":1,\"Name\":\"A 5-liter bottle\",\"Description\":\"5 liters\",\"Price\":100,\"LiterCount\":5}";
+
+            foreach (DeserializeSource source in new[] { DeserializeSource.String, DeserializeSource.Stream, DeserializeSource.StreamReader })
+            {
+                var response = (RpcResponse)Deserialize(source, message, typeof(RpcResponse));
+
+                Assert.AreEqual(expectedResult, response.Result);
+
+                var product = (Product)JsonConvert.DeserializeObject(response.Result, typeof(Product));
+                Assert.AreEqual("5 liters", product.Description);
+                Assert.AreEqual("A 5-liter bottle", product.Name);
+            }
+        }
+
+        [TestMethod]
+        public void DeserializeObject_Should_DecodeUnicodeEscapesWithoutConsumingAdjacentCharacters()
+        {
+            string[] jsonValues = { "\\u00355", "a\\u0041F", "\\u00e9", "\\u0041\\u0035" };
+            string[] expectedValues = { "55", "aAF", "\u00e9", "A5" };
+
+            foreach (DeserializeSource source in new[] { DeserializeSource.String, DeserializeSource.Stream, DeserializeSource.StreamReader })
+            {
+                for (int i = 0; i < jsonValues.Length; i++)
+                {
+                    string json = "{\"Value\":\"" + jsonValues[i] + "\"}";
+                    var result = (StringTarget)Deserialize(source, json, typeof(StringTarget));
+
+                    Assert.AreEqual(expectedValues[i], result.Value);
+                }
+            }
         }
 
         private static object Deserialize(DeserializeSource source, string json, System.Type type)
