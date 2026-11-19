@@ -122,8 +122,10 @@
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.Common.10.0.404\build\Microsoft.SourceLink.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.Common.10.0.404\build\Microsoft.SourceLink.Common.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Build.Tasks.Git.10.0.404\build\Microsoft.Build.Tasks.Git.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Build.Tasks.Git.10.0.404\build\Microsoft.Build.Tasks.Git.targets'))" />
   </Target>
   <Import Project="..\packages\Nerdbank.GitVersioning.3.10.94\build\Nerdbank.GitVersioning.targets" Condition="Exists('..\packages\Nerdbank.GitVersioning.3.10.94\build\Nerdbank.GitVersioning.targets')" />
   <Import Project="..\packages\Microsoft.SourceLink.Common.10.0.404\build\Microsoft.SourceLink.Common.targets" Condition="Exists('..\packages\Microsoft.SourceLink.Common.10.0.404\build\Microsoft.SourceLink.Common.targets')" />
   <Import Project="..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.targets" Condition="Exists('..\packages\Microsoft.SourceLink.GitHub.10.0.404\build\Microsoft.SourceLink.GitHub.targets')" />
+  <Import Project="..\packages\Microsoft.Build.Tasks.Git.10.0.404\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.10.0.404\build\Microsoft.Build.Tasks.Git.targets')" />
 </Project>
