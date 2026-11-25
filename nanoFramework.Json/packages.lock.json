@@ -4,15 +4,15 @@
     ".NETnanoFramework,Version=v1.0": {
       "Microsoft.Build.Tasks.Git": {
         "type": "Direct",
-        "requested": "[11.0.100, 11.0.100]",
-        "resolved": "11.0.100",
-        "contentHash": "juE7HH7MfWolKodshqdxaJjFK3A4wp/UqMN69sVtBBU2hT2Bs1vwjAy0dwdsIUFlff0jEOqT7qcXQiD8l3+z3A=="
+        "requested": "[10.0.404, 10.0.404]",
+        "resolved": "10.0.404",
+        "contentHash": "SMywJ542jorXpeGtJUMSYmZ9i/FxT8tc0qkbIGI3amqh0Wl7AKDYRfFNzImVGeLT8mkUPTRgpoWHgxoZQT1b5A=="
       },
       "Microsoft.SourceLink.Common": {
         "type": "Direct",
-        "requested": "[11.0.100, 11.0.100]",
-        "resolved": "11.0.100",
-        "contentHash": "7BbbX7EWxjEEU1Evc5hPF7aoncC/qq0avTgyUQN7fXXexWbfy4PgDFd35U90wdomwBGkn1zaYTW7kdwxiVdtnQ=="
+        "requested": "[10.0.404, 10.0.404]",
+        "resolved": "10.0.404",
+        "contentHash": "jQuH8U7EpZEO7XrV3Ql7PvgpyQGsytm74HNawvOdgKGQc97x8bLDlxGx4pT2kCU+3lLu/f42jEoKixGMkm8Ynw=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
@@ -22,15 +22,15 @@
       },
       "nanoFramework.CoreLibrary": {
         "type": "Direct",
-        "requested": "[2.0.0-preview.63, 2.0.0-preview.63]",
-        "resolved": "2.0.0-preview.63",
-        "contentHash": "M2qEbjY8Uh5jpgrqDD7vJf2YXk3CmGbTHkb/t6w4F/aNyetOYk0LyekdwUSF0kZ+gTNMH/y6CTHBbJfgtMbIeA=="
+        "requested": "[2.0.0-preview.125, 2.0.0-preview.125]",
+        "resolved": "2.0.0-preview.125",
+        "contentHash": "MF3uIcQJxaxif5Bib29eEWei+Jy/D5xYPBRsTeFHYVpSp++qDdxdafqsgWJWG8jZlWD6gHI+UFSEM62l9SG8ZA=="
       },
       "nanoFramework.System.Collections": {
         "type": "Direct",
-        "requested": "[2.0.0-preview.24, 2.0.0-preview.24]",
-        "resolved": "2.0.0-preview.24",
-        "contentHash": "R9H0vjkT4DGVM7bu9e53EHukRU2iebO2pqjcfPEJlUSyIytexpkvxdTgSVmfLjv4COr8jBq7jMvkdr0NiOhxjA=="
+        "requested": "[2.0.0-preview.36, 2.0.0-preview.36]",
+        "resolved": "2.0.0-preview.36",
+        "contentHash": "SaYE0SDWnIclfR4WlOzzDHlgxmGWJJRdTjnU6P9W7udjw0JgpUuO9ooN6onoWQtmmv6XhALAqy408HNdX0zxeQ=="
       },
       "nanoFramework.System.IO.Streams": {
         "type": "Direct",
